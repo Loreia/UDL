@@ -1,19 +1,30 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO ( donho@altern.org )
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #include "precompiledHeaders.h"
 #include "Parameters.h"
@@ -21,6 +32,7 @@
 #include "ScintillaEditView.h"
 #include "keys.h"
 #include "localization.h"
+#include "UserDefineDialog.h"
 
 struct WinMenuKeyDefinition {	//more or less matches accelerator table definition, easy copy/paste
 	//const TCHAR * name;	//name retrieved from menu?
@@ -92,7 +104,8 @@ WinMenuKeyDefinition winKeyDefs[] = {
 	{VK_NULL,	IDM_EDIT_EOL2WS,			 		false, false, false, NULL},
 	{VK_NULL,	IDM_EDIT_TRIMALL,			 		false, false, false, NULL},
 	{VK_NULL,	IDM_EDIT_TAB2SW,			 		false, false, false, NULL},
-	{VK_NULL,	IDM_EDIT_SW2TAB,			 		false, false, false, NULL},
+	{VK_NULL,	IDM_EDIT_SW2TAB_ALL,		 		false, false, false, NULL},
+	{VK_NULL,	IDM_EDIT_SW2TAB_LEADING,	 		false, false, false, NULL},
 
 	{VK_C,		IDM_EDIT_COLUMNMODE,				false, true,  false, NULL},
 	{VK_U, 		IDM_EDIT_UPPERCASE,					true,  false, true,  NULL},
@@ -157,10 +170,10 @@ WinMenuKeyDefinition winKeyDefs[] = {
 	{VK_NULL,	IDM_VIEW_INDENT_GUIDE,				false, false, false, NULL},
 	{VK_NULL,	IDM_VIEW_WRAP,						false, false, false, NULL},
 	{VK_NULL,	IDM_VIEW_WRAP_SYMBOL,				false, false, false, NULL},
-	{VK_NULL,	IDM_VIEW_USER_DLG,					false, false, false, NULL},
-	//{VK_NULL,	IDM_VIEW_ZOOMIN,					false, false, false, NULL},
-	//{VK_NULL,	IDM_VIEW_ZOOMOUT,					false, false, false, NULL},
-	//{VK_NULL,	IDM_VIEW_ZOOMRESTORE,				false, false, false, NULL},
+	{VK_NULL,	IDM_LANG_USER_DLG,					false, false, false, NULL},
+	// {VK_NULL,	IDM_VIEW_ZOOMIN,					false, false, false, NULL},
+	// {VK_NULL,	IDM_VIEW_ZOOMOUT,					false, false, false, NULL},
+	// {VK_NULL,	IDM_VIEW_ZOOMRESTORE,				false, false, false, NULL},
 	{VK_0,		IDM_VIEW_TOGGLE_FOLDALL, 			false, true,  false, NULL},
 	{VK_F,		IDM_VIEW_FOLD_CURRENT,				true,  true,  false, NULL},
 	{VK_1,		IDM_VIEW_FOLD_1, 					false, true,  false, NULL},
@@ -387,34 +400,34 @@ ScintillaKeyDefinition scintKeyDefs[] = {	//array of accelerator keys for all po
 	{TEXT("SCI_SWAPMAINANCHORCARET"),	SCI_SWAPMAINANCHORCARET,			false, false, false, 0,	0},
 	{TEXT("SCI_ROTATESELECTION"),		SCI_ROTATESELECTION,					false, false, false, 0, 0}
 
-	//{TEXT("SCI_EMPTYUNDOBUFFER"),		SCI_EMPTYUNDOBUFFER,		false, false, false, 0,			0},
-	//{TEXT("SCI_TOGGLECARETSTICKY"),		SCI_TOGGLECARETSTICKY,		false, false, false, 0,			0},
-	//{TEXT("SCI_CALLTIPCANCEL"),			SCI_CALLTIPCANCEL,			false, false, false, 0,			0},
-	//{TEXT("SCI_SETSAVEPOINT"),			SCI_SETSAVEPOINT,			false, false, false, 0,			0},
-	//{TEXT("SCI_CLEARDOCUMENTSTYLE"),	SCI_CLEARDOCUMENTSTYLE,		false, false, false, 0,			0},
+	// {TEXT("SCI_EMPTYUNDOBUFFER"),		SCI_EMPTYUNDOBUFFER,		false, false, false, 0,			0},
+	// {TEXT("SCI_TOGGLECARETSTICKY"),		SCI_TOGGLECARETSTICKY,		false, false, false, 0,			0},
+	// {TEXT("SCI_CALLTIPCANCEL"),			SCI_CALLTIPCANCEL,			false, false, false, 0,			0},
+	// {TEXT("SCI_SETSAVEPOINT"),			SCI_SETSAVEPOINT,			false, false, false, 0,			0},
+	// {TEXT("SCI_CLEARDOCUMENTSTYLE"),	SCI_CLEARDOCUMENTSTYLE,		false, false, false, 0,			0},
 	//
 	//
 	//{TEXT("SCI_CHOOSECARETX"),			SCI_CHOOSECARETX,			false, false, false, 0,			0},
-	//{TEXT("SCI_AUTOCCOMPLETE"),			SCI_AUTOCCOMPLETE,			false, false, false, 0,			0},
-	//{TEXT("SCI_AUTOCCANCEL"),			SCI_AUTOCCANCEL,			false, false, false, 0,			0},
-	//{TEXT("SCI_CLEARREGISTEREDIMAGES"), SCI_CLEARREGISTEREDIMAGES,	false, false, false, 0,			0},
-	//{TEXT("SCI_HOMEDISPLAYEXTEND"),		SCI_HOMEDISPLAYEXTEND,		false, true,  true,  VK_HOME,	0},
-	//{TEXT("SCI_LINEENDDISPLAYEXTEND"),	SCI_LINEENDDISPLAYEXTEND,	false, true,  true,  VK_END,	0},
-	//
-	//{TEXT("SCI_DELWORDRIGHTEND"),		SCI_DELWORDRIGHTEND,		false, false, false, 0,			0},
-	//{TEXT("SCI_LOWERCASE"),				SCI_LOWERCASE,				false, false, false, 0,			0},
-	//{TEXT("SCI_UPPERCASE"),				SCI_UPPERCASE,				false, false, false, 0,			0},
-	//{TEXT("SCI_LOWERCASE"),				SCI_LOWERCASE,				true,  false, false, VK_U, 		0},
-	//{TEXT("SCI_UPPERCASE"),				SCI_UPPERCASE,				true,  false, true,  VK_U, 		0},
-	//
-	//{TEXT("SCI_FORMFEED"),				SCI_FORMFEED,				true,  false, false, VK_L, 		0},
-	//{TEXT("SCI_CLEARALLCMDKEYS"),		SCI_CLEARALLCMDKEYS,		false, false, false, 0,			0},
-	//{TEXT("SCI_STARTRECORD"),			SCI_STARTRECORD,			false, false, false, 0,			0},
-	//{TEXT("SCI_STOPRECORD"),			SCI_STOPRECORD,				false, false, false, 0,			0},
-	//{TEXT("SCI_SEARCHANCHOR"),			SCI_SEARCHANCHOR,			false, false, false, 0,			0},
-	//{TEXT("SCI_TARGETFROMSELECTION"),	SCI_TARGETFROMSELECTION,	false, false, false, 0,			0},
-	//{TEXT("SCI_STYLERESETDEFAULT"),		SCI_STYLERESETDEFAULT,		false, false, false, 0,			0},
-	//{TEXT("SCI_STYLECLEARALL"),			SCI_STYLECLEARALL,			false, false, false, 0,			0},
+	// {TEXT("SCI_AUTOCCOMPLETE"),			SCI_AUTOCCOMPLETE,			false, false, false, 0,			0},
+	// {TEXT("SCI_AUTOCCANCEL"),			SCI_AUTOCCANCEL,			false, false, false, 0,			0},
+	// {TEXT("SCI_CLEARREGISTEREDIMAGES"), SCI_CLEARREGISTEREDIMAGES,	false, false, false, 0,			0},
+	// {TEXT("SCI_HOMEDISPLAYEXTEND"),		SCI_HOMEDISPLAYEXTEND,		false, true,  true,  VK_HOME,	0},
+	// {TEXT("SCI_LINEENDDISPLAYEXTEND"),	SCI_LINEENDDISPLAYEXTEND,	false, true,  true,  VK_END,	0},
+	// 
+	// {TEXT("SCI_DELWORDRIGHTEND"),		SCI_DELWORDRIGHTEND,		false, false, false, 0,			0},
+	// {TEXT("SCI_LOWERCASE"),				SCI_LOWERCASE,				false, false, false, 0,			0},
+	// {TEXT("SCI_UPPERCASE"),				SCI_UPPERCASE,				false, false, false, 0,			0},
+	// {TEXT("SCI_LOWERCASE"),				SCI_LOWERCASE,				true,  false, false, VK_U, 		0},
+	// {TEXT("SCI_UPPERCASE"),				SCI_UPPERCASE,				true,  false, true,  VK_U, 		0},
+	// 
+	// {TEXT("SCI_FORMFEED"),				SCI_FORMFEED,				true,  false, false, VK_L, 		0},
+	// {TEXT("SCI_CLEARALLCMDKEYS"),		SCI_CLEARALLCMDKEYS,		false, false, false, 0,			0},
+	// {TEXT("SCI_STARTRECORD"),			SCI_STARTRECORD,			false, false, false, 0,			0},
+	// {TEXT("SCI_STOPRECORD"),			SCI_STOPRECORD,				false, false, false, 0,			0},
+	// {TEXT("SCI_SEARCHANCHOR"),			SCI_SEARCHANCHOR,			false, false, false, 0,			0},
+	// {TEXT("SCI_TARGETFROMSELECTION"),	SCI_TARGETFROMSELECTION,	false, false, false, 0,			0},
+	// {TEXT("SCI_STYLERESETDEFAULT"),		SCI_STYLERESETDEFAULT,		false, false, false, 0,			0},
+	// {TEXT("SCI_STYLECLEARALL"),			SCI_STYLECLEARALL,			false, false, false, 0,			0},
 	//
 };
 
@@ -540,6 +553,11 @@ winVer getWindowsVersion()
    {
 		case VER_PLATFORM_WIN32_NT:
 		{
+			if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
+			{
+				return WV_WIN8;
+			}
+
 			if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
 			{
 				return WV_WIN7;
@@ -771,11 +789,11 @@ bool NppParameters::load()
 	PathAppend(localConfPath, localConfFile);
 
 	// Test if localConf.xml exist
-	bool isLocal = (PathFileExists(localConfPath.c_str()) == TRUE);
+	_isLocal = (PathFileExists(localConfPath.c_str()) == TRUE);
 
     // Under vista and windows 7, the usage of doLocalConf.xml is not allowed
     // if Notepad++ is installed in "program files" directory, because of UAC
-    if (isLocal)
+    if (_isLocal)
     {
         // We check if OS is Vista or above
         if (_winVersion >= WV_VISTA)
@@ -789,11 +807,11 @@ bool NppParameters::load()
             ::PathRemoveFileSpec(nppDirLocation);
             	
             if  (lstrcmp(progPath, nppDirLocation) == 0)
-                isLocal = false;
+                _isLocal = false;
         }
     }
 
-	if (isLocal)
+	if (_isLocal)
 	{
 		_userPath = _nppPath;
 	}
@@ -1115,7 +1133,6 @@ void NppParameters::destroyInstance()
 
 	if (_pXmlUserDoc != NULL)
 	{
-		_pXmlUserDoc->SaveFile();
 		delete _pXmlUserDoc;
 	}
 	if (_pXmlUserStylerDoc)
@@ -1214,23 +1231,25 @@ bool NppParameters::getUserParametersFromXmlTree()
 	TiXmlNode *root = _pXmlUserDoc->FirstChild(TEXT("NotepadPlus"));
 	if (!root) return false;
 
-	// GUI
+	// Get GUI parameters
 	feedGUIParameters(root);
 
-	//History
+	// Get History parameters
 	feedFileListParameters(root);
 
-	// Raser tout
+	// Erase the History root
 	TiXmlNode *node = root->FirstChildElement(TEXT("History"));
 	root->RemoveChild(node);
 
-	// Repartir de zero
+	// Add a new empty History root
 	TiXmlElement HistoryNode(TEXT("History"));
-
 	root->InsertEndChild(HistoryNode);
 
-	//Find history
+	//Get Find history parameters
 	feedFindHistoryParameters(root);
+
+	//Get Project Panel parameters
+	feedProjectPanelsParameters(root);
 
 	return true;
 }
@@ -1691,6 +1710,7 @@ bool NppParameters::getSessionFromXmlTree(TiXmlDocument *pSessionDoc, Session *p
 	
 	return true;
 }
+
 void NppParameters::feedFileListParameters(TiXmlNode *node)
 {
 	TiXmlNode *historyRoot = node->FirstChildElement(TEXT("History"));
@@ -1699,7 +1719,7 @@ void NppParameters::feedFileListParameters(TiXmlNode *node)
 	// nbMaxFile value
 	int nbMaxFile;
 	const TCHAR *strVal = (historyRoot->ToElement())->Attribute(TEXT("nbMaxFile"), &nbMaxFile);
-	if (strVal && (nbMaxFile > 0) && (nbMaxFile <= 50))
+	if (strVal && (nbMaxFile >= 0) && (nbMaxFile <= 50))
 		_nbMaxRecentFile = nbMaxFile;
 
 	// customLen value
@@ -1722,6 +1742,28 @@ void NppParameters::feedFileListParameters(TiXmlNode *node)
 		{
 			_LRFileList[_nbRecentFile] = new generic_string(filePath);
 			_nbRecentFile++;
+		}
+	}
+}
+
+void NppParameters::feedProjectPanelsParameters(TiXmlNode *node)
+{
+	TiXmlNode *projPanelRoot = node->FirstChildElement(TEXT("ProjectPanels"));
+	if (!projPanelRoot) return;
+	
+	for (TiXmlNode *childNode = projPanelRoot->FirstChildElement(TEXT("ProjectPanel"));
+		childNode;
+		childNode = childNode->NextSibling(TEXT("ProjectPanel")) )
+	{
+		int index = 0;
+		const TCHAR *idStr = (childNode->ToElement())->Attribute(TEXT("id"), &index);
+		if (idStr && (index >= 0 && index <= 2))
+		{
+			const TCHAR *filePath = (childNode->ToElement())->Attribute(TEXT("workSpaceFile"));
+			if (filePath)
+			{
+				_workSpaceFilePathes[index] = filePath;
+			}
 		}
 	}
 }
@@ -1839,6 +1881,10 @@ void NppParameters::feedFindHistoryParameters(TiXmlNode *node)
 	(findHistoryRoot->ToElement())->Attribute(TEXT("transparency"), &_findHistory._transparency);
 	if (_findHistory._transparency <= 0 || _findHistory._transparency > 200)
 		_findHistory._transparency = 150;
+
+	boolStr = (findHistoryRoot->ToElement())->Attribute(TEXT("dotMatchesNewline"));
+	if (boolStr)
+		_findHistory._dotMatchesNewline = !lstrcmp(TEXT("yes"), boolStr);
 }
 
 void NppParameters::feedShortcut(TiXmlNode *node)
@@ -2110,12 +2156,16 @@ bool NppParameters::feedUserLang(TiXmlNode *node)
 	{
 		const TCHAR *name = (childNode->ToElement())->Attribute(TEXT("name"));
 		const TCHAR *ext = (childNode->ToElement())->Attribute(TEXT("ext"));
+		const TCHAR *udlVersion = (childNode->ToElement())->Attribute(TEXT("udlVersion"));
         hasFoundElement = true;
 		try {
 			if (!name || !name[0] || !ext)
 				throw std::runtime_error("NppParameters::feedUserLang : UserLang name is missing");
 
-			_userLangArray[_nbUserLang] = new UserLangContainer(name, ext);
+			if (!udlVersion)
+				_userLangArray[_nbUserLang] = new UserLangContainer(name, ext, TEXT(""));
+			else
+				_userLangArray[_nbUserLang] = new UserLangContainer(name, ext, udlVersion);
 			_nbUserLang++;
 
 			TiXmlNode *settingsRoot = childNode->FirstChildElement(TEXT("Settings"));
@@ -2135,6 +2185,14 @@ bool NppParameters::feedUserLang(TiXmlNode *node)
 				throw std::runtime_error("NppParameters::feedUserLang : Styles node is missing");
 
 			feedUserStyles(stylesRoot);
+
+			// styles that were not read from xml file should get default values 
+			for (int i=0; i<SCE_USER_STYLE_TOTAL_STYLES; ++i)
+			{
+				Style & style = _userLangArray[_nbUserLang - 1]->_styleArray.getStyler(i);
+				if (style._styleID == -1)
+					_userLangArray[_nbUserLang - 1]->_styleArray.addStyler(i, styleNameMapper[i]);
+			}
 
 		} catch (std::exception e) {
 			delete _userLangArray[--_nbUserLang];
@@ -2479,20 +2537,6 @@ void NppParameters::removeUserLang(int index)
 	_nbUserLang--;
 }
 
-int NppParameters::getIndexFromKeywordListName(const TCHAR *name)
-{
-	if (!name) return -1;
-	if (!lstrcmp(name, TEXT("Folder+")))	return 1;
-	else if (!lstrcmp(name, TEXT("Folder-")))	return 2;
-	else if (!lstrcmp(name, TEXT("Operators")))return 3;
-	else if (!lstrcmp(name, TEXT("Comment")))	return 4;
-	else if (!lstrcmp(name, TEXT("Words1")))	return 5;
-	else if (!lstrcmp(name, TEXT("Words2")))	return 6;
-	else if (!lstrcmp(name, TEXT("Words3")))	return 7;
-	else if (!lstrcmp(name, TEXT("Words4")))	return 8;
-	else if (!lstrcmp(name, TEXT("Delimiters")))	return 0;
-	else return -1;
-}
 void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
 {
 	const TCHAR *boolStr;
@@ -2501,31 +2545,44 @@ void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
 	{
 		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("caseIgnored"));
 		if (boolStr)
-			_userLangArray[_nbUserLang - 1]->_isCaseIgnored = !lstrcmp(TEXT("yes"), boolStr);
-		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("escapeChar"));
-		_userLangArray[_nbUserLang - 1]->_escapeChar[0] = (boolStr) ? boolStr[0] : 0;
-	}
-	TiXmlNode *treatAsSymbolNode = settingsRoot->FirstChildElement(TEXT("TreatAsSymbol"));
-	if (treatAsSymbolNode)
-	{
-		boolStr = (treatAsSymbolNode->ToElement())->Attribute(TEXT("comment"));
-		if (boolStr)
-			_userLangArray[_nbUserLang - 1]->_isCommentSymbol = !lstrcmp(TEXT("yes"), boolStr);
+            _userLangArray[_nbUserLang - 1]->_isCaseIgnored = !lstrcmp(TEXT("yes"), boolStr);
 
-		boolStr = (treatAsSymbolNode->ToElement())->Attribute(TEXT("commentLine"));
+		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("allowFoldOfComments"));
 		if (boolStr)
-			_userLangArray[_nbUserLang - 1]->_isCommentLineSymbol = !lstrcmp(TEXT("yes"), boolStr);
+            _userLangArray[_nbUserLang - 1]->_allowFoldOfComments = !lstrcmp(TEXT("yes"), boolStr);
+
+		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("forceLineCommentsAtBOL"));
+		if (boolStr)
+            _userLangArray[_nbUserLang - 1]->_forceLineCommentsAtBOL = !lstrcmp(TEXT("yes"), boolStr);
+
+		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("foldCompact"));
+		if (boolStr)
+            _userLangArray[_nbUserLang - 1]->_foldCompact = !lstrcmp(TEXT("yes"), boolStr);
 	}
+
 	TiXmlNode *prefixNode = settingsRoot->FirstChildElement(TEXT("Prefix"));
 	if (prefixNode)
 	{
-		TCHAR names[nbPrefixListAllowed][7] = {TEXT("words1"), TEXT("words2"), TEXT("words3"), TEXT("words4")};
-		for (int i = 0 ; i < nbPrefixListAllowed ; i++)
-		{
-			boolStr = (prefixNode->ToElement())->Attribute(names[i]);
-			if (boolStr)
-				_userLangArray[_nbUserLang - 1]->_isPrefix[i] = !lstrcmp(TEXT("yes"), boolStr);
-		}
+        const TCHAR *udlVersion = _userLangArray[_nbUserLang - 1]->_udlVersion.c_str();
+        if (!lstrcmp(udlVersion, TEXT("2.0")))
+        {
+            for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
+            {
+                boolStr = (prefixNode->ToElement())->Attribute(keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1]);
+                if (boolStr)
+                    _userLangArray[_nbUserLang - 1]->_isPrefix[i] = !lstrcmp(TEXT("yes"), boolStr);
+            }
+        }
+        else    // support for old style (pre 2.0)
+        {
+            TCHAR names[SCE_USER_TOTAL_KEYWORD_GROUPS][7] = {TEXT("words1"), TEXT("words2"), TEXT("words3"), TEXT("words4")};
+            for (int i = 0 ; i < 4 ; i++)
+            {
+                boolStr = (prefixNode->ToElement())->Attribute(names[i]);
+                if (boolStr)
+                    _userLangArray[_nbUserLang - 1]->_isPrefix[i] = !lstrcmp(TEXT("yes"), boolStr);
+            }
+        }
 	}
 }
 
@@ -2536,30 +2593,136 @@ void NppParameters::feedUserKeywordList(TiXmlNode *node)
 		childNode = childNode->NextSibling(TEXT("Keywords")))
 	{
 		const TCHAR *keywordsName = (childNode->ToElement())->Attribute(TEXT("name"));
-		int i = getIndexFromKeywordListName(keywordsName);
-		if (i != -1)
-		{
-			TiXmlNode *valueNode = childNode->FirstChild();
-			if (valueNode)
-			{
-				const TCHAR *kwl = (valueNode)?valueNode->Value():(lstrcmp(keywordsName, TEXT("Delimiters"))?TEXT(""):TEXT("000000"));
-				lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[i], kwl);
-			}
-		}
+		const TCHAR *udlVersion = _userLangArray[_nbUserLang - 1]->_udlVersion.c_str();
+		TCHAR *kwl = NULL;
+
+        TiXmlNode *valueNode = childNode->FirstChild();
+        if (valueNode)
+        {
+            if (!lstrcmp(udlVersion, TEXT("2.0")))
+            {
+                const int keywordsID = _tstoi((childNode->ToElement())->Attribute(TEXT("id")));
+                kwl = (valueNode)?valueNode->Value():TEXT("");
+                lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[keywordsID], kwl);
+            }
+            else    // support for old style (pre 2.0)
+            {
+                if (!lstrcmp(keywordsName, TEXT("Delimiters")))
+                {
+                    basic_string<TCHAR> temp = TEXT("");
+                    kwl = (valueNode)?valueNode->Value():TEXT("000000");
+                    
+                    temp += TEXT("00");     if (kwl[0] != '0') temp += kwl[0];     temp += TEXT(" 01");
+                    temp += TEXT(" 02");    if (kwl[3] != '0') temp += kwl[3]; 
+                    temp += TEXT(" 03");    if (kwl[1] != '0') temp += kwl[1];     temp += TEXT(" 04");
+                    temp += TEXT(" 05");    if (kwl[4] != '0') temp += kwl[4]; 
+                    temp += TEXT(" 06");    if (kwl[2] != '0') temp += kwl[2];     temp += TEXT(" 07");
+                    temp += TEXT(" 08");    if (kwl[5] != '0') temp += kwl[5];
+                    
+                    temp += TEXT(" 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_DELIMITERS], temp.c_str());
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Operators")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_OPERATORS1], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Folder+")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+					lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_FOLDERS_IN_CODE1_OPEN], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Folder-")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+					lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Words1")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_KEYWORDS1], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Words2")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_KEYWORDS2], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Words3")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_KEYWORDS3], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Words4")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_KEYWORDS4], kwl);
+                }
+                else if (!lstrcmp(keywordsName, TEXT("Comment")))
+                {
+                    kwl = (valueNode)?valueNode->Value():TEXT("");
+                    //int len = _tcslen(kwl);
+                    basic_string<TCHAR> temp = TEXT(" ");
+                    
+                    temp += kwl;
+                    size_t pos = 0;
+                    
+                    pos = temp.find(TEXT(" 0"));
+                    while (pos != string::npos)
+                    {
+                        temp.replace(pos, 2, TEXT(" 00"));
+                        pos = temp.find(TEXT(" 0"), pos+1);
+                    }
+                    pos = temp.find(TEXT(" 1"));
+                    while (pos != string::npos)
+                    {
+                        temp.replace(pos, 2, TEXT(" 03"));
+                        pos = temp.find(TEXT(" 1"));
+                    }
+                    pos = temp.find(TEXT(" 2"));
+                    while (pos != string::npos)
+                    {
+                        temp.replace(pos, 2, TEXT(" 04"));
+                        pos = temp.find(TEXT(" 2"));
+                    }
+                    
+                    temp += TEXT(" 01 02");
+                    if (temp[0] == ' ')
+                        temp.erase(0, 1);
+                    
+                    lstrcpy(_userLangArray[_nbUserLang - 1]->_keywordLists[SCE_USER_KWLIST_COMMENTS], temp.c_str());
+
+                }
+            }
+        }
 	}
 }
 
 void NppParameters::feedUserStyles(TiXmlNode *node)
 {
+	bool oldVersion = false;
+	const TCHAR *udlVersion = _userLangArray[_nbUserLang - 1]->_udlVersion.c_str();
+	if (lstrcmp(udlVersion, TEXT("2.0")))
+		oldVersion = true;
+
 	for (TiXmlNode *childNode = node->FirstChildElement(TEXT("WordsStyle"));
 		childNode ;
 		childNode = childNode->NextSibling(TEXT("WordsStyle")))
 	{
 		int id;
 		const TCHAR *styleIDStr = (childNode->ToElement())->Attribute(TEXT("styleID"), &id);
+		if (oldVersion)
+		{
+			if (id >= SCE_USER_STYLE_MAPPER_TOTAL)
+				continue;
+
+			id = styleIdMApper[id];
+			if (id == -1)
+				continue;
+		}
 		if (styleIDStr)
 		{
-			_userLangArray[_nbUserLang - 1]->_styleArray.addStyler(id, childNode);
+			if (id < SCE_USER_STYLE_TOTAL_STYLES)
+				_userLangArray[_nbUserLang - 1]->_styleArray.addStyler((id | L_USER << 16), childNode);
 		}
 	}
 }
@@ -2659,26 +2822,40 @@ void LexerStylerArray::eraseAll()
 
 void StyleArray::addStyler(int styleID, TiXmlNode *styleNode)
 {
-	_styleArray[_nbStyler]._styleID = styleID;
+	int index = _nbStyler;
+	bool isUser = styleID >> 16 == L_USER;
+	if (isUser)
+	{
+		styleID = (styleID & 0xFFFF);
+		index = styleID;
+		if (index >= SCE_USER_STYLE_TOTAL_STYLES)
+			return;
+	}
+
+	_styleArray[index]._styleID = styleID;
 	
 	if (styleNode)
 	{
 		TiXmlElement *element = styleNode->ToElement();
 		
+		// TODO: translate to English
 		// Pour _fgColor, _bgColor :
 		// RGB() | (result & 0xFF000000) c'est pour le cas de -1 (0xFFFFFFFF)
 		// retourné par hexStrVal(str)
 		const TCHAR *str = element->Attribute(TEXT("name"));
 		if (str)
 		{
-			_styleArray[_nbStyler]._styleDesc = str;
+			if (isUser)
+				_styleArray[index]._styleDesc = styleNameMapper[index];
+			else
+				_styleArray[index]._styleDesc = str;
 		}
 
 		str = element->Attribute(TEXT("fgColor"));
 		if (str)
 		{
 			unsigned long result = hexStrVal(str);
-			_styleArray[_nbStyler]._fgColor = (RGB((result >> 16) & 0xFF, (result >> 8) & 0xFF, result & 0xFF)) | (result & 0xFF000000);
+			_styleArray[index]._fgColor = (RGB((result >> 16) & 0xFF, (result >> 8) & 0xFF, result & 0xFF)) | (result & 0xFF000000);
 	            
 		}
 		
@@ -2686,40 +2863,46 @@ void StyleArray::addStyler(int styleID, TiXmlNode *styleNode)
 		if (str)
 		{
 			unsigned long result = hexStrVal(str);
-			_styleArray[_nbStyler]._bgColor = (RGB((result >> 16) & 0xFF, (result >> 8) & 0xFF, result & 0xFF)) | (result & 0xFF000000);
+			_styleArray[index]._bgColor = (RGB((result >> 16) & 0xFF, (result >> 8) & 0xFF, result & 0xFF)) | (result & 0xFF000000);
 		}
 
 		str = element->Attribute(TEXT("colorStyle"));
 		if (str)
 		{
-			_styleArray[_nbStyler]._colorStyle = decStrVal(str);
+			_styleArray[index]._colorStyle = decStrVal(str);
 		}
 		
 		str = element->Attribute(TEXT("fontName"));
-		_styleArray[_nbStyler]._fontName = str;
+		_styleArray[index]._fontName = str;
 		
 		str = element->Attribute(TEXT("fontStyle"));
 		if (str)
 		{
-			_styleArray[_nbStyler]._fontStyle = decStrVal(str);
+			_styleArray[index]._fontStyle = decStrVal(str);
 		}
 		
 		str = element->Attribute(TEXT("fontSize"));
 		if (str)
 		{
-			_styleArray[_nbStyler]._fontSize = decStrVal(str);
+			_styleArray[index]._fontSize = decStrVal(str);
+		}
+		str = element->Attribute(TEXT("nesting"));
+
+		if (str)
+		{
+			_styleArray[index]._nesting = decStrVal(str);
 		}
 
 		str = element->Attribute(TEXT("keywordClass"));
 		if (str)
 		{
-			_styleArray[_nbStyler]._keywordClass = getKwClassFromName(str);
+			_styleArray[index]._keywordClass = getKwClassFromName(str);
 		}
 
 		TiXmlNode *v = styleNode->FirstChild();
 		if (v)
 		{
-			_styleArray[_nbStyler]._keywords = new generic_string(v->Value());
+			_styleArray[index]._keywords = new generic_string(v->Value());
 		}
 	}
 	_nbStyler++;
@@ -2738,6 +2921,38 @@ bool NppParameters::writeRecentFileHistorySettings(int nbMaxFile) const
 	(historyNode->ToElement())->SetAttribute(TEXT("nbMaxFile"), nbMaxFile!=-1?nbMaxFile:_nbMaxRecentFile);
 	(historyNode->ToElement())->SetAttribute(TEXT("inSubMenu"), _putRecentFileInSubMenu?TEXT("yes"):TEXT("no"));
 	(historyNode->ToElement())->SetAttribute(TEXT("customLength"), _recentFileCustomLength);
+	return true;
+}
+
+bool NppParameters::writeProjectPanelsSettings() const
+{
+	if (!_pXmlUserDoc) return false;
+	
+	TiXmlNode *nppRoot = _pXmlUserDoc->FirstChild(TEXT("NotepadPlus"));
+	if (!nppRoot) return false;
+	
+	TiXmlNode *projPanelRootNode = nppRoot->FirstChildElement(TEXT("ProjectPanels"));
+	if (projPanelRootNode)
+	{
+		// Erase the Project Panel root
+		nppRoot->RemoveChild(projPanelRootNode);
+	}
+
+	// Create the Project Panel root
+	projPanelRootNode = new TiXmlElement(TEXT("ProjectPanels"));
+
+	// Add 3 Project Panel parameters
+	for (int i = 0 ; i < 3 ; i++)
+	{
+		TiXmlElement projPanelNode(TEXT("ProjectPanel"));
+		(projPanelNode.ToElement())->SetAttribute(TEXT("id"), i);
+		(projPanelNode.ToElement())->SetAttribute(TEXT("workSpaceFile"), _workSpaceFilePathes[i]);
+
+		(projPanelRootNode->ToElement())->InsertEndChild(projPanelNode);
+	}
+
+	// (Re)Insert the Project Panel root
+	(nppRoot->ToElement())->InsertEndChild(*projPanelRootNode);
 	return true;
 }
 
@@ -3102,6 +3317,22 @@ void NppParameters::feedGUIParameters(TiXmlNode *node)
 						_nppGUI._enableSmartHilite = true;
 					else
 						_nppGUI._enableSmartHilite = false;
+				}
+			}
+		}
+
+		else if (!lstrcmp(nm, TEXT("SmartHighLightCaseSensitive")))
+		{
+			TiXmlNode *n = childNode->FirstChild();
+			if (n)
+			{
+				val = n->Value();
+				if (val)
+				{
+					if (!lstrcmp(val, TEXT("yes")))
+						_nppGUI._smartHiliteCaseSensitive = true;
+					else
+						_nppGUI._smartHiliteCaseSensitive = false;
 				}
 			}
 		}
@@ -3812,6 +4043,13 @@ void NppParameters::feedScintillaParam(TiXmlNode *node)
 		else if (!lstrcmp(nm, TEXT("hide")))
 			_svp._eolShow = false;
 	}
+	
+	nm = element->Attribute(TEXT("borderWidth"), &val);
+	if (nm)
+	{
+		if (val >= 0 && val <= 30)
+			_svp._borderWidth = val;
+	}
 }
 
 
@@ -3943,7 +4181,7 @@ bool NppParameters::writeScintillaParams(const ScintillaViewParams & svp)
 	(scintNode->ToElement())->SetAttribute(TEXT("zoom2"), svp._zoom2);
 	(scintNode->ToElement())->SetAttribute(TEXT("whiteSpaceShow"), svp._whiteSpaceShow?TEXT("show"):TEXT("hide"));
 	(scintNode->ToElement())->SetAttribute(TEXT("eolShow"), svp._eolShow?TEXT("show"):TEXT("hide"));
-
+	(scintNode->ToElement())->SetAttribute(TEXT("borderWidth"), svp._borderWidth);
 	return true;
 }
 
@@ -3975,6 +4213,7 @@ bool NppParameters::writeGUIParams()
 	bool noUpdateExist = false;
 	bool menuBarExist = false;
 	bool smartHighLightExist = false;
+	bool smartHighLightCaseSensitiveExist = false;
 	bool tagsMatchHighLightExist = false;
 	bool caretExist = false;
     bool ScintillaGlobalSettingsExist = false;
@@ -4152,6 +4391,16 @@ bool NppParameters::writeGUIParams()
 		{
 			smartHighLightExist = true;
 			const TCHAR *pStr = _nppGUI._enableSmartHilite?TEXT("yes"):TEXT("no");
+			TiXmlNode *n = childNode->FirstChild();
+			if (n)
+				n->SetValue(pStr);
+			else
+				childNode->InsertEndChild(TiXmlText(pStr));
+		}
+		else if (!lstrcmp(nm, TEXT("SmartHighLightCaseSensitive")))
+		{
+			smartHighLightCaseSensitiveExist = true;
+			const TCHAR *pStr = _nppGUI._smartHiliteCaseSensitive?TEXT("yes"):TEXT("no");
 			TiXmlNode *n = childNode->FirstChild();
 			if (n)
 				n->SetValue(pStr);
@@ -4382,6 +4631,10 @@ bool NppParameters::writeGUIParams()
 	{
 		insertGUIConfigBoolNode(GUIRoot, TEXT("SmartHighLight"), _nppGUI._enableSmartHilite);
 	}
+	if( !smartHighLightCaseSensitiveExist)
+	{
+		insertGUIConfigBoolNode(GUIRoot, TEXT("SmartHighLightCaseSensitive"), _nppGUI._smartHiliteCaseSensitive);
+	}
 	if (!tagsMatchHighLightExist)
 	{
 		TiXmlElement * ele = insertGUIConfigBoolNode(GUIRoot, TEXT("TagsMatchHighLight"), _nppGUI._enableTagsMatchHilite);
@@ -4569,6 +4822,7 @@ bool NppParameters::writeFindHistory()
 	(findHistoryRoot->ToElement())->SetAttribute(TEXT("searchMode"), _findHistory._searchMode);
 	(findHistoryRoot->ToElement())->SetAttribute(TEXT("transparencyMode"), _findHistory._transparencyMode);
 	(findHistoryRoot->ToElement())->SetAttribute(TEXT("transparency"), _findHistory._transparency);
+	(findHistoryRoot->ToElement())->SetAttribute(TEXT("dotMatchesNewline"),		_findHistory._dotMatchesNewline?TEXT("yes"):TEXT("no"));
 
 	TiXmlElement hist_element(TEXT(""));
 
@@ -5009,61 +5263,57 @@ bool NppParameters::insertTabInfo(const TCHAR *langName, int tabInfo)
     return false;
 }
 
-void NppParameters::writeStyle2Element(Style & style2Wite, Style & style2Sync, TiXmlElement *element)
+void NppParameters::writeStyle2Element(Style & style2Write, Style & style2Sync, TiXmlElement *element)
 {
-    if (HIBYTE(HIWORD(style2Wite._fgColor)) != 0xFF)
+    if (HIBYTE(HIWORD(style2Write._fgColor)) != 0xFF)
     {
-        int rgbVal = RGB2int(style2Wite._fgColor);
+        int rgbVal = RGB2int(style2Write._fgColor);
 	    TCHAR fgStr[7];
 	    wsprintf(fgStr, TEXT("%.6X"), rgbVal);
 	    element->SetAttribute(TEXT("fgColor"), fgStr);
     }
 
-    if (HIBYTE(HIWORD(style2Wite._bgColor)) != 0xFF)
+    if (HIBYTE(HIWORD(style2Write._bgColor)) != 0xFF)
     {
-        int rgbVal = RGB2int(style2Wite._bgColor);
+        int rgbVal = RGB2int(style2Write._bgColor);
 	    TCHAR bgStr[7];
 	    wsprintf(bgStr, TEXT("%.6X"), rgbVal);
 	    element->SetAttribute(TEXT("bgColor"), bgStr);
     }
 
-	if (style2Wite._colorStyle != COLORSTYLE_ALL)
+	if (style2Write._colorStyle != COLORSTYLE_ALL)
     {
-	    element->SetAttribute(TEXT("colorStyle"), style2Wite._colorStyle);
+	    element->SetAttribute(TEXT("colorStyle"), style2Write._colorStyle);
     }
 
-    if (style2Wite._fontName)
+    if (style2Write._fontName)
     {
         const TCHAR *oldFontName = element->Attribute(TEXT("fontName"));
-        if (lstrcmp(oldFontName, style2Wite._fontName))
+        if (lstrcmp(oldFontName, style2Write._fontName))
         {
-		    element->SetAttribute(TEXT("fontName"), style2Wite._fontName);
-            style2Sync._fontName = style2Wite._fontName = element->Attribute(TEXT("fontName"));
+		    element->SetAttribute(TEXT("fontName"), style2Write._fontName);
+            style2Sync._fontName = style2Write._fontName = element->Attribute(TEXT("fontName"));
         }
     }
 
-    if (style2Wite._fontSize != -1)
+    if (style2Write._fontSize != -1)
     {
-        if (!style2Wite._fontSize)
+        if (!style2Write._fontSize)
             element->SetAttribute(TEXT("fontSize"), TEXT(""));
         else
-		    element->SetAttribute(TEXT("fontSize"), style2Wite._fontSize);
+		    element->SetAttribute(TEXT("fontSize"), style2Write._fontSize);
     }
 
-    if (style2Wite._fontStyle != -1)
-    {
-	    element->SetAttribute(TEXT("fontStyle"), style2Wite._fontStyle);
-    }
-
+    element->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
 	
-	if (style2Wite._keywords)
+	if (style2Write._keywords)
     {	
 		TiXmlNode *teteDeNoeud = element->LastChild();
 
 		if (teteDeNoeud)
-			teteDeNoeud->SetValue(style2Wite._keywords->c_str());
+			teteDeNoeud->SetValue(style2Write._keywords->c_str());
 		else 
-			element->InsertEndChild(TiXmlText(style2Wite._keywords->c_str()));
+			element->InsertEndChild(TiXmlText(style2Write._keywords->c_str()));
     }
 }
 
@@ -5073,31 +5323,27 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 
 	rootElement->SetAttribute(TEXT("name"), userLang->_name);
 	rootElement->SetAttribute(TEXT("ext"), userLang->_ext);
+	rootElement->SetAttribute(TEXT("udlVersion"), TEXT("2.0"));
 	TiXmlElement *settingsElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("Settings"))))->ToElement();
 	{
 		TiXmlElement *globalElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Global"))))->ToElement();
-		globalElement->SetAttribute(TEXT("caseIgnored"), userLang->_isCaseIgnored?TEXT("yes"):TEXT("no"));
-		if (userLang->_escapeChar[0])
-			globalElement->SetAttribute(TEXT("escapeChar"), userLang->_escapeChar);
-
-		TiXmlElement *treatAsSymbolElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("TreatAsSymbol"))))->ToElement();
-		treatAsSymbolElement->SetAttribute(TEXT("comment"), userLang->_isCommentSymbol?TEXT("yes"):TEXT("no"));
-		treatAsSymbolElement->SetAttribute(TEXT("commentLine"), userLang->_isCommentLineSymbol?TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("caseIgnored"),			userLang->_isCaseIgnored ? TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("allowFoldOfComments"),	userLang->_allowFoldOfComments ? TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("forceLineCommentsAtBOL"), userLang->_forceLineCommentsAtBOL ? TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("foldCompact"),			userLang->_foldCompact ? TEXT("yes"):TEXT("no"));
 
 		TiXmlElement *prefixElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Prefix"))))->ToElement();
-		TCHAR names[nbPrefixListAllowed][7] = {TEXT("words1"), TEXT("words2"), TEXT("words3"), TEXT("words4")};
-		for (int i = 0 ; i < nbPrefixListAllowed ; i++)
-			prefixElement->SetAttribute(names[i], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
+		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
+			prefixElement->SetAttribute(keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
 	}
 
 	TiXmlElement *kwlElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("KeywordLists"))))->ToElement();
 
-	const int nbKWL = 9;
-	TCHAR kwn[nbKWL][16] = {TEXT("Delimiters"), TEXT("Folder+"), TEXT("Folder-"), TEXT("Operators"), TEXT("Comment"), TEXT("Words1"), TEXT("Words2"), TEXT("Words3"), TEXT("Words4")};
-	for (int i = 0 ; i < nbKWL ; i++)
+	for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 	{
 		TiXmlElement *kwElement = (kwlElement->InsertEndChild(TiXmlElement(TEXT("Keywords"))))->ToElement();
-		kwElement->SetAttribute(TEXT("name"), kwn[i]);
+		kwElement->SetAttribute(TEXT("name"), keywordListMapper[i]);
+		kwElement->SetAttribute(TEXT("id"), i);
 		kwElement->InsertEndChild(TiXmlText(userLang->_keywordLists[i]));
 	}
 
@@ -5106,54 +5352,52 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 	for (int i = 0 ; i < userLang->_styleArray.getNbStyler() ; i++)
 	{
 		TiXmlElement *styleElement = (styleRootElement->InsertEndChild(TiXmlElement(TEXT("WordsStyle"))))->ToElement();
-		Style style2Wite = userLang->_styleArray.getStyler(i);
+		Style style2Write = userLang->_styleArray.getStyler(i);
+		
+		if (style2Write._styleID == -1)
+			continue;
+			
+		styleElement->SetAttribute(TEXT("name"), style2Write._styleDesc);
 
-		styleElement->SetAttribute(TEXT("name"), style2Wite._styleDesc);
+		styleElement->SetAttribute(TEXT("styleID"), style2Write._styleID);
 
-		styleElement->SetAttribute(TEXT("styleID"), style2Wite._styleID);
-
-		//if (HIBYTE(HIWORD(style2Wite._fgColor)) != 0xFF)
+		//if (HIBYTE(HIWORD(style2Write._fgColor)) != 0xFF)
 		{
-			int rgbVal = RGB2int(style2Wite._fgColor);
+			int rgbVal = RGB2int(style2Write._fgColor);
 			TCHAR fgStr[7];
 			wsprintf(fgStr, TEXT("%.6X"), rgbVal);
 			styleElement->SetAttribute(TEXT("fgColor"), fgStr);
 		}
 
-		//if (HIBYTE(HIWORD(style2Wite._bgColor)) != 0xFF)
+		//if (HIBYTE(HIWORD(style2Write._bgColor)) != 0xFF)
 		{
-			int rgbVal = RGB2int(style2Wite._bgColor);
+			int rgbVal = RGB2int(style2Write._bgColor);
 			TCHAR bgStr[7];
 			wsprintf(bgStr, TEXT("%.6X"), rgbVal);
 			styleElement->SetAttribute(TEXT("bgColor"), bgStr);
 		}
 
-		if (style2Wite._colorStyle != COLORSTYLE_ALL)
+		if (style2Write._colorStyle != COLORSTYLE_ALL)
 		{
-			styleElement->SetAttribute(TEXT("colorStyle"), style2Wite._colorStyle);
+			styleElement->SetAttribute(TEXT("colorStyle"), style2Write._colorStyle);
 		}
 
-		if (style2Wite._fontName)
+		if (style2Write._fontName)
 		{
-			styleElement->SetAttribute(TEXT("fontName"), style2Wite._fontName);
+			styleElement->SetAttribute(TEXT("fontName"), style2Write._fontName);
 		}
 
-		if (style2Wite._fontStyle == -1)
-		{
-			styleElement->SetAttribute(TEXT("fontStyle"), TEXT("0"));
-		}
-		else
-		{
-			styleElement->SetAttribute(TEXT("fontStyle"), style2Wite._fontStyle);
-		}
+        styleElement->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
 
-		if (style2Wite._fontSize != -1)
+		if (style2Write._fontSize != -1)
 		{
-			if (!style2Wite._fontSize)
+			if (!style2Write._fontSize)
 				styleElement->SetAttribute(TEXT("fontSize"), TEXT(""));
 			else
-				styleElement->SetAttribute(TEXT("fontSize"), style2Wite._fontSize);
+				styleElement->SetAttribute(TEXT("fontSize"), style2Write._fontSize);
 		}
+		
+		styleElement->SetAttribute(TEXT("nesting"), style2Write._nesting);
 	}
 }
 

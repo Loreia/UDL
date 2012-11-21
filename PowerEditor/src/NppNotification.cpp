@@ -1,24 +1,37 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO ( donho@altern.org )
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #include "precompiledHeaders.h"
 #include "Notepad_plus_Window.h"
 #include "xmlMatchedTagsHighlighter.h"
 #include "VerticalFileSwitcher.h"
+#include "ProjectPanel.h"
+#include "documentMap.h"
 
 BOOL Notepad_plus::notify(SCNotification *notification)
 {
@@ -37,13 +50,13 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 			{
 				prevWasEdit = true;
 				_linkTriggered = true;
-				_isDocModifing = true;
 				::InvalidateRect(notifyView->getHSelf(), NULL, TRUE);
 			}
 
 			if (notification->modificationType & SC_MOD_CHANGEFOLD)
 			{
-				if (prevWasEdit) {
+				if (prevWasEdit) 
+				{
 					notifyView->foldChanged(notification->line,
 							notification->foldLevelNow, notification->foldLevelPrev);
 					prevWasEdit = false;
@@ -122,8 +135,12 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 				     (hWin == _pNonEditView->getHSelf())) // In the another view group
 			{
                 docGotoAnotherEditView(isInCtrlStat?TransferClone:TransferMove);
-			}
-
+			}/*
+			else if ((hWin == _pProjectPanel_1->getTreeHandle()))
+			{
+				
+                //printStr(TEXT("IN!!!"));
+			}*/
 			else
 			{
 				RECT nppZone;
@@ -302,6 +319,7 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_SAVEAS, TEXT("Save As...")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_RENAME, TEXT("Rename")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_DELETE, TEXT("Delete")));
+			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_RELOAD, TEXT("Reload")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_PRINT, TEXT("Print")));
 			itemUnitArray.push_back(MenuItemUnit(0, NULL));
 			itemUnitArray.push_back(MenuItemUnit(IDM_EDIT_SETREADONLY, TEXT("Read-Only")));
@@ -349,28 +367,50 @@ BOOL Notepad_plus::notify(SCNotification *notification)
     {
         if (notification->nmhdr.hwndFrom == _mainEditView.getHSelf())
             switchEditViewTo(MAIN_VIEW);
-			
 		else if (notification->nmhdr.hwndFrom == _subEditView.getHSelf())
             switchEditViewTo(SUB_VIEW);
+
+        int lineClick = int(_pEditView->execute(SCI_LINEFROMPOSITION, notification->position));
         
-        if (notification->margin == ScintillaEditView::_SC_MARGE_FOLDER)
+		if (notification->margin == ScintillaEditView::_SC_MARGE_FOLDER)
         {
             _pEditView->marginClick(notification->position, notification->modifiers);
+			if (_pDocMap)
+				_pDocMap->fold(lineClick, _pEditView->isFolded(lineClick));
         }
         else if ((notification->margin == ScintillaEditView::_SC_MARGE_SYBOLE) && !notification->modifiers)
         {
-            
-            int lineClick = int(_pEditView->execute(SCI_LINEFROMPOSITION, notification->position));
 			if (!_pEditView->markerMarginClick(lineClick))
 				bookmarkToggle(lineClick);
-        
         }
 		break;
+	}
+
+	case SCN_FOLDINGSTATECHANGED :
+	{
+		if ((notification->nmhdr.hwndFrom == _mainEditView.getHSelf())
+		|| (notification->nmhdr.hwndFrom == _subEditView.getHSelf()))
+		{
+			int lineClicked = notification->line;
+			
+			if (!_isFolding)
+			{
+				int urlAction = (NppParameters::getInstance())->getNppGUI()._styleURL;
+				if ((urlAction == 1) || (urlAction == 2))
+					addHotSpot();
+			}
+
+			if (_pDocMap)
+				_pDocMap->fold(lineClicked, _pEditView->isFolded(lineClicked));
+		}
+		return TRUE;
 	}
 	
 	case SCN_CHARADDED:
 	{
-		charAdded(static_cast<TCHAR>(notification->ch));
+		bool indentMaintain = NppParameters::getInstance()->getNppGUI()._maitainIndent;
+		if (indentMaintain)
+			MaintainIndentation(static_cast<TCHAR>(notification->ch));
 		AutoCompletion * autoC = isFromPrimary?&_autoCompleteMain:&_autoCompleteSub;
 		autoC->update(notification->ch);
 		break;
@@ -420,6 +460,7 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 		updateStatusBar();
 		AutoCompletion * autoC = isFromPrimary?&_autoCompleteMain:&_autoCompleteSub;
 		autoC->update(0);
+
         break;
 	}
 
@@ -428,6 +469,10 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 		const NppGUI & nppGUI = (NppParameters::getInstance())->getNppGUI();
 		if (nppGUI._enableSmartHilite)
 			_smartHighlighter.highlightView(notifyView);
+
+		int urlAction = (NppParameters::getInstance())->getNppGUI()._styleURL;
+		if ((urlAction == 1) || (urlAction == 2))
+			addHotSpot();
 		break;
 	}
 
@@ -503,6 +548,18 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 
 	case SCN_PAINTED:
 	{
+		//--FLS: ViewMoveAtWrappingDisableFix: Disable wrapping messes up visible lines. Therefore save view position before in IDM_VIEW_WRAP and restore after SCN_PAINTED, as doc. says
+		if (_mainEditView.isWrapRestoreNeeded())
+		{
+			_mainEditView.restoreCurrentPos();
+			_mainEditView.setWrapRestoreNeeded(false);
+		}
+
+		if (_subEditView.isWrapRestoreNeeded())
+		{
+			_subEditView.restoreCurrentPos();
+			_subEditView.setWrapRestoreNeeded(false);
+		}
 		notifyView->updateLineNumberWidth();
 		if (_syncInfo.doSync()) 
 			doSynScorll(HWND(notification->nmhdr.hwndFrom));
@@ -510,13 +567,18 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 		NppParameters *nppParam = NppParameters::getInstance();
 		
 		// if it's searching/replacing, then do nothing
-		if (_linkTriggered && !nppParam->_isFindReplacing)
+		if ((_linkTriggered && !nppParam->_isFindReplacing) || notification->wParam == LINKTRIGGERED)
 		{
 			int urlAction = (NppParameters::getInstance())->getNppGUI()._styleURL;
 			if ((urlAction == 1) || (urlAction == 2))
-				addHotSpot(_isDocModifing);
+				addHotSpot();
 			_linkTriggered = false;
-			_isDocModifing = false;
+		}
+
+		if (_pDocMap)
+		{
+			_pDocMap->wrapMap();
+			_pDocMap->scrollMap();
 		}
 		break;
 	}
@@ -539,8 +601,13 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 			endPos = int(notifyView->execute(SCI_GETTARGETEND));
 		}
 
-		TCHAR currentWord[MAX_PATH*2];
-		notifyView->getGenericText(currentWord, startPos, endPos);
+		// Prevent buffer overflow in getGenericText().
+		if(endPos - startPos > 2*MAX_PATH)
+			endPos = startPos + 2*MAX_PATH;
+
+		TCHAR currentWord[2*MAX_PATH];
+
+		notifyView->getGenericText(currentWord, MAX_PATH*2, startPos, endPos);
 
 		::ShellExecute(_pPublicInterface->getHSelf(), TEXT("open"), currentWord, NULL, NULL, SW_SHOW);
 		_isHotspotDblClicked = true;

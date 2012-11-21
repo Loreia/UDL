@@ -1,21 +1,30 @@
-/*
-this file is part of notepad++
-Copyright (C)2003 Don HO <donho@altern.org>
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
 
 #include "precompiledHeaders.h"
 #include "Buffer.h"
@@ -70,7 +79,7 @@ void Buffer::setLangType(LangType lang, const TCHAR * userLangName)
 	{
 		_userLangExt = userLangName;
 	}
-	_needLexer = true;	//change of lang means lexern eeds updating
+	_needLexer = true;	//change of lang means lexern needs updating
 	doNotify(BufferChangeLanguage|BufferChangeLexing);
 }
 
@@ -108,7 +117,7 @@ void Buffer::setFileName(const TCHAR *fn, LangType defaultLang)
 		ext += 1;
 
 		// Define User Lang firstly
-		const TCHAR *langName = pNppParamInst->getUserDefinedLangNameFromExt(ext);
+		const TCHAR *langName = pNppParamInst->getUserDefinedLangNameFromExt(ext, _fileName);
 		if (langName)
 		{
 			newLang = L_USER;
@@ -116,7 +125,7 @@ void Buffer::setFileName(const TCHAR *fn, LangType defaultLang)
 		}
 		else // if it's not user lang, then check if it's supported lang
 		{
-			_userLangExt[0] = '\0';
+			_userLangExt = TEXT("");
 			newLang = pNppParamInst->getLangFromExt(ext);
 		}	
 	}
@@ -276,7 +285,7 @@ void Buffer::setHeaderLineState(const std::vector<HeaderLineState> & folds, Scin
 	}
 }
 
-std::vector<HeaderLineState> & Buffer::getHeaderLineState(ScintillaEditView * identifier) {
+const std::vector<HeaderLineState> & Buffer::getHeaderLineState(const ScintillaEditView * identifier) const {
 	int index = indexOfReference(identifier);
 	return _foldStates.at(index);
 }
@@ -295,7 +304,7 @@ Lang * Buffer::getCurrentLang() const {
 	return NULL;
 };
 
-int Buffer::indexOfReference(ScintillaEditView * identifier) const {
+int Buffer::indexOfReference(const ScintillaEditView * identifier) const {
 	int size = (int)_referees.size();
 	for(int i = 0; i < size; i++) {
 		if (_referees[i] == identifier)
@@ -586,7 +595,7 @@ bool FileManager::moveFile(BufferID id, const TCHAR * newFileName)
 	return true;
 }
 
-bool FileManager::saveBuffer(BufferID id, const TCHAR * filename, bool isCopy) {
+bool FileManager::saveBuffer(BufferID id, const TCHAR * filename, bool isCopy, generic_string * error_msg) {
 	Buffer * buffer = getBufferByID(id);
 	bool isHidden = false;
 	bool isSys = false;
@@ -627,9 +636,12 @@ bool FileManager::saveBuffer(BufferID id, const TCHAR * filename, bool isCopy) {
 
 		int lengthDoc = _pscratchTilla->getCurrentDocLen();
 		char* buf = (char*)_pscratchTilla->execute(SCI_GETCHARACTERPOINTER);	//to get characters directly from Scintilla buffer
+		size_t items_written = 0;
 		if (encoding == -1) //no special encoding; can be handled directly by Utf8_16_Write
 		{
-			UnicodeConvertor.fwrite(buf, lengthDoc);
+			items_written = UnicodeConvertor.fwrite(buf, lengthDoc);
+			if (lengthDoc == 0)
+				items_written = 1;
 		}
 		else
 		{
@@ -645,10 +657,19 @@ bool FileManager::saveBuffer(BufferID id, const TCHAR * filename, bool isCopy) {
 				int incompleteMultibyteChar = 0;
 				const char *newData = wmc->encode(SC_CP_UTF8, encoding, buf+i, grabSize, &newDataLen, &incompleteMultibyteChar);
 				grabSize -= incompleteMultibyteChar;
-				UnicodeConvertor.fwrite(newData, newDataLen);
+				items_written = UnicodeConvertor.fwrite(newData, newDataLen);
 			}
 		}
 		UnicodeConvertor.fclose();
+
+		// Error, we didn't write the entire document to disk.
+		// Note that fwrite() doesn't return the number of bytes written, but rather the number of ITEMS.
+		if(items_written != 1)
+		{
+			if(error_msg != NULL)
+				*error_msg = TEXT("Not enough space on disk to save file.");
+			return false;
+		}
 
 		if (isHidden)
 			::SetFileAttributes(fullpath, attrib | FILE_ATTRIBUTE_HIDDEN);
@@ -730,6 +751,13 @@ bool FileManager::loadFileData(Document doc, const TCHAR * filename, Utf8_16_Rea
 	if(bufferSizeRequested > INT_MAX)
 	{
 		::MessageBox(NULL, TEXT("File is too big to be opened by Notepad++"), TEXT("File open problem"), MB_OK|MB_APPLMODAL);
+		/*
+		_nativeLangSpeaker.messageBox("NbFileToOpenImportantWarning",
+										_pPublicInterface->getHSelf(),
+										TEXT("File is too big to be opened by Notepad++"),
+										TEXT("File open problem"),
+										MB_OK|MB_APPLMODAL);
+		*/
 		fclose(fp);
 		return false;
 	}

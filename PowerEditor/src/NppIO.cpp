@@ -1,25 +1,37 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO ( donho@altern.org )
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #include "precompiledHeaders.h"
 #include "Notepad_plus_Window.h"
 #include "FileDialog.h"
 #include "EncodingMapper.h"
 #include "VerticalFileSwitcher.h"
+#include <TCHAR.h>
 
 
 BufferID Notepad_plus::doOpen(const TCHAR *fileName, bool isReadOnly, int encoding)
@@ -156,8 +168,6 @@ BufferID Notepad_plus::doOpen(const TCHAR *fileName, bool isReadOnly, int encodi
 		}
 		PathRemoveFileSpec(longFileName);
 		_linkTriggered = true;
-		_isDocModifing = false;
-		
 		_isFileOpening = false;
 
 		// Notify plugins that current file is just opened
@@ -179,9 +189,26 @@ BufferID Notepad_plus::doOpen(const TCHAR *fileName, bool isReadOnly, int encodi
 				fileNameStr += TEXT("\\");
 
 			getMatchedFileNames(fileNameStr.c_str(), patterns, fileNames, true, false);
-			for (size_t i = 0 ; i < fileNames.size() ; i++)
+			size_t nbFiles2Open = fileNames.size();
+
+			bool ok2Open = true;
+			if (nbFiles2Open > 200)
 			{
-				doOpen(fileNames[i].c_str());
+				int answer = _nativeLangSpeaker.messageBox("NbFileToOpenImportantWarning",
+												_pPublicInterface->getHSelf(),
+												TEXT("$INT_REPLACE$ files are about to be opened.\rAre you sure to open them?"),
+												TEXT("Amount of files to open is too large"),
+												MB_YESNO|MB_APPLMODAL,
+												nbFiles2Open);
+				ok2Open = answer == IDYES;
+			}
+
+			if (ok2Open)
+			{
+				for (size_t i = 0 ; i < nbFiles2Open ; i++)
+				{
+					doOpen(fileNames[i].c_str());
+				}
 			}
 		}
 		else
@@ -261,7 +288,8 @@ bool Notepad_plus::doSave(BufferID id, const TCHAR * filename, bool isCopy)
 		_pluginsManager.notify(&scnN);
 	}
 
-	bool res = MainFileManager->saveBuffer(id, filename, isCopy);
+	generic_string error_msg;
+	bool res = MainFileManager->saveBuffer(id, filename, isCopy, &error_msg);
 
 	if (!isCopy)
 	{
@@ -270,11 +298,20 @@ bool Notepad_plus::doSave(BufferID id, const TCHAR * filename, bool isCopy)
 	}
 
 	if (!res)
-		_nativeLangSpeaker.messageBox("FileLockedWarning",
-		_pPublicInterface->getHSelf(),
-		TEXT("Please check whether if this file is opened in another program"),
-		TEXT("Save failed"), 
-		MB_OK);
+	{
+		if(error_msg.empty())
+		{
+			_nativeLangSpeaker.messageBox("FileLockedWarning",
+			_pPublicInterface->getHSelf(),
+			TEXT("Please check if this file is opened in another program."),
+			TEXT("Save failed"), 
+			MB_OK);
+		}
+		else
+		{
+			::MessageBox(_pPublicInterface->getHSelf(), error_msg.c_str(), TEXT("Save failed"), MB_OK);
+		}
+	}
 	return res;
 }
 
@@ -295,7 +332,8 @@ void Notepad_plus::doClose(BufferID id, int whichOne) {
 		// So we turn Wow64 off
 		bool isWow64Off = false;
 		NppParameters *pNppParam = NppParameters::getInstance();
-		if (!PathFileExists(buf->getFullPathName()))
+		const TCHAR *fn = buf->getFullPathName();
+		if (!PathFileExists(fn))
 		{
 			pNppParam->safeWow64EnableWow64FsRedirection(FALSE);
 			isWow64Off = true;
@@ -775,6 +813,7 @@ bool Notepad_plus::fileSaveAll() {
 			fileSave(idToSave);
 		}
 	}
+	checkDocState();
 	return true;
 }
 
@@ -792,7 +831,16 @@ bool Notepad_plus::fileSaveAs(BufferID id, bool isSaveCopy)
 	fDlg.setDefFileName(buf->getFileName());
 	
     fDlg.setExtIndex(langTypeIndex+1); // +1 for "All types"
+
+	// Disable file autodetection before opening save dialog to prevent use-after-delete bug.
+	NppParameters *pNppParam = NppParameters::getInstance();
+	ChangeDetect cdBefore = ((NppGUI &)(pNppParam->getNppGUI()))._fileAutoDetection;
+	((NppGUI &)(pNppParam->getNppGUI()))._fileAutoDetection = cdDisabled;
+
 	TCHAR *pfn = fDlg.doSaveDlg();
+
+	// Enable file autodetection again.
+	((NppGUI &)(pNppParam->getNppGUI()))._fileAutoDetection = cdBefore;
 
 	if (pfn)
 	{
@@ -972,7 +1020,7 @@ bool Notepad_plus::loadSession(Session & session)
 			const TCHAR *pLn = session._mainViewFiles[i]._langName.c_str();
 			int id = getLangFromMenuName(pLn);
 			LangType typeToSet = L_TEXT;
-			if (id != 0 && lstrcmp(pLn, TEXT("User Defined")) != 0)
+			if (id != 0 && id != IDM_LANG_USER)
 				typeToSet = menuID2LangType(id);
 			if (typeToSet == L_EXTERNAL )
 				typeToSet = (LangType)(id - IDM_LANG_EXTERNAL + L_EXTERNAL);

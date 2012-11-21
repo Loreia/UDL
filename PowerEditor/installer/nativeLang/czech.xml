@@ -1,65 +1,69 @@
 <?xml version="1.0" encoding="Windows-1250" ?>
+<!--
+	- intended for version: 6.1.5
+	- last change: 9 Jul 2012 by Ondřej Müller (mullero@email.cz)
+	- all Czech translations at: http://sourceforge.net/projects/notepad-plus/forums/forum/558104/topic/3099029
+-->
 <NotepadPlus>
 	<Native-Langue name = "Čeština" filename="czech.xml" >
 		<Menu>
 			<Main>
                 <!-- Main Menu Entries -->
 				<Entries>
-					<Item id = "0" name = "&amp;Soubor"/>
-					<Item id = "1" name = "Ú&amp;pravy"/>
-					<Item id = "2" name = "&amp;Najít"/>
-					<Item id = "3" name = "&amp;Zobrazit"/>
-					<Item id = "4" name = "For&amp;mát"/>
-					<Item id = "5" name = "Synta&amp;xe"/>
-					<Item id = "6" name = "Nas&amp;tavení"/>
-					<Item id = "7" name = "Makro"/>
-					<Item id = "8" name = "Spustit"/>
+					<Item menuId="file" name = "&amp;Soubor"/>
+					<Item menuId="edit" name = "Ú&amp;pravy"/>
+					<Item menuId="search" name = "&amp;Najít"/>
+					<Item menuId="view" name = "&amp;Zobrazit"/>
+					<Item menuId="encoding" name = "For&amp;mát"/>
+					<Item menuId="language" name = "Synta&amp;xe"/>
+					<Item menuId="settings" name = "Nas&amp;tavení"/>
+					<Item menuId="macro" name = "Makro"/>
+					<Item menuId="run" name = "Spustit"/>
 					<Item idName = "Plugins" name = "Pluginy"/>
 					<Item idName = "Window" name = "Okno"/>
 				</Entries>
              
                 <!-- Sub Menu Entries -->
                 <SubEntries>
-					<!--
-					<Item posX = "0" posY = "" name = "Historie posledních souborů"/>
-					-->
-					<Item posX = "1" posY = "9" name = "Kopírovat do Schránky"/>
-					<Item posX = "1" posY = "10" name = "Odsazení"/>
-					<Item posX = "1" posY = "11" name = "Konverze písma (VELKÁ/malá)"/>
-					<Item posX = "1" posY = "12" name = "Řádkové operace"/>
-					<Item posX = "1" posY = "13" name = "Zakomentovat/Odkomentovat"/>
-					<Item posX = "1" posY = "14" name = "Automatické dokončování"/>
-					<Item posX = "1" posY = "15" name = "Konverze konců řádků (EOL)"/>
-					<Item posX = "1" posY = "16" name = "Operace s prázdnými znaky"/>
-					<Item posX = "1" posY = "17" name = "Vložit nestandardně"/>
-					<Item posX = "2" posY = "16" name = "Označit vše"/>
-					<Item posX = "2" posY = "17" name = "Odznačit vše"/>
-					<Item posX = "2" posY = "18" name = "Skočit nahoru"/>
-					<Item posX = "2" posY = "19" name = "Skočit dolů"/>
-					<Item posX = "2" posY = "21" name = "Záložka"/>
-					<Item posX = "3" posY = "4" name = "Ukázat symboly"/>
-					<Item posX = "3" posY = "5" name = "Lupa"/>
-					<Item posX = "3" posY = "6" name = "Přesunout/duplikovat aktuální dokument"/>
-					<Item posX = "3" posY = "16" name = "Sbalit úroveň"/>
-					<Item posX = "3" posY = "17" name = "Rozbalit úroveň"/>
-					<Item posX = "4" posY = "5" name = "Výběr znakové sady"/> 
-					<Item posX = "4" posY = "5"  posZ = "0"  name = "arabština"/>
-                    <Item posX = "4" posY = "5"  posZ = "1"  name = "baltské jazyky"/>
-                    <Item posX = "4" posY = "5"  posZ = "2"  name = "keltština"/>
-                    <Item posX = "4" posY = "5"  posZ = "3"  name = "azbuka"/>
-                    <Item posX = "4" posY = "5"  posZ = "4"  name = "středoevropské jazyky (CE)"/>
-                    <Item posX = "4" posY = "5"  posZ = "5"  name = "čínština"/>
-                    <Item posX = "4" posY = "5"  posZ = "6"  name = "východoevropské jazyky (EE)"/>
-                    <Item posX = "4" posY = "5"  posZ = "7"  name = "řečtina"/>
-                    <Item posX = "4" posY = "5"  posZ = "8"  name = "hebrejština"/>
-                    <Item posX = "4" posY = "5"  posZ = "9"  name = "japonština"/>
-                    <Item posX = "4" posY = "5"  posZ = "10" name = "korejština"/>
-                    <Item posX = "4" posY = "5"  posZ = "11" name = "severoevropské jazyky (NE)"/>
-                    <Item posX = "4" posY = "5"  posZ = "12" name = "thajština"/>
-                    <Item posX = "4" posY = "5"  posZ = "13" name = "turečtina"/>
-                    <Item posX = "4" posY = "5"  posZ = "14" name = "západoevropské jazyky (WE)"/>
-                    <Item posX = "4" posY = "5"  posZ = "15" name = "vietnamština"/>
-					<Item posX = "6" posY = "4" name = "Import"/>
+					<Item subMenuId="file-recentFiles" name = "Historie posledních souborů"/>
+					<Item subMenuId="edit-copyToClipboard" name = "Kopírovat do Schránky"/>
+					<Item subMenuId="edit-indent" name = "Odsazení"/>
+					<Item subMenuId="edit-convertCaseTo" name = "Konverze písma (VELKÁ/malá)"/>
+					<Item subMenuId="edit-lineOperations" name = "Řádkové operace"/>
+					<Item subMenuId="edit-comment" name = "Zakomentovat/Odkomentovat"/>
+					<Item subMenuId="edit-autoCompletion" name = "Automatické dokončování"/>
+					<Item subMenuId="edit-eolConversion" name = "Konverze konců řádků (EOL)"/>
+					<Item subMenuId="edit-blankOperations" name = "Operace s prázdnými znaky"/>
+					<Item subMenuId="edit-pasteSpecial" name = "Vložit nestandardně"/>
+					<Item subMenuId="search-markAll" name = "Označit vše"/>
+					<Item subMenuId="search-unmarkAll" name = "Odznačit vše"/>
+					<Item subMenuId="search-jumpUp" name = "Skočit nahoru"/>
+					<Item subMenuId="search-jumpDown" name = "Skočit dolů"/>
+					<Item subMenuId="search-bookmark" name = "Záložka"/>
+					<Item subMenuId="view-showSymbol" name = "Ukázat symboly"/>
+					<Item subMenuId="view-zoom" name = "Lupa"/>
+					<Item subMenuId="view-moveCloneDocument" name = "Přesunout/duplikovat aktuální dokument"/>
+					<Item subMenuId="view-collapsLevel" name = "Sbalit úroveň"/>
+					<Item subMenuId="view-uncollapseLevel" name = "Rozbalit úroveň"/>
+					<Item subMenuId="view-project" name = "Projekt"/>
+					<Item subMenuId="encoding-characterSets" name = "Výběr znakové sady"/> 
+					<Item subMenuId="encoding-arabic"  name = "arabština"/>
+                    <Item subMenuId="encoding-baltic"  name = "baltské jazyky"/>
+                    <Item subMenuId="encoding-celtic"  name = "keltština"/>
+                    <Item subMenuId="encoding-cyrillic"  name = "azbuka"/>
+                    <Item subMenuId="encoding-centralEuropean"  name = "středoevropské jazyky (CE)"/>
+                    <Item subMenuId="encoding-chinese"  name = "čínština"/>
+                    <Item subMenuId="encoding-easternEuropean"  name = "východoevropské jazyky (EE)"/>
+                    <Item subMenuId="encoding-greek"  name = "řečtina"/>
+                    <Item subMenuId="encoding-hebrew"  name = "hebrejština"/>
+                    <Item subMenuId="encoding-japanese"  name = "japonština"/>
+                    <Item subMenuId="encoding-korean" name = "korejština"/>
+                    <Item subMenuId="encoding-northEuropean" name = "severoevropské jazyky (NE)"/>
+                    <Item subMenuId="encoding-thai" name = "thajština"/>
+                    <Item subMenuId="encoding-turkish" name = "turečtina"/>
+                    <Item subMenuId="encoding-westernEuropean" name = "západoevropské jazyky (WE)"/>
+                    <Item subMenuId="encoding-vietnamese" name = "vietnamština"/>
+					<Item subMenuId="settings-import" name = "Import"/>
                 </SubEntries>
                 
                 <!-- all menu item -->
@@ -202,6 +206,10 @@
                     <Item id = "44041" name = "Zobrazit zalamovací znaky"/>
 					<Item id = "44049" name = "Souhrnné informace..."/> 
 					<Item id = "44072" name = "Přejít na další náhled"/>
+					<Item id = "44080" name = "Přehledná mapa dokumentu"/>
+					<Item id = "44081" name = "Panel 1"/>
+					<Item id = "44082" name = "Panel 2"/>
+					<Item id = "44083" name = "Panel 3"/>
                     
                     <Item id = "45001" name = "Konvertovat do formátu Windows"/>
                     <Item id = "45002" name = "Konvertovat do formátu UNIX"/>
@@ -256,22 +264,22 @@
             <Splitter>
             </Splitter>
             <TabBar>
-                    <Item order = "0" name = "Zavřít"/>
-                    <Item order = "1" name = "Zavřít vše kromě aktuálního"/>
-                    <Item order = "2" name = "Uložit"/>
-                    <Item order = "3" name = "Uložit jako..."/>
-                    <Item order = "4" name = "Tisk"/>
-                    <Item order = "5" name = "Přepnout náhled"/>
-                    <Item order = "6" name = "Vytvořit kopii v samostatném náhledu"/>
-					<Item order = "7" name = "Jméno souboru i s cestou do Schránky"/>
-					<Item order = "8" name = "Jméno souboru do Schránky"/>
-					<Item order = "9" name = "Jméno aktuálního adresáře do Schránky"/>
-					<Item order = "10" name = "Přejmenovat"/>
-					<Item order = "11" name = "Smazat"/>
-					<Item order = "12" name = "Pouze ke čtení"/>
-					<Item order = "13" name = "Vymazat příznak Pouze ke čtení"/>
-					<Item order = "14" name = "Jít na novou instanci"/>
-					<Item order = "15" name = "Otevřít v nové instanci"/>
+                    <Item CMID = "0" name = "Zavřít"/>
+                    <Item CMID = "1" name = "Zavřít vše kromě aktuálního"/>
+                    <Item CMID = "2" name = "Uložit"/>
+                    <Item CMID = "3" name = "Uložit jako..."/>
+                    <Item CMID = "4" name = "Tisk"/>
+                    <Item CMID = "5" name = "Přepnout náhled"/>
+                    <Item CMID = "6" name = "Vytvořit kopii v samostatném náhledu"/>
+					<Item CMID = "7" name = "Jméno souboru i s cestou do Schránky"/>
+					<Item CMID = "8" name = "Jméno souboru do Schránky"/>
+					<Item CMID = "9" name = "Jméno aktuálního adresáře do Schránky"/>
+					<Item CMID = "10" name = "Přejmenovat"/>
+					<Item CMID = "11" name = "Smazat"/>
+					<Item CMID = "12" name = "Pouze ke čtení"/>
+					<Item CMID = "13" name = "Vymazat příznak Pouze ke čtení"/>
+					<Item CMID = "14" name = "Jít na novou instanci"/>
+					<Item CMID = "15" name = "Otevřít v nové instanci"/>
             </TabBar>
         </Menu>
         
@@ -317,6 +325,7 @@
 				<Item id = "1660" name = "Nah&amp;radit v souborech"/>
 				<Item id = "1661" name = "Podle aktuál. dokumentu"/>
 				<Item id = "1686" name = "Průhle&amp;dnost"/>
+				<Item id = "1703" name = "&amp;. označuje nový řádek"/>
             </Find>
 			
 			<FindCharsInRange title = "Najít znaky z rozsahu...">
@@ -400,8 +409,8 @@
 				<Item id = "20009" name = "Přípona:"/>
 				<Item id = "20012" name = "Nerozliš. malá a VELKÁ písmena"/>
 				<Item id = "20011" name = "Průhlednost"/>
-				<Item id = "20015" name = "Export..."/>
-				<Item id = "20016" name = "Import..."/>
+				<Item id = "20015" name = "Import..."/>
+				<Item id = "20016" name = "Export..."/>
 				<Item id = "0" name = "Styl barev"/>
 				<Item id = "1" name = "Barva popředí"/>
 				<Item id = "2" name = "Barva pozadí"/>
@@ -461,7 +470,7 @@
 					<Item id = "6107" name = "Zmenšit"/>
 					<Item id = "6108" name = "Uzamknout (nelze přetahovat záložky)"/>
 					<Item id = "6109" name = "Znevýraznit neaktivní záložky"/>
-					<Item id = "6110" name = "Zobrazovat horní oranžový pruh"/>
+					<Item id = "6110" name = "Zobrazovat barevný pruh na aktivní záložce"/>
 					
 					<Item id = "6111" name = "Zobrazovat stavový řádek"/>
 					<Item id = "6112" name = "Přidat zavírací tlačítko každé záložce"/>
@@ -511,7 +520,8 @@
 					
 					<Item id = "6224" name = "Vícenásobná editace"/>
 					<Item id = "6225" name = "Povolit (Ctrl+Myš(kliknutí/výběr))"/>
-
+					
+					<Item id = "6231" name = "Šířka okraje"/>
                 </Scintillas>
 				<NewDoc title = "Nový dokument / Implicitní adresář">
 					<Item id = "6419" name = "Nový dokument"/>
@@ -533,9 +543,7 @@
 					<Item id = "6304" name = "Historie posledních souborů"/>
 					<Item id = "6305" name = "Nekontrolovat při startu"/>
 					<Item id = "6306" name = "Max. počet položek:"/>
-					<!--
-					<Item id = "" name = "Zobrazení"/>
-					-->
+					<Item id = "-1" name = "Zobrazení"/>
 					<Item id = "6424" name = "Podmenu"/>
 					<Item id = "6425" name = "Jenom název souboru"/>
 					<Item id = "6426" name = "Jméno souboru i s cestou"/>
@@ -605,7 +613,7 @@
 					<Item id = "6329" name = "Zvýrazňování shody značek"/>
 					<Item id = "6327" name = "Povolit"/>
 					<Item id = "6328" name = "Zvýrazňování atributů značek"/>
-					<Item id = "6330" name = "Zvýrazňování zón php/asp"/>
+					<Item id = "6330" name = "Zvýrazňování zón php/asp/komentářů"/>
 					
 					<Item id = "6331" name = "V záhlaví Notepadu++ zobrazovat pouze název souboru"/>
 					
@@ -663,5 +671,66 @@
 				<Item id = "2" name = "Storno"/>
             </ColumnEditor>
 		</Dialog>
+		
+		<MessageBox>
+			<ContextMenuXmlEditWarning title="Úprava kontextové nabídky" message="Úpravou souboru contextMenu.xml můžete modifikovat chování vyskakovacího kontextového menu Notepadu++. Po případné změně musíte restartovat Notepad++, aby se změny projevily."/>
+			<NppHelpAbsentWarning title="Soubor neexistuje" message=" neexistuje. Stáhněte si jej prosím z domovské stránky Notepadu++."/>
+			<SaveCurrentModifWarning title="Uložit změny" message="Měli byste uložit aktuální změny. Uložené změny nemohou být vráceny zpět. Pokračovat?"/>
+			<LoseUndoAbilityWarning title="Varování před ztrátou možnosti vrátit změny" message="Měli byste uložit aktuální změny. Uložené změny nemohou být vráceny zpět. Pokračovat?"/>
+			<NbFileToOpenImportantWarning title="Velmi mnoho souborů k otevření" message="$INT_REPLACE$ souborů má být otevřeno.\rJste si jisti, že je chcete všechny opravdu otevřít?"/>
+			<CannotMoveDoc title="Přejít k nové instanci Notepadu++" message="Dokument je modifikován, uložte jej a poté to zkuste znovu."/>
+			<DocReloadWarning title="Znovu otevřít" message="Jste si jisti, že chcete znovu načíst aktuální soubor a ztratit tak změny udělané v Notepadu++?"/>
+			<FileLockedWarning title="Uložení selhalo" message="Prosím zkontrolujte, zda tento soubor není otevřen jiným programem"/>
+			<FileAlreadyOpenedInNpp title="" message="Tento soubor je již otevřen v Notepadu++."/>
+			<DeleteFileFailed title="Odstranit Soubor" message="Odstranění souboru selhalo"/>
+		</MessageBox>
+		
+		<ProjectManager>
+			<PanelTitle name="Projekt"/>
+			<WorkspaceRootName name="Pracovní plocha"/>
+			<NewProjectName name="Jméno projektu"/>
+			<NewFolderName name="Jméno složky"/>
+			<Menus>
+				<Entries>
+					<Item id="0" name="Pracovní plocha"/>
+					<Item id="1" name="Úpravy"/>
+				</Entries>
+				<WorkspaceMenu>
+					<Item id="3122" name="Nová pracovní plocha"/>
+					<Item id="3123" name="Otevřít pracovní plochu"/>
+					<Item id="3124" name="Znovu otevřít pracovní plochu"/>
+					<Item id="3125" name="Uložit"/>
+					<Item id="3126" name="Uložit jako..."/>
+					<Item id="3127" name="Uložit kopii jako..."/>
+					<Item id="3121" name="Přidat nový projekt"/>
+				</WorkspaceMenu>
+				<ProjectMenu>
+					<Item id="3111" name="Přejmenovat"/>
+					<Item id="3112" name="Přidat složku"/>
+					<Item id="3113" name="Přidat soubory..."/>
+					<Item id="3114" name="Odstranit"/>
+					<Item id="3117" name="Přidat soubory ze složky..." />
+					<Item id="3118" name="Posunout nahoru"/>
+					<Item id="3119" name="Posunout dolů"/>
+				</ProjectMenu>
+				<FolderMenu>
+					<Item id="3111" name="Přejmenovat"/>
+					<Item id="3112" name="Přidat složku"/>
+					<Item id="3113" name="Přidat soubory..."/>
+					<Item id="3114" name="Odstranit"/>
+					<Item id="3117" name="Přidat soubory ze složky..." />
+					<Item id="3118" name="Posunout nahoru"/>
+					<Item id="3119" name="Posunout dolů"/>
+				</FolderMenu>
+				<FileMenu>
+					<Item id="3111" name="Přejmenovat"/>
+					<Item id="3115" name="Odstranit"/>
+					<Item id="3116" name="Změnit cestu k souboru"/>
+					<Item id="3118" name="Posunout nahoru"/>
+					<Item id="3119" name="Posunout dolů"/>
+				</FileMenu>
+			</Menus>
+		</ProjectManager>
+
     </Native-Langue>
 </NotepadPlus>

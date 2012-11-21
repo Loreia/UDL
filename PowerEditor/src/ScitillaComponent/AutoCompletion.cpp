@@ -1,19 +1,30 @@
-//this file is part of Notepad++
-//Copyright (C)2008 Harry Bruin <harrybharry@users.sourceforge.net>
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #include "precompiledHeaders.h"
 
@@ -80,11 +91,11 @@ bool AutoCompletion::showWordComplete(bool autoInsert)
 
 	TCHAR beginChars[bufSize];
 
-	_pEditView->getGenericText(beginChars, startPos, curPos);
+	_pEditView->getGenericText(beginChars, bufSize, startPos, curPos);
 
 	generic_string expr(TEXT("\\<"));
 	expr += beginChars;
-	expr += TEXT("[^ \\t.,;:\"()=<>'+!\\[\\]]*");
+	expr += TEXT("[^ \\t\\n\\r.,;:\"()=<>'+!\\[\\]]*");
 
 	int docLength = int(_pEditView->execute(SCI_GETLENGTH));
 
@@ -104,9 +115,9 @@ bool AutoCompletion::showWordComplete(bool autoInsert)
 		if (foundTextLen < bufSize)
 		{
 			TCHAR w[bufSize];
-			_pEditView->getGenericText(w, wordStart, wordEnd);
+			_pEditView->getGenericText(w, bufSize, wordStart, wordEnd);
 
-			if (lstrcmp(w, beginChars))
+			if (lstrcmp(w, beginChars) != 0)
 				if (!isInList(w, wordArray))
 					wordArray.push_back(w);
 		}
@@ -178,7 +189,10 @@ void AutoCompletion::update(int character)
 	if (lstrlen(s) >= int(nppGUI._autocFromLen))
 	{
 		if (nppGUI._autocStatus == nppGUI.autoc_word)
-			showWordComplete(false);
+		{
+			if (!_pEditView->isCJK())
+				showWordComplete(false);
+		}
 		else if (nppGUI._autocStatus == nppGUI.autoc_func)
 			showAutoComplete();
 	}

@@ -1,0 +1,83 @@
+*.pdb
+PowerEditor/bin/SciLexer2.dll
+PowerEditor/bin/notepad2++.exe
+PowerEditor/bin/config.model.xml
+PowerEditor/bin/config.xml
+PowerEditor/bin/contextMenu.xml
+PowerEditor/bin/langs.model.xml
+PowerEditor/bin/langs.xml
+PowerEditor/bin/session.xml
+PowerEditor/bin/shortcuts.xml
+PowerEditor/bin/stylers.model.xml
+PowerEditor/bin/stylers.xml
+status.txt
+
+
+# Which files should I include in .gitignore when using Git in conjunction with Visual Studio Solutions (.sln) and Projects?
+# Community Wiki:
+# http://stackoverflow.com/questions/2143956/gitignore-for-visual-studio-projects-and-solutions
+
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Visual Studio files
+*.[Oo]bj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+obj/
+# [Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+
+#MonoDevelop
+*.pidb
+*.userprefs
+
+#Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+*.sass-cache
+
+#Project files
+[Bb]uild/
+
+#Subversion files
+.svn
+
+# Office Temp Files
+~$*
+
+#NuGet
+packages/
+
+#ncrunch
+*ncrunch*
+*crunch*.local.xml
+
+# visual studio database projects
+*.dbmdl
+
+#Test files
+*.testsettings

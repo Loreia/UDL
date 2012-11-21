@@ -1,19 +1,29 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO ( donho@altern.org )
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef NOTEPAD_PLUS_H
 #define NOTEPAD_PLUS_H
@@ -141,6 +151,12 @@ enum trimOp {
 	lineEol = 2
 };
 
+enum spaceTab {
+	tab2Space = 0,
+	space2TabLeading = 1,
+	space2TabAll = 2
+};
+
 struct TaskListInfo;
 
 struct VisibleGUIConf {
@@ -168,11 +184,14 @@ struct VisibleGUIConf {
 	};
 };
 
+
 class FileDialog;
 class Notepad_plus_Window;
 class AnsiCharPanel;
 class ClipboardHistoryPanel;
 class VerticalFileSwitcher;
+class ProjectPanel;
+class DocumentMap;
 
 class Notepad_plus {
 
@@ -232,6 +251,7 @@ public:
 	bool saveScintillaParams();
 
 	bool saveGUIParams();
+	bool saveProjectPanelsParams();
 	void saveDockingParams();
     void saveUserDefineLangs() {
         if (ScintillaEditView::getUserDefineDlg()->isDirty())
@@ -255,6 +275,9 @@ public:
 
 	bool doBlockComment(comment_mode currCommentMode);
 	bool doStreamComment();
+	//--FLS: undoStreamComment: New function unDoStreamComment()
+	bool undoStreamComment();
+	
 	bool addCurrentMacro();
 	void macroPlayback(Macro);
     
@@ -352,8 +375,8 @@ private:
 
 	// For hotspot
 	bool _linkTriggered;
-	bool _isDocModifing;
 	bool _isHotspotDblClicked;
+	bool _isFolding;
 
 	//For Dynamic selection highlight
 	CharacterRange _prevSelectedRange;
@@ -399,6 +422,11 @@ private:
 	AnsiCharPanel *_pAnsiCharPanel;
 	ClipboardHistoryPanel *_pClipboardHistoryPanel;
 	VerticalFileSwitcher *_pFileSwitcherPanel;
+	ProjectPanel *_pProjectPanel_1;
+	ProjectPanel *_pProjectPanel_2;
+	ProjectPanel *_pProjectPanel_3;
+
+	DocumentMap *_pDocMap;
 
 	BOOL notify(SCNotification *notification);
 	void specialCmd(int id);
@@ -487,10 +515,9 @@ private:
 	void checkMenuItem(int itemID, bool willBeChecked) const {
 		::CheckMenuItem(_mainMenuHandle, itemID, MF_BYCOMMAND | (willBeChecked?MF_CHECKED:MF_UNCHECKED));
 	};
-	void charAdded(TCHAR chAdded);
 	void MaintainIndentation(TCHAR ch);
 	
-	void addHotSpot(bool docIsModifing = false);
+	void addHotSpot();
 
     void bookmarkAdd(int lineno) const {
 		if (lineno == -1)
@@ -580,11 +607,29 @@ private:
 	bool goToNextIndicator(int indicID2Search, bool isWrap = true) const;
 	int wordCount();
 	
-	void wsTabConvert(bool whichWay);
+	void wsTabConvert(spaceTab whichWay);
 	void doTrim(trimOp whichPart);
 	void launchAnsiCharPanel();
 	void launchClipboardHistoryPanel();
 	void launchFileSwitcherPanel();
+	void launchProjectPanel(int cmdID, ProjectPanel ** pProjPanel, int panelID);
+	void launchDocMap();
+	int getQuoteIndexFrom(const char *quoter) const;
+	void showQuoteFromIndex(int index) const;
+	void showAllQuotes() const;
+	static DWORD WINAPI threadTextPlayer(void *text2display);
+	static DWORD WINAPI threadTextTroller(void *params);
+	static int getRandomAction(int ranNum);
+	static bool deleteBack(ScintillaEditView *pCurrentView, BufferID targetBufID);
+	static bool deleteForward(ScintillaEditView *pCurrentView, BufferID targetBufID);
+	static bool selectBack(ScintillaEditView *pCurrentView, BufferID targetBufID);
+	
+	static int getRandomNumber(int rangeMax = -1) {
+		int randomNumber = rand();
+		if (rangeMax == -1)
+			return randomNumber;
+		return (rand() % rangeMax);
+	};
 };
 
 

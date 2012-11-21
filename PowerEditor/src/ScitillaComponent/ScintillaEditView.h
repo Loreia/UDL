@@ -1,19 +1,30 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO ( donho@altern.org )
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #ifndef SCINTILLA_EDIT_VIEW_H
 #define SCINTILLA_EDIT_VIEW_H
@@ -188,7 +199,7 @@ struct LanguageName {
 
 class ScintillaEditView : public Window
 {
-	friend class Notepad_plus;
+	//friend class Notepad_plus;
 	friend class Finder;
 public:
 	ScintillaEditView()
@@ -214,7 +225,7 @@ public:
 						delete [] it2->second._fontName;
 				}
 				delete it->second;
-			} 
+			}
 		}
 	};
 	virtual void destroy()
@@ -231,9 +242,12 @@ public:
 	
 	void activateBuffer(BufferID buffer);
 
+	void getCurrentFoldStates(std::vector<HeaderLineState> & lineStateVector);
+	void syncFoldStateWith(const std::vector<HeaderLineState> & lineStateVectorNew);
+
 	void getText(char *dest, int start, int end) const;
-	void getGenericText(TCHAR *dest, int start, int end) const;
-	void getGenericText(TCHAR *dest, int start, int end, int *mstart, int *mend) const;
+	void getGenericText(TCHAR *dest, size_t destlen, int start, int end) const;
+	void getGenericText(TCHAR *dest, size_t deslen, int start, int end, int *mstart, int *mend) const;
 	void insertGenericTextFrom(int position, const TCHAR *text2insert) const;
 	void replaceSelWith(const char * replaceText);
 
@@ -242,6 +256,7 @@ public:
 		return (range.cpMax - range.cpMin);
 	};
 
+	void getVisibleStartAndEndPosition(int * startPos, int * endPos);
     char * getWordFromRange(char * txt, int size, int pos1, int pos2);
 	char * getSelectedText(char * txt, int size, bool expand = true);
     char * getWordOnCaretPos(char * txt, int size);
@@ -280,7 +295,7 @@ public:
 		
 		str[0] = '\0';
 		if ((caretPos - startPos) < strLen)
-			getGenericText(str, startPos, caretPos);
+			getGenericText(str, strLen, startPos, caretPos);
 	};
 
     void doUserDefineDlg(bool willBeShown = true, bool isRTL = false) {
@@ -531,6 +546,10 @@ public:
     
 	void collapse(int level2Collapse, bool mode);
 	void foldAll(bool mode);
+	void fold(int line, bool mode);
+	bool isFolded(int line){
+		return (execute(SCI_GETFOLDEXPANDED, line) != 0);
+	};
 	void foldCurrentPos(bool mode);
 	int getCodepage() const {return _codepage;};
 
@@ -556,6 +575,7 @@ public:
 	void bufferUpdated(Buffer * buffer, int mask);
 	BufferID getCurrentBufferID() { return _currentBufferID; };
 	Buffer * getCurrentBuffer() { return _currentBuffer; };
+	void setCurrentBuffer(Buffer *buf2set) { _currentBuffer = buf2set; };
 	void styleChange();
 
 	void hideLines();
@@ -584,29 +604,21 @@ public:
 		return false;
 	};
 	void setHiLiteResultWords(const TCHAR *keywords);
-/*
-	pair<size_t, bool> getLineUndoState(size_t currentLine) {
-		Buffer * buf = getCurrentBuffer();
-		return buf->getLineUndoState(currentLine);
+	void defineDocType(LangType typeDoc);	//setup stylers for active document
+	void mouseWheel(WPARAM wParam, LPARAM lParam) {
+		scintillaNew_Proc(_hSelf, WM_MOUSEWHEEL, wParam, lParam);
 	};
-	void setLineUndoState(size_t currentLine, size_t undoLevel, bool isSaved = false) {
-		Buffer * buf = getCurrentBuffer();
-		buf->setLineUndoState(currentLine, undoLevel, isSaved);
+	
+	void setHotspotStyle(Style& styleToSet);
+    void setTabSettings(Lang *lang);
+	bool isWrapRestoreNeeded() const {return _wrapRestoreNeeded;};
+	void setWrapRestoreNeeded(bool isWrapRestoredNeeded) {_wrapRestoreNeeded = isWrapRestoredNeeded;};
+
+	bool isCJK() const {
+		return ((_codepage == CP_CHINESE_TRADITIONAL) || (_codepage == CP_CHINESE_SIMPLIFIED) || 
+			    (_codepage == CP_JAPANESE) || (_codepage == CP_KOREAN));
 	};
 
-	void markSavedLines() {
-		for (int i = 0 ; i <= lastZeroBasedLineNumber() ; i++)
-		{
-			if ((execute(SCI_MARKERGET, i) & (1 << MARK_LINEMODIFIEDUNSAVED)) != 0)
-			{
-				execute(SCI_MARKERDELETE, i, MARK_LINEMODIFIEDUNSAVED);
-				execute(SCI_MARKERADD, i, MARK_LINEMODIFIEDSAVED);
-				//pair<size_t, bool> st = getLineUndoState(i);
-				setLineUndoState(i, 0, true);
-			}
-		}
-	};
-*/
 protected:
 	static HINSTANCE _hLib;
 	static int _refCount;
@@ -654,16 +666,14 @@ protected:
 
 	typedef std::map<int, Style> StyleMap;
 	typedef std::map<BufferID, StyleMap*> BufferStyleMap;
-	BufferStyleMap _hotspotStyles; 
+	BufferStyleMap _hotspotStyles;
 
 //Lexers and Styling
-	void defineDocType(LangType typeDoc);	//setup stylers for active document
 	void restyleBuffer();
 	const char * getCompleteKeywordList(std::basic_string<char> & kwl, LangType langType, int keywordIndex);
 	void setKeywords(LangType langType, const char *keywords, int index);
 	void setLexer(int lexerID, LangType langType, int whichList);
 	inline void makeStyle(LangType langType, const TCHAR **keywordArray = NULL);
-	void setHotspotStyle(Style& styleToSet);
 	void setStyle(Style styleToSet);			//NOT by reference	(style edited)
 	void setSpecialStyle(const Style & styleToSet);	//by reference
 	void setSpecialIndicator(const Style & styleToSet) {
@@ -879,11 +889,6 @@ protected:
 		execute(SCI_MARKERSETBACKSELECTED, marker, foreActive);
 	};
 
-	bool isCJK() const {
-		return ((_codepage == CP_CHINESE_TRADITIONAL) || (_codepage == CP_CHINESE_SIMPLIFIED) || 
-			    (_codepage == CP_JAPANESE) || (_codepage == CP_KOREAN));
-	};
-
 	int codepage2CharSet() const {
 		switch (_codepage)	
 		{
@@ -896,7 +901,6 @@ protected:
 		}
 	};
 
-    void setTabSettings(Lang *lang);
     pair<int, int> getWordRange();
 	bool expandWordSelection();
 };

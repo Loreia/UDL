@@ -6,23 +6,57 @@
 			<Main>
                 <!-- Main Menu Entries -->
 				<Entries>
-					<Item id="0" name="&amp;Datoteka"/>
-					<Item id="1" name="&amp;Uredi"/>
-					<Item id="2" name="&amp;Pretraživanje"/>
-					<Item id="3" name="Pri&amp;kaži"/>
-					<Item id="4" name="For&amp;mat"/>
-					<Item id="5" name="&amp;Jezik"/>
-					<Item id="6" name="Po&amp;stavke"/>
-					<Item id="7" name="Makro"/>
-					<Item id="8" name="Pokreni"/>
-					<Item idName="Pluginovi" name="Dodaci"/>
+					<Item menuId="file" name="&amp;Datoteka"/>
+					<Item menuId="edit" name="&amp;Uredi"/>
+					<Item menuId="search" name="&amp;Pretraživanje"/>
+					<Item menuId="view" name="Pri&amp;kaži"/>
+					<Item menuId="encoding" name="For&amp;mat"/>
+					<Item menuId="language" name="&amp;Jezik"/>
+					<Item menuId="settings" name="Po&amp;stavke"/>
+					<Item menuId="macro" name="Makro"/>
+					<Item menuId="run" name="Pokreni"/>
+					<Item idName="Plugins" name="Dodaci"/>
 					<Item idName="Window" name="Prozor"/>
 				</Entries>
 
                 <!-- Sub Menu Entries -->
-                <SubEntries>
-                    <Item posX="3" posY="16" name="Sakrij"/>
-                    <Item posX="3" posY="17" name="Prikaži"/>
+                 <SubEntries>
+                    <Item subMenuId="edit-copyToClipboard"  name="Kopiraj u privremenu memoriju"/>
+                    <Item subMenuId="edit-indent" name="Uvlake"/>
+                    <Item subMenuId="edit-convertCaseTo" name="Prebaci slova u"/>
+                    <Item subMenuId="edit-lineOperations" name="Operacije s redovima"/>
+                    <Item subMenuId="edit-comment" name="Comment/Uncomment"/>
+                    <Item subMenuId="edit-autoCompletion" name="Auto dopuna"/>
+                    <Item subMenuId="edit-eolConversion" name="EOL Conversion"/>
+					<Item subMenuId="edit-blankOperations" name="Operacije sa prazninama"/>
+                    <Item subMenuId="search-markAll" name="Oznaèi sve"/>
+                    <Item subMenuId="search-unmarkAll" name="Odznaèi sve"/>
+                    <Item subMenuId="search-jumpUp" name="Jump Up"/>
+                    <Item subMenuId="search-jumpDown" name="Jump Down"/>
+                    <Item subMenuId="search-bookmark" name="Bookmark"/>
+                    <Item subMenuId="view-showSymbol"  name="Prikaži simbol"/>
+                    <Item subMenuId="view-zoom"  name="Uveæaj"/>
+                    <Item subMenuId="view-moveCloneDocument"  name="Premjesti trenutni dokument"/>
+                    <Item subMenuId="view-collapsLevel" name="Sakrij"/>
+                    <Item subMenuId="view-uncollapseLevel" name="Prikaži"/>
+                    <Item subMenuId="encoding-characterSets"  name="Set znakova"/>
+                    <Item subMenuId="encoding-arabic"  name="Arapski"/>
+                    <Item subMenuId="encoding-celtic"  name="Celtic"/>
+                    <Item subMenuId="encoding-baltic"  name="Baltièki"/>
+                    <Item subMenuId="encoding-cyrillic"  name="Æirilica"/>
+                    <Item subMenuId="encoding-centralEuropean"  name="Centralna Europa"/>
+                    <Item subMenuId="encoding-chinese"  name="Kineski"/>
+                    <Item subMenuId="encoding-easternEuropean"  name="Istoèna Europa"/>
+                    <Item subMenuId="encoding-greek"  name="Grèki"/>
+                    <Item subMenuId="encoding-hebrew"  name="Hebrejski"/>
+                    <Item subMenuId="encoding-japanese"  name="Japanski"/>
+                    <Item subMenuId="encoding-korean" name="Korejski"/>
+                    <Item subMenuId="encoding-northEuropean" name="Sjeverna Europa"/>
+                    <Item subMenuId="encoding-thai" name="Tajski"/>
+                    <Item subMenuId="encoding-turkish" name="Turski"/>
+                    <Item subMenuId="encoding-westernEuropean" name="Zapadna Europa"/>
+                    <Item subMenuId="encoding-vietnamese" name="Vijetnamski"/>
+                    <Item subMenuId="settings-import"  name="Uvoz"/>
                 </SubEntries>
 
                 <!-- all menu item -->
@@ -31,7 +65,7 @@
                     <Item id="41002" name="&amp;Otvori"/>
                     <Item id="41003" name="Zatvori"/>
                     <Item id="41004" name="Zatvo&amp;ri sve"/>
-                    <Item id="41005" name="Zatvoriti sve OSIM TRENUTNOG dokumenta"/>
+                    <Item id="41005" name="Zatvori sve osim trenutnog dokumenta"/>
                     <Item id="41006" name="&amp;Snimi"/>
                     <Item id="41007" name="Sni&amp;mi sve"/>
                     <Item id="41008" name="Snimi &amp;kao..."/>
@@ -72,7 +106,7 @@
                     <Item id="42026" name="Smjer teksta s desna na lijevo"/>
                     <Item id="42027" name="Smjer teksta s lijeva na desno"/>
                     <Item id="42028" name="Postavi samo za èitanje"/>
-                    <Item id="42029" name="Prebaci celu putanju fajla u clipboard"/>
+                    <Item id="42029" name="Prebaci cijelu putanju fajla u clipboard"/>
                     <Item id="42030" name="Prebaci ime fajla u clipboard"/>
                     <Item id="42031" name="Prebaci cijelu putanju foldera u clipboard"/>
                     <Item id="42032" name="Višestruko pokretanje makro-naredbi..."/>
@@ -100,6 +134,54 @@
                     <Item id="43019" name="Kopiraj oznaèene redove"/>
                     <Item id="43020" name="Oznaèene redove zamijeni sadržajem iz bookmarka (oznake)"/>
                     <Item id="43021" name="Izbriši oznaèene redove"/>
+					<Item id="43022" name="Koristi prvi stil"/>
+                    <Item id="43023" name="Briši prvi stil"/>
+                    <Item id="43024" name="Koristi drugi stil"/>
+                    <Item id="43025" name="Briši drugi stil"/>
+                    <Item id="43026" name="Koristi treæi stil"/>
+                    <Item id="43027" name="Briši treæi stil"/>
+                    <Item id="43028" name="Koristi èetvrti stil"/>
+                    <Item id="43029" name="Briši èetvrti stil"/>
+                    <Item id="43030" name="Koristi peti stil"/>
+                    <Item id="43031" name="Briši peti stil"/>
+                    <Item id="43032" name="Briši sve stilove"/>
+                    <Item id="43033" name="Prvi stil"/>
+                    <Item id="43034" name="Drugi stil"/>
+                    <Item id="43035" name="Treæi stil"/>
+                    <Item id="43036" name="Èetvrti stil"/>
+                    <Item id="43037" name="Peti stil"/>
+                    <Item id="43038" name="Pronaði stil"/>
+                    <Item id="43039" name="Prvi stil"/>
+                    <Item id="43040" name="Drugi stil"/>
+                    <Item id="43041" name="Treæi stil"/>
+                    <Item id="43042" name="Èetvrti stil"/>
+                    <Item id="43043" name="Peti stil"/>
+                    <Item id="43044" name="Pronaði stil"/>
+                    <Item id="43045" name="Search Results Window"/>
+                    <Item id="43046" name="Slijedeæi rezultat u pretrazi"/>
+                    <Item id="43047" name="Prethodni rezultat u pretrazi"/>
+                    <Item id="43048" name="Oznaèi i traži slijedeæe"/>
+                    <Item id="43049" name="Oznaèi i traži prethodno"/>
+                    <Item id="43050" name="Inverse Bookmark"/>
+                    <Item id="44009" name="Post-It"/>
+                    <Item id="44010" name="Fold All"/>
+                    <Item id="44011" name="Korisnikom zadani dijalog..."/>
+                    <Item id="44019" name="Prikaži sve znakove"/>
+                    <Item id="44020" name="Show Indent Guide"/>
+                    <Item id="44022" name="Wrap"/>
+                    <Item id="44023" name="Zoom &amp;In	Ctrl+Mouse Wheel Up"/>
+                    <Item id="44024" name="Zoom &amp;Out	Ctrl+Mouse Wheel Down"/>
+                    <Item id="44025" name="Show White Space and TAB"/>
+                    <Item id="44026" name="Prikaži kraj linije"/>
+                    <Item id="44029" name="Raširi sve"/>
+                    <Item id="44030" name="Prikaži trenutni nivo"/>
+                    <Item id="44031" name="Sakrij trenutni nivo"/>
+                    <Item id="44032" name="Toggle Full Screen Mode"/>
+                    <Item id="44033" name="Vrati zadani zum"/>
+                    <Item id="44034" name="Uvijek na vrhu"/>
+					<Item id="44049" name="Kratak pregled..."/>
+                    <Item id="44035" name="Uskladi vertikalno skrolanje"/>
+                    <Item id="44036" name="Uskladi horizontalno skrolanje"/>
 					<Item id="44009" name="Prikaži kraj dokumenta"/>
                     <Item id="44010" name="Sakrij sve nivoe"/>
                     <Item id="44011" name="Korisnikom zadani dijalog"/>
@@ -167,27 +249,27 @@
             <Splitter>
             </Splitter>
             <TabBar>
-                    <Item order="0" name="Zatvori"/>
-                    <Item order="1" name="Zatvori sve ostale"/>
-                    <Item order="2" name="Saèuvaj"/>
-                    <Item order="3" name="Saèuvaj kao..."/>
-                    <Item order="4" name="Ispiši"/>
-                    <Item order="5" name="Premjesti u drugi prikaz"/>
-                    <Item order="6" name="Preslikaj u drugi prikaz"/>
-					<Item order="7" name="Potpunu putanju datoteke u clipboard"/>
-					<Item order="8" name="Naziv datoteke u clipboard"/>
-					<Item order="9" name="Putanju tekuæe datoteke u clipboard"/>
-					<Item order="10" name="Preimenuj"/>
-					<Item order="11" name="Izbriši"/>
-					<Item order="12" name="Samo za èitanje"/>
-					<Item order="13" name="Odstraniti zaštitu od pisanja"/>
-					<Item order="14" name="Prebaciti u novi nivo"/>
-					<Item order="15" name="Otvori u novom nivou"/>
+                    <Item CMID="0" name="Zatvori"/>
+                    <Item CMID="1" name="Zatvori sve ostale"/>
+                    <Item CMID="2" name="Saèuvaj"/>
+                    <Item CMID="3" name="Saèuvaj kao..."/>
+                    <Item CMID="4" name="Ispiši"/>
+                    <Item CMID="5" name="Premjesti u drugi prikaz"/>
+                    <Item CMID="6" name="Preslikaj u drugi prikaz"/>
+					<Item CMID="7" name="Potpunu putanju datoteke u clipboard"/>
+					<Item CMID="8" name="Naziv datoteke u clipboard"/>
+					<Item CMID="9" name="Putanju tekuæe datoteke u clipboard"/>
+					<Item CMID="10" name="Preimenuj"/>
+					<Item CMID="11" name="Izbriši"/>
+					<Item CMID="12" name="Samo za èitanje"/>
+					<Item CMID="13" name="Odstraniti zaštitu od pisanja"/>
+					<Item CMID="14" name="Prebaciti u novi nivo"/>
+					<Item CMID="15" name="Otvori u novom nivou"/>
             </TabBar>
         </Menu>
 
         <Dialog>
-            <Find title="" titleFind="Find" titleReplace="Nadomjestiti" titleFindInFiles="Pronaæi u datotekama">
+            <Find title="" titleFind="Find" titleReplace="Zamijeni" titleFindInFiles="Pronaði u datotekama">
                 <Item id="1" name="Pronaði slijedeæe"/>
                 <Item id="2" name="Zatvori"/>
                 <Item id="1603" name="Samo &amp;potpuna rijeèima"/>

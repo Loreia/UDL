@@ -1,19 +1,30 @@
-//this file is part of notepad++
-//Copyright (C)2010 Don HO <don.h@free.fr>
+// This file is part of Notepad++ project
+// Copyright (C)2003 Don HO <don.h@free.fr>
 //
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either
-//version 2 of the License, or (at your option) any later version.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
 //
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// Note that the GPL places important restrictions on "derived works", yet
+// it does not provide a detailed definition of that term.  To avoid      
+// misunderstandings, we consider an application to constitute a          
+// "derivative work" for the purpose of this license if it does any of the
+// following:                                                             
+// 1. Integrates source code from Notepad++.
+// 2. Integrates/includes/aggregates Notepad++ into a proprietary executable
+//    installer, such as those produced by InstallShield.
+// 3. Links to a library or executes a program that does any of the above.
 //
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #include "precompiledHeaders.h"
 #include "Notepad_plus_Window.h"
@@ -21,6 +32,7 @@
 #include "ImageListSet.h"
 #include "ShortcutMapper.h"
 #include "VerticalFileSwitcher.h"
+#include "documentMap.h"
 
 struct SortTaskListPred
 {
@@ -161,8 +173,8 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 		case WM_CLOSE_USERDEFINE_DLG :
 		{
-			checkMenuItem(IDM_VIEW_USER_DLG, false);
-			_toolBar.setCheck(IDM_VIEW_USER_DLG, false);
+			checkMenuItem(IDM_LANG_USER_DLG, false);
+			_toolBar.setCheck(IDM_LANG_USER_DLG, false);
 			return TRUE;
 		}
 
@@ -418,6 +430,12 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			getMainClientRect(rc);
 			_dockingManager.reSizeTo(rc);
 
+			if (_pDocMap)
+			{
+				_pDocMap->doMove();
+				_pDocMap->reloadMap();
+			}
+
 			result = TRUE;
 		}
 		break;
@@ -430,6 +448,10 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 		case WM_MOVING:
 		{
+			if (_pDocMap)
+			{
+				_pDocMap->doMove();
+			}
 			result = FALSE;
 		}
 		break;
@@ -935,9 +957,10 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			auxVerStr[k] = '\0';
 
 			int mainVer = 0, auxVer = 0;
-			if (mainVerStr)
+			if (mainVerStr[0])
 				mainVer = generic_atoi(mainVerStr);
-			if (auxVerStr)
+
+			if (auxVerStr[0])
 				auxVer = generic_atoi(auxVerStr);
 
 			return MAKELONG(auxVer, mainVer);
@@ -1032,7 +1055,12 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		{
 			return (LRESULT)_scintillaCtrls4Plugins.createSintilla((lParam == NULL?_pPublicInterface->getHSelf():(HWND)lParam));
 		}
-		
+
+		case NPPM_INTERNAL_GETSCINTEDTVIEW:
+		{
+			return (LRESULT)_scintillaCtrls4Plugins.getScintillaEditViewFrom((HWND)lParam);
+		}
+
 		case NPPM_DESTROYSCINTILLAHANDLE :
 		{
 			return _scintillaCtrls4Plugins.destroyScintilla((HWND)lParam);
@@ -1243,11 +1271,20 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 		case WM_NOTIFY:
 		{
-			checkClipboard();
-			checkUndoState();
-			checkMacroState();
-			_pluginsManager.notify(reinterpret_cast<SCNotification *>(lParam));
-			return notify(reinterpret_cast<SCNotification *>(lParam));
+			SCNotification *notification = reinterpret_cast<SCNotification *>(lParam);
+
+			if (notification->nmhdr.code == SCN_UPDATEUI)
+			{
+				checkClipboard(); //6
+				checkUndoState(); //4
+			}
+
+			if (wParam == LINKTRIGGERED)
+				notification->wParam = LINKTRIGGERED;
+
+			_pluginsManager.notify(notification);
+			
+			return notify(notification);
 		}
 
 		case NPPM_INTERNAL_CHECKDOCSTATUS :
@@ -1414,19 +1451,32 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			    scnN.nmhdr.idFrom = 0;
 			    _pluginsManager.notify(&scnN);
 
-			    saveFindHistory();
+				//
+				// saving config.xml
+				//
+			    saveFindHistory(); //writeFindHistory
+			    _lastRecentFileList.saveLRFL(); //writeRecentFileHistorySettings, writeHistory
+			    saveScintillaParams(); //writeScintillaParams
+			    saveGUIParams(); //writeGUIParams
+				saveProjectPanelsParams(); //writeProjectPanelsSettings
+				pNppParam->saveConfig_xml();
 
-			    _lastRecentFileList.saveLRFL();
-			    saveScintillaParams();
-			    saveGUIParams();
+
 			    saveUserDefineLangs();
 			    saveShortcuts();
 			    if (nppgui._rememberLastSession && _rememberThisSession)
 				    saveSession(currentSession);
 
                 //Sends WM_DESTROY, Notepad++ will end
-			    ::DestroyWindow(hwnd);
+				if(Message == WM_CLOSE)
+					::DestroyWindow(hwnd);
 			}
+			return TRUE;
+		}
+
+		case WM_ENDSESSION:
+		{
+			::DestroyWindow(hwnd);
 			return TRUE;
 		}
 
@@ -1831,6 +1881,25 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			if (!_pFileSwitcherPanel)
 				return FALSE;
 			return _pFileSwitcherPanel->isVisible();
+		}
+
+		case NPPM_GETAPPDATAPLUGINSALLOWED:
+		{
+			NppParameters *pNppParam = NppParameters::getInstance();
+			const TCHAR *appDataNpp = pNppParam->getAppDataNppDir();
+			if (appDataNpp[0])
+			{
+				generic_string allowAppDataPluginsPath(pNppParam->getNppPath());
+				PathAppend(allowAppDataPluginsPath, allowAppDataPluginsFile);
+				return ::PathFileExists(allowAppDataPluginsPath.c_str());
+			}
+			return FALSE;
+		}
+
+		case NPPM_INTERNAL_SETDOCMAPCHECK:
+		{
+			checkMenuItem(IDM_VIEW_DOC_MAP, lParam == TRUE ? true : false);
+			return TRUE;
 		}
 
 		//
