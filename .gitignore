@@ -11,7 +11,13 @@ PowerEditor/bin/shortcuts.xml
 PowerEditor/bin/stylers.model.xml
 PowerEditor/bin/stylers.xml
 status.txt
-
+scintilla/win32/ScintRes.res
+scintilla/boostregex/bin/
+scintilla/bin/
+PowerEditor/visual.net/Unicode Debug/
+PowerEditor/visual.net/Unicode Release/
+PowerEditor/visual.net/UpgradeLog.XML
+PowerEditor/visual.net/bin/
 
 # Which files should I include in .gitignore when using Git in conjunction with Visual Studio Solutions (.sln) and Projects?
 # Community Wiki:
