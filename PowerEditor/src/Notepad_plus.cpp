@@ -1379,7 +1379,7 @@ bool Notepad_plus::replaceInFiles()
 	_pEditView = pOldView;
 
 	TCHAR msg[128];
-	wsprintf(msg, TEXT("%d occurences replaced"), nbTotal);
+	wsprintf(msg, TEXT("%d occurrences replaced"), nbTotal);
 	printStr(msg);
 
 	return true;
