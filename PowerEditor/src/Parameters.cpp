@@ -2828,7 +2828,7 @@ void StyleArray::addStyler(int styleID, TiXmlNode *styleNode)
 	{
 		styleID = (styleID & 0xFFFF);
 		index = styleID;
-		if (index >= SCE_USER_STYLE_TOTAL_STYLES)
+		if (index >= SCE_USER_STYLE_TOTAL_STYLES || _styleArray[index]._styleID != -1)
 			return;
 	}
 
@@ -5296,12 +5296,17 @@ void NppParameters::writeStyle2Element(Style & style2Write, Style & style2Sync, 
         }
     }
 
-    if (style2Write._fontSize != -1)
+    if (style2Write._fontSize != STYLE_NOT_USED)
     {
         if (!style2Write._fontSize)
             element->SetAttribute(TEXT("fontSize"), TEXT(""));
         else
 		    element->SetAttribute(TEXT("fontSize"), style2Write._fontSize);
+    }
+
+    if (style2Write._fontStyle != STYLE_NOT_USED)
+    {
+	    element->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
     }
 
     element->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
@@ -5349,7 +5354,8 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 
 	TiXmlElement *styleRootElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("Styles"))))->ToElement();
 
-	for (int i = 0 ; i < userLang->_styleArray.getNbStyler() ; i++)
+	//for (int i = 0 ; i < userLang->_styleArray.getNbStyler() ; i++)
+	for (int i = 0 ; i < SCE_USER_STYLE_TOTAL_STYLES ; i++)
 	{
 		TiXmlElement *styleElement = (styleRootElement->InsertEndChild(TiXmlElement(TEXT("WordsStyle"))))->ToElement();
 		Style style2Write = userLang->_styleArray.getStyler(i);
@@ -5387,9 +5393,16 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 			styleElement->SetAttribute(TEXT("fontName"), style2Write._fontName);
 		}
 
-        styleElement->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
+		if (style2Write._fontStyle == STYLE_NOT_USED)
+		{
+			styleElement->SetAttribute(TEXT("fontStyle"), TEXT("0"));
+		}
+		else
+		{
+			styleElement->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
+		}
 
-		if (style2Write._fontSize != -1)
+		if (style2Write._fontSize != STYLE_NOT_USED)
 		{
 			if (!style2Write._fontSize)
 				styleElement->SetAttribute(TEXT("fontSize"), TEXT(""));
@@ -5405,8 +5418,9 @@ void NppParameters::stylerStrOp(bool op)
 {
 	for (int i = 0 ; i < _nbUserLang ; i++)
 	{
-		int nbStyler = _userLangArray[i]->_styleArray.getNbStyler();
-		for (int j = 0 ; j < nbStyler ; j++)
+		//int nbStyler = _userLangArray[i]->_styleArray.getNbStyler();
+		//for (int j = 0 ; j < nbStyler ; j++)
+		for (int j = 0 ; j < SCE_USER_STYLE_TOTAL_STYLES ; j++)
 		{
 			Style & style = _userLangArray[i]->_styleArray.getStyler(j);
 			

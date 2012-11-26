@@ -28,10 +28,10 @@
 ; Define the application name
 !define APPNAME "Notepad++"
 
-!define APPVERSION "6.1.8"
+!define APPVERSION "6.2.2"
 !define APPNAMEANDVERSION "${APPNAME} v${APPVERSION}"
 !define VERSION_MAJOR 6
-!define VERSION_MINOR 18
+!define VERSION_MINOR 22
 
 !define APPWEBSITE "http://notepad-plus-plus.org/"
 
@@ -789,6 +789,9 @@ SectionGroup "Localization" localization
 	Section /o "Arabic"  arabic
 		CopyFiles "$TEMP\nppLocalization\arabic.xml" "$INSTDIR\localization\arabic.xml"
 	SectionEnd
+	Section /o "Aragonese"  aragonese
+		CopyFiles "$TEMP\nppLocalization\aragonese.xml" "$INSTDIR\localization\aragonese.xml"
+	SectionEnd
 	Section /o "Aranese"  aranese
 		CopyFiles "$TEMP\nppLocalization\aranese.xml" "$INSTDIR\localization\aranese.xml"
 	SectionEnd
@@ -1463,6 +1466,9 @@ SectionGroup un.localization
 	SectionEnd
 	Section un.arabic
 		Delete "$INSTDIR\localization\arabic.xml"
+	SectionEnd
+	Section un.aragonese
+		Delete "$INSTDIR\localization\aragonese.xml"
 	SectionEnd
 	Section un.aranese
 		Delete "$INSTDIR\localization\aranese.xml"

@@ -37,341 +37,38 @@
                     <Item subMenuId="view-showSymbol"  name="Show Symbol"/>
                     <Item subMenuId="view-zoom"  name="Zoom"/>
                     <Item subMenuId="view-moveCloneDocument"  name="Move/Clone Current Document"/>
-                    <Item subMenuId="view-collapsLevel" name="Collapse Level"/>
-                    <Item subMenuId="view-uncollapseLevel" name="Uncollapse Level"/>
-                    <Item subMenuId="view-project" name="Project"/>
-                    <Item subMenuId="encoding-characterSets"  name="Character Set"/>
-                    <Item subMenuId="encoding-arabic"  name="Arabic"/>
-                    <Item subMenuId="encoding-baltic"  name="Baltic"/>
-                    <Item subMenuId="encoding-celtic"  name="Celtic"/>
-                    <Item subMenuId="encoding-cyrillic"  name="Cyrillic"/>
-                    <Item subMenuId="encoding-centralEuropean"  name="Central European"/>
-                    <Item subMenuId="encoding-chinese"  name="Chinese"/>
-                    <Item subMenuId="encoding-easternEuropean"  name="Eastern European"/>
-                    <Item subMenuId="encoding-greek"  name="Greek"/>
-                    <Item subMenuId="encoding-hebrew"  name="Hebrew"/>
-                    <Item subMenuId="encoding-japanese"  name="Japanese"/>
-                    <Item subMenuId="encoding-korean" name="Korean"/>
-                    <Item subMenuId="encoding-northEuropean" name="North European"/>
-                    <Item subMenuId="encoding-thai" name="Thai"/>
-                    <Item subMenuId="encoding-turkish" name="Turkish"/>
-                    <Item subMenuId="encoding-westernEuropean" name="Western European"/>
-                    <Item subMenuId="encoding-vietnamese" name="Vietnamese"/>
-                    <Item subMenuId="settings-import"  name="Import"/>
-                </SubEntries>
-                
-                <!-- all menu item -->
-                <Commands>
-                    <Item id="41001" name="&amp;New"/>
-                    <Item id="41002" name="&amp;Open"/>
-                    <Item id="41003" name="Close"/>
-                    <Item id="41004" name="C&amp;lose All"/>
-                    <Item id="41005" name="Close All BUT Current Document"/>
-                    <Item id="41006" name="&amp;Save"/>
-                    <Item id="41007" name="Sav&amp;e All"/>
-                    <Item id="41008" name="Save &amp;As..."/>
-                    <Item id="41010" name="Print..."/>
-                    <Item id="1001"  name="Print Now"/>
-                    <Item id="41011" name="E&amp;xit"/>
-                    <Item id="41012" name="Load Session..."/>
-                    <Item id="41013" name="Save Session..."/>
-                    <Item id="41014" name="Reload from Disk"/>
-                    <Item id="41015" name="Save a Copy As..."/>
-                    <Item id="41016" name="Delete from Disk"/>
-                    <Item id="41017" name="Rename..."/>
-                    
-                    <Item id="42001" name="Cu&amp;t"/>
-                    <Item id="42002" name="&amp;Copy"/>
-                    <Item id="42003" name="&amp;Undo"/>
-                    <Item id="42004" name="&amp;Redo"/>
-                    <Item id="42005" name="&amp;Paste"/>
-                    <Item id="42006" name="&amp;Delete"/>
-                    <Item id="42007" name="Select A&amp;ll"/>
-                    <Item id="42008" name="Increase Line Indent"/>
-                    <Item id="42009" name="Decrease Line Indent"/>
-                    <Item id="42010" name="Duplicate Current Line"/>
-                    <Item id="42012" name="Split Lines"/>
-                    <Item id="42013" name="Join Lines"/>
-                    <Item id="42014" name="Move Up Current Line"/>   
-                    <Item id="42015" name="Move Down Current Line"/>   
-                    <Item id="42016" name="UPPERCASE"/>
-                    <Item id="42017" name="lowercase"/>
-                    <Item id="42018" name="&amp;Start Recording"/>
-                    <Item id="42019" name="&amp;Stop Recording"/>
-                    <Item id="42021" name="&amp;Playback"/>
-                    <Item id="42022" name="Toggle Block Comment"/>
-                    <Item id="42023" name="Stream Comment"/>
-                    <Item id="42042" name="Trim Leading Space"/>
-                    <Item id="42043" name="Trim Leading and Trailing Space"/>
-                    <Item id="42044" name="EOL to Space"/>
-                    <Item id="42045" name="Remove Unnecessary Blank and EOL"/>
-                    <Item id="42046" name="TAB to Space"/>
-                    <Item id="42047" name="Space to TAB"/>
-                    <Item id="42024" name="Trim Trailing Space"/>
-                    <Item id="42025" name="Save Currently Recorded Macro"/>
-                    <Item id="42026" name="Text Direction RTL"/>
-                    <Item id="42027" name="Text Direction LTR"/>
-                    <Item id="42028" name="Set Read-Only"/>
-                    <Item id="42029" name="Current File Path to Clipboard"/>
-                    <Item id="42030" name="Current Filename to Clipboard"/>
-                    <Item id="42031" name="Current Dir. Path to Clipboard"/>
-                    <Item id="42032" name="Run a Macro Multiple Times..."/>
-                    <Item id="42033" name="Clear Read-Only Flag"/>
-                    <Item id="42035" name="Block Comment"/>
-                    <Item id="42036" name="Block Uncomment"/>
-                    
-                    <Item id="43001" name="&amp;Find..."/>
-                    <Item id="43002" name="Find &amp;Next"/>
-                    <Item id="43003" name="Replace..."/>
-                    <Item id="43004" name="Go to..."/>
-                    <Item id="43005" name="Toggle Bookmark"/>
-                    <Item id="43006" name="Next Bookmark"/>
-                    <Item id="43007" name="Previous Bookmark"/>
-                    <Item id="43008" name="Clear All Bookmarks"/>
-                    <Item id="43009" name="Go to Matching Brace"/>
-                    <Item id="43010" name="Find Previous"/>
-                    <Item id="43011" name="&amp;Incremental Search"/>
-                    <Item id="43013" name="Find in Files"/>
-                    <Item id="43014" name="Find (Volatile) Next"/>
-                    <Item id="43015" name="Find (Volatile) Previous"/>
-                    <Item id="43016" name="Mark All"/>
-                    <Item id="43017" name="Unmark All"/>
-                    <Item id="43018" name="Cut Bookmarked Lines"/>
-                    <Item id="43019" name="Copy Bookmarked Lines"/>
-                    <Item id="43020" name="Paste to (Replace) Bookmarked Lines"/>
-                    <Item id="43021" name="Delete Bookmarked Lines"/>
-                    <Item id="43022" name="Using 1st Style"/>
-                    <Item id="43023" name="Clear 1st Style"/>
-                    <Item id="43024" name="Using 2nd Style"/>
-                    <Item id="43025" name="Clear 2nd Style"/>
-                    <Item id="43026" name="Using 3rd Style"/>
-                    <Item id="43027" name="Clear 3rd Style"/>
-                    <Item id="43028" name="Using 4th Style"/>
-                    <Item id="43029" name="Clear 4th Style"/>
-                    <Item id="43030" name="Using 5th Style"/>
-                    <Item id="43031" name="Clear 5th Style"/>
-                    <Item id="43032" name="Clear All Styles"/>
-                    <Item id="43033" name="1st style"/>
-                    <Item id="43034" name="2nd style"/>
-                    <Item id="43035" name="3rd style"/>
-                    <Item id="43036" name="4th style"/>
-                    <Item id="43037" name="5th style"/>
-                    <Item id="43038" name="Find style"/>
-                    <Item id="43039" name="1st style"/>
-                    <Item id="43040" name="2nd style"/>
-                    <Item id="43041" name="3rd style"/>
-                    <Item id="43042" name="4th style"/>
-                    <Item id="43043" name="5th style"/>
-                    <Item id="43044" name="Find style"/>
-                    <Item id="43045" name="Search Results Window"/>
-                    <Item id="43046" name="Next Search Result"/>
-                    <Item id="43047" name="Previous Search Result"/>
-                    <Item id="43048" name="Select and Find Next"/>
-                    <Item id="43049" name="Select and Find Previous"/>
-                    <Item id="43050" name="Inverse Bookmark"/>
-                    <Item id="44009" name="Post-It"/>
-                    <Item id="44010" name="Fold All"/>
-                    <Item id="44011" name="User-Defined Dialogue..."/>
-                    <Item id="44019" name="Show All Characters"/>
-                    <Item id="44020" name="Show Indent Guide"/>
-                    <Item id="44022" name="Wrap"/>
-                    <Item id="44023" name="Zoom &amp;In Ctrl+Mouse Wheel Up"/>
-                    <Item id="44024" name="Zoom &amp;Out    Ctrl+Mouse Wheel Down"/>
-                    <Item id="44025" name="Show White Space and TAB"/>
-                    <Item id="44026" name="Show End of Line"/>
-                    <Item id="44029" name="Unfold All"/>
-                    <Item id="44030" name="Collapse Current Level"/>
-                    <Item id="44031" name="Uncollapse Current Level"/>
-                    <Item id="44032" name="Toggle Full Screen Mode"/>
-                    <Item id="44033" name="Restore Default Zoom"/>
-                    <Item id="44034" name="Always on Top"/>
-                    <Item id="44049" name="Summary..."/>
-                    <Item id="44035" name="Synchronise Vertical Scrolling"/>
-                    <Item id="44036" name="Synchronise Horizontal Scrolling"/>
-                    <Item id="44041" name="Show Wrap Symbol"/>
-                    <Item id="44072" name="Focus on Another View"/>
-                    <Item id="44081" name="Project Panel 1"/>
-                    <Item id="44082" name="Project Panel 2"/>
-                    <Item id="44083" name="Project Panel 3"/>
-                    <Item id="45001" name="Convert to Windows Format"/>
-                    <Item id="45002" name="Convert to UNIX Format"/>
-                    <Item id="45003" name="Convert to MAC Format"/>
-                    <Item id="45004" name="Encode in ANSI"/>
-                    <Item id="45005" name="Encode in UTF-8"/>
-                    <Item id="45006" name="Encode in UCS-2 Big Endian"/>
-                    <Item id="45007" name="Encode in UCS-2 Little Endian"/>
-                    <Item id="45008" name="Encode in UTF-8 without BOM"/>
-                    <Item id="45009" name="Convert to ANSI"/>
-                    <Item id="45010" name="Convert to UTF-8 without BOM"/>
-                    <Item id="45011" name="Convert to UTF-8"/>
-                    <Item id="45012" name="Convert to UCS-2 Big Endian"/>
-                    <Item id="45013" name="Convert to UCS-2 Little Endian"/>
-
-                    <Item id="10001" name="Move to Other View"/>
-                    <Item id="10002" name="Clone to Other View"/>
-                    <Item id="10003" name="Move to New Instance"/>
-                    <Item id="10004" name="Open in New Instance"/>
-
-                    <Item id="46001" name="Style Configurator..."/>
-                    <Item id="46080" name="User-Defined"/>
-                    <Item id="47000" name="About Notepad++..."/>
-                    <Item id="47001" name="Notepad++ Home"/>
-                    <Item id="47002" name="Notepad++ Project Page"/>
-                    <Item id="47003" name="Online Documentation"/>
-                    <Item id="47004" name="Forum"/>
-                    <Item id="47005" name="Get More Plugins"/>
-                    <Item id="47006" name="Update Notepad++"/>
-                    <Item id="47008" name="Help Contents"/>
-                    <Item id="48005" name="Import Plugin(s) ..."/>
-                    <Item id="48006" name="Import Theme(s) ..."/>
-                    <Item id="48009" name="Shortcut Mapper..."/>
-                    <Item id="48011" name="Preferences..."/>
-                    <Item id="49000" name="&amp;Run..."/>
-
-                    <Item id="50000" name="Function Completion"/>
-                    <Item id="50001" name="Word Completion"/>
-                    <Item id="50002" name="Function Parameters Hint"/>
-                    <Item id="42034" name="Column Editor..."/>
-                    <Item id="44042" name="Hide Lines"/>
-                    <Item id="42040" name="Open All Recent Files"/>
-                    <Item id="42041" name="Empty Recent Files List"/>
-                    <Item id="48016" name="Modify Shortcut/Delete Macro..."/>
-                    <Item id="48017" name="Modify Shortcut/Delete Command..."/>
-                    <Item id="48018" name="Edit Popup ContextMenu"/>
-                </Commands>
-            </Main>
-            <Splitter>
-            </Splitter>
-            <TabBar>
-                    <Item CMID="0" name="Close"/>
-                    <Item CMID="1" name="Close All BUT This"/>
-                    <Item CMID="2" name="Save"/>
-                    <Item CMID="3" name="Save As..."/>
-                    <Item CMID="4" name="Print"/>
-                    <Item CMID="5" name="Move to Other View"/>
-                    <Item CMID="6" name="Clone to Other View"/>
-                    <Item CMID="7" name="Full File Path to Clipboard"/>
-                    <Item CMID="8" name="Filename to Clipboard"/>
-                    <Item CMID="9" name="Current Dir. Path to Clipboard"/>
-                    <Item CMID="10" name="Rename"/>
-                    <Item CMID="11" name="Delete"/>
-                    <Item CMID="12" name="Read-Only"/>
-                    <Item CMID="13" name="Clear Read-Only Flag"/>
-                    <Item CMID="14" name="Move to New Instance"/>
-                    <Item CMID="15" name="Open in New Instance"/>
-                    <Item CMID="16" name="Reload"/>
-            </TabBar>
-        </Menu>
-        
-        <Dialog>
-            <Find title="" titleFind="Find" titleReplace="Replace" titleFindInFiles="Find in Files" titleMark="Mark">
-                <Item id="1"    name="Find Next"/>
-                <Item id="2"    name="Close"/>
-                <Item id="1620" name="Find what:"/>
-                <Item id="1603" name="Match &amp;whole word only"/>
-                <Item id="1604" name="Match &amp;case"/>
-                <Item id="1605" name="Regular &amp;expression"/>
-                <Item id="1606" name="Wrap aroun&amp;d"/>
-                <Item id="1612" name="&amp;Up"/>
-                <Item id="1613" name="&amp;Down"/>
-                <Item id="1614" name="Count"/>
-                <Item id="1615" name="Find All"/>
-                <Item id="1616" name="Mark line"/>
-                <Item id="1617" name="Style found token"/>
-                <Item id="1618" name="Purge for each search"/>
-                <Item id="1621" name="Direction"/>
-                <Item id="1611" name="Re&amp;place with:"/>
-                <Item id="1608" name="&amp;Replace"/>
-                <Item id="1609" name="Replace &amp;All"/>
-                <Item id="1623" name="Transparency"/>
-                <Item id="1687" name="On losing focus"/>
-                <Item id="1688" name="Always"/>
-                <Item id="1632" name="In selection"/>
-                <Item id="1633" name="Clear"/>
-                <Item id="1635" name="Replace All in All Opened Documents"/>
-                <Item id="1636" name="Find All in All Opened Documents"/>
-                <Item id="1637" name="Find in Files"/>
-                <Item id="1654" name="Filters:"/>
-                <Item id="1655" name="Directory:"/>
-                <Item id="1656" name="Find All"/>
-                <Item id="1658" name="In all sub-folders"/>
-                <Item id="1659" name="In hidden folders"/>
-                <Item id="1624" name="Search mode"/>
-                <Item id="1625" name="Normal"/>
-                <Item id="1626" name="Extended (\n, \r, \t, \0, \x...)"/>
-                <Item id="1660" name="Replace in Files"/>
-                <Item id="1661" name="Follow current doc."/>
-                <Item id="1641" name="Find All in Current Document"/>
-                <Item id="1686" name="Transparency"/>
-            </Find>
-            <GoToLine title="Go to...">
-                <Item id="2007" name="Line"/>
-                <Item id="2008" name="Offset"/>
-                <Item id="1"    name="&amp;Go"/>
-                <Item id="2"    name="I'm going nowhere"/>
-                <Item id="2004" name="You are here:"/>
-                <Item id="2005" name="You want to go to:"/>
-                <Item id="2006" name="You can't go further than:"/>
-            </GoToLine>
-
-            <Run title="Run...">
-                <Item id="1903" name="The Program to Run"/>
-                <Item id="1"    name="Run"/>
-                <Item id="2"    name="Cancel"/>
-                <Item id="1904" name="Save..."/>
-            </Run>
-            
-            <StyleConfig title="Style Configurator">
-                <Item id="2"    name="Cancel"/>
-                <Item id="2301" name="Save &amp;&amp; Close"/>
-                <Item id="2303" name="Transparency"/>       
-                <Item id="2306" name="Select theme: "/>
-                <SubDialog>
-                    <Item id="2204" name="Bold"/>
-                    <Item id="2205" name="Italic"/>
-                    <Item id="2206" name="Foreground colour"/>
-                    <Item id="2207" name="Background colour"/>
-                    <Item id="2208" name="Font name:"/>
-                    <Item id="2209" name="Font size:"/>
-                    <Item id="2212" name="Colour Style"/>
-                    <Item id="2213" name="Font Style"/>
-                    <Item id="2214" name="Default ext.:"/>
-                    <Item id="2216" name="User ext.:"/>
-                    <Item id="2218" name="Underline"/>
-                    <Item id="2219" name="Default keywords"/>
-                    <Item id="2221" name="User-defined keywords"/>
-                    <Item id="2225" name="Language:"/>
-                    <Item id="2226" name="Enable global foreground colour"/>
-                    <Item id="2227" name="Enable global background colour"/>
-                    <Item id="2228" name="Enable global font"/>
-                    <Item id="2229" name="Enable global font size"/>
-                    <Item id="2230" name="Enable global bold font style"/>
-                    <Item id="2231" name="Enable global italic font style"/>
-                    <Item id="2232" name="Enable global underline font style"/>
-                </SubDialog>                
-                
-            </StyleConfig>
-            
-            <UserDefine title="User-Defined">
-                <Item id="20002" name="Rename"/>
-                <Item id="20003" name="Create New..."/>
-                <Item id="20004" name="Remove"/>
-                <Item id="20005" name="Save As..."/>
-                <Item id="20007" name="User language: "/>
-                <Item id="20009" name="Ext.:"/>
-                <Item id="20012" name="Ignore case"/>
-                <Item id="20011" name="Transparency"/>
-                <Item id="20015" name="Import..."/>
-                <Item id="20016" name="Export..."/>
-                <Item id="0"     name="Colour Style"/>
-                <Item id="1"     name="Foreground colour"/>
-                <Item id="2"     name="Background colour"/>
-                <Item id="3"     name="Font Style"/>
-                <Item id="4"     name="Font name:"/>
-                <Item id="5"     name="Font size:"/>
-                <Item id="6"     name="Bold"/>
-                <Item id="7"     name="Italic"/>
-                <Item id="8"     name="Underline"/>
+				<StylerDialog title="Styler Dialog">
+                    <Item id="25030" name="Font options:"/>
+					<Item id="25006" name="Foreground colour"/>
+					<Item id="25007" name="Background colour"/>
+					<Item id="25031" name="Name:"/>
+					<Item id="25032" name="Size:"/>
+					<Item id="25001" name="Bold"/>
+					<Item id="25002" name="Italic"/>
+					<Item id="25003" name="Underline"/>
+					<Item id="25029" name="Nesting:"/>
+					<Item id="25008" name="Delimiter 1"/>
+					<Item id="25009" name="Delimiter 2"/>
+					<Item id="25010" name="Delimiter 3"/>
+					<Item id="25011" name="Delimiter 4"/>
+					<Item id="25012" name="Delimiter 5"/>
+					<Item id="25013" name="Delimiter 6"/>
+					<Item id="25014" name="Delimiter 7"/>
+					<Item id="25015" name="Delimiter 8"/>
+					<Item id="25018" name="Keyword 1"/>
+					<Item id="25019" name="Keyword 2"/>
+					<Item id="25020" name="Keyword 3"/>
+					<Item id="25021" name="Keyword 4"/>
+					<Item id="25022" name="Keyword 5"/>
+					<Item id="25023" name="Keyword 6"/>
+					<Item id="25024" name="Keyword 7"/>
+					<Item id="25025" name="Keyword 8"/>
+					<Item id="25016" name="Comment"/>
+					<Item id="25017" name="Comment line"/>
+					<Item id="25026" name="Operator 1"/>
+					<Item id="25027" name="Operator 2"/>
+					<Item id="25028" name="Numbers"/>
+                </StylerDialog>
                 <Folder title="Folder &amp;&amp; Default">
                     <Item id="21101" name="Default Style Settings"/>
                     <Item id="21201" name="Folder Open Keywords Settings"/>

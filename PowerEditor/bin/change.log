@@ -1,19 +1,8 @@
-Notepad++ v6.1.8 fixed bug (from v6.1.7):
+Notepad++ v6.2.2 fixed bugs and added features:
 
-1.  Fix a regression of wrong behaviour while save an empty file.
-
-
-Notepad++ v6.1.7 new features and fixed bugs:
-
-1.  Fix config.xml zero length bug after Windows' update (Notepad++ is forced to quit).
-2.  Fix a crash issue on save as command.
-3.  Fix saving file fails silently bug.
-4.  Fix a buffer overflow bug.
-5.  Add case sensitive option for smart highlighting feature.
-6.  Enhance the localization system.
-7.  Fix a behavior issue on Windows shutdown.
-8.  Enhance comment operations: add stream Uncomment command and cross-calling of block feature.
-9.  Enhance TAB to space and space to TAB commands.
+1.  Fix url link style problem in php document.
+2.  Add selected line count display on the status bar.
+3.  Add the capacity to treat path like "\test\test.txt".
 
 
 Included plugins:

@@ -220,6 +220,67 @@ MenuPosition menuPos[] = {
 	{-1,  -1,  -1,    ""} // End of array
 };
 
+MenuPosition menuPos[] = {
+//==============================================
+//  {L0,  L1,  L2,    id},
+//==============================================
+	{ 0,  -1,  -1,    "file"},
+	{ 1,  -1,  -1,    "edit"},
+	{ 2,  -1,  -1,    "search"},
+	{ 3,  -1,  -1,    "view"},
+	{ 4,  -1,  -1,    "encoding"},
+	{ 5,  -1,  -1,    "language"},
+	{ 6,  -1,  -1,    "settings"},
+	{ 7,  -1,  -1,    "macro"},
+	{ 8,  -1,  -1,    "run"},
+
+	{ 0,  19,  -1,    "file-recentFiles"},
+
+	{ 1,   9,  -1,    "edit-copyToClipboard"},
+	{ 1,  10,  -1,    "edit-indent"},
+	{ 1,  11,  -1,    "edit-convertCaseTo"},
+	{ 1,  12,  -1,    "edit-lineOperations"},
+	{ 1,  13,  -1,    "edit-comment"},
+	{ 1,  14,  -1,    "edit-autoCompletion"},
+	{ 1,  15,  -1,    "edit-eolConversion"},
+	{ 1,  16,  -1,    "edit-blankOperations"},
+	{ 1,  17,  -1,    "edit-pasteSpecial"},
+	
+	{ 2,  16,  -1,    "search-markAll"},
+	{ 2,  17,  -1,    "search-unmarkAll"},
+	{ 2,  18,  -1,    "search-jumpUp"},
+	{ 2,  19,  -1,    "search-jumpDown"},
+	{ 2,  21,  -1,    "search-bookmark"},
+	
+	{ 3,   4,  -1,    "view-showSymbol"},
+	{ 3,   5,  -1,    "view-zoom"},
+	{ 3,   6,  -1,    "view-moveCloneDocument"},
+	{ 3,  15,  -1,    "view-collapseLevel"},
+	{ 3,  16,  -1,    "view-uncollapseLevel"},
+	{ 3,  20,  -1,    "view-project"},
+	
+	{ 4,   5,  -1,    "encoding-characterSets"},
+	{ 4,   5,   0,    "encoding-arabic"},
+	{ 4,   5,   1,    "encoding-baltic"},
+	{ 4,   5,   2,    "encoding-celtic"},
+	{ 4,   5,   3,    "encoding-cyrillic"},
+	{ 4,   5,   4,    "encoding-centralEuropean"},
+	{ 4,   5,   5,    "encoding-chinese"},
+	{ 4,   5,   6,    "encoding-easternEuropean"},
+	{ 4,   5,   7,    "encoding-greek"},
+	{ 4,   5,   8,    "encoding-hebrew"},
+	{ 4,   5,   9,    "encoding-japanese"},
+	{ 4,   5,  10,    "encoding-korean"},
+	{ 4,   5,  11,    "encoding-northEuropean"},
+	{ 4,   5,  12,    "encoding-thai"},
+	{ 4,   5,  13,    "encoding-turkish"},
+	{ 4,   5,  14,    "encoding-westernEuropean"},
+	{ 4,   5,  15,    "encoding-vietnamese"},
+
+	{ 6,   4,  -1,    "settings-import"},
+	{-1,  -1,  -1,    ""} // End of array
+};
+
 MenuPosition & getMenuPosition(const char *id) {
 
 	int nbSubMenuPos = sizeof(menuPos)/sizeof(MenuPosition);
@@ -585,7 +646,7 @@ void NativeLangSpeaker::changeStyleCtrlsLang(HWND hDlg, int *idArray, const char
 	}
 }
 
-void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
+void NativeLangSpeaker::changeUserDefineLangPopupDlg(HWND hDlg)
 {
 	if (!_nativeLangA) return;
 
@@ -595,7 +656,47 @@ void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
 	userDefineDlgNode = userDefineDlgNode->FirstChild("UserDefine");
 	if (!userDefineDlgNode) return;
 
-	//UserDefineDialog *userDefineDlg = _pEditView->getUserDefineDlg();
+	WcharMbcsConvertor *wmc = WcharMbcsConvertor::getInstance();
+
+	TiXmlNodeA *stylerDialogNode = userDefineDlgNode->FirstChild("StylerDialog");
+	if (!stylerDialogNode) return;
+
+	const char *titre = (stylerDialogNode->ToElement())->Attribute("title");
+	if (titre &&titre[0])
+	{
+		const wchar_t *nameW = wmc->char2wchar(titre, _nativeLangEncoding);
+		::SetWindowText(hDlg, nameW);
+	}
+	for (TiXmlNodeA *childNode = stylerDialogNode->FirstChildElement("Item");
+		childNode ;
+		childNode = childNode->NextSibling("Item") )
+	{
+		TiXmlElementA *element = childNode->ToElement();
+		int id;
+		const char *sentinel = element->Attribute("id", &id);
+		const char *name = element->Attribute("name");
+		if (sentinel && (name && name[0]))
+		{
+			HWND hItem = ::GetDlgItem(hDlg, id);
+			if (hItem)
+			{
+				const wchar_t *nameW = wmc->char2wchar(name, _nativeLangEncoding);
+				::SetWindowText(hItem, nameW);
+
+			}
+		}
+	}
+}
+
+void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
+{
+	if (!_nativeLangA) return;
+
+	TiXmlNodeA *userDefineDlgNode = _nativeLangA->FirstChild("Dialog");
+	if (!userDefineDlgNode) return;	
+	
+	userDefineDlgNode = userDefineDlgNode->FirstChild("UserDefine");
+	if (!userDefineDlgNode) return;
 
 	HWND hDlg = userDefineDlg->getHSelf();
 #ifdef UNICODE
@@ -613,7 +714,7 @@ void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
 		::SetWindowText(hDlg, titre);
 #endif
 	}
-	// pour ses propres controls 	
+	// for each control
 	const int nbControl = 9;
 	const char *translatedText[nbControl];
 	for (int i = 0 ; i < nbControl ; i++)
@@ -654,14 +755,13 @@ void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
 			}
 		}
 	}
-
 	const int nbDlg = 4;
 	HWND hDlgArrary[nbDlg];
 	hDlgArrary[0] = userDefineDlg->getFolderHandle();
 	hDlgArrary[1] = userDefineDlg->getKeywordsHandle();
 	hDlgArrary[2] = userDefineDlg->getCommentHandle();
 	hDlgArrary[3] = userDefineDlg->getSymbolHandle();
-	
+/*	
 	const int nbGrpFolder = 3;
 	int folderID[nbGrpFolder][nbControl] = {
 		//{IDC_DEFAULT_COLORSTYLEGROUP_STATIC, IDC_DEFAULT_FG_STATIC, IDC_DEFAULT_BG_STATIC, IDC_DEFAULT_FONTSTYLEGROUP_STATIC, IDC_DEFAULT_FONTNAME_STATIC, IDC_DEFAULT_FONTSIZE_STATIC, IDC_DEFAULT_BOLD_CHECK, IDC_DEFAULT_ITALIC_CHECK, IDC_DEFAULT_UNDERLINE_CHECK},\
@@ -693,11 +793,12 @@ void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
 	};
 
 	int nbGpArray[nbDlg] = {nbGrpFolder, nbGrpKeywords, nbGrpComment, nbGrpOperator};
+*/
 	const char nodeNameArray[nbDlg][16] = {"Folder", "Keywords", "Comment", "Operator"};
 
 	for (int i = 0 ; i < nbDlg ; i++)
 	{
-	
+/*
 		for (int j = 0 ; j < nbGpArray[i] ; j++)
 		{
 			switch (i)
@@ -708,6 +809,7 @@ void NativeLangSpeaker::changeUserDefineLang(UserDefineDialog *userDefineDlg)
 				case 3 : changeStyleCtrlsLang(hDlgArrary[i], operatorID[j], translatedText); break;
 			}
 		}
+*/
 		TiXmlNodeA *node = userDefineDlgNode->FirstChild(nodeNameArray[i]);
 		
 		if (node) 
