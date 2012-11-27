@@ -1709,15 +1709,7 @@ void ScintillaEditView::bufferUpdated(Buffer * buffer, int mask)
 
 void ScintillaEditView::collapse(int level2Collapse, bool mode)
 {
-	// The following code is needed :
-	int startPos = 0, endPos = -1;
-	getVisibleStartAndEndPosition(&startPos, &endPos);
-	execute(SCI_COLOURISE, startPos, endPos);
-	// according to the Scitilla document :
-	//    This requests the current lexer or the container (if the lexer is set to SCLEX_CONTAINER)
-	//    to style the document between startPos and endPos. If endPos is -1, the document is styled from startPos to the end.
-	//    If the "fold" property is set to "1" and your lexer or container supports folding, fold levels are also set.
-	//    This message causes a redraw.
+	execute(SCI_COLOURISE, 0, -1);
 
 	int maxLine = execute(SCI_GETLINECOUNT);
 
@@ -1746,15 +1738,11 @@ void ScintillaEditView::foldCurrentPos(bool mode)
 
 void ScintillaEditView::fold(int line, bool mode)
 {
-	// The following code is needed :
-	int startPos = 0, endPos = -1;
-	getVisibleStartAndEndPosition(&startPos, &endPos);
-	execute(SCI_COLOURISE, startPos, endPos);
-	// according to the Scitilla document :
-	//    This requests the current lexer or the container (if the lexer is set to SCLEX_CONTAINER)
-	//    to style the document between startPos and endPos. If endPos is -1, the document is styled from startPos to the end.
-	//    If the "fold" property is set to "1" and your lexer or container supports folding, fold levels are also set.
-	//    This message causes a redraw.
+    int endStyled = execute(SCI_GETENDSTYLED);
+    int len = execute(SCI_GETTEXTLENGTH);
+
+    if (endStyled < len)
+        execute(SCI_COLOURISE, 0, -1);
 
 	int headerLine;
 	int level = execute(SCI_GETFOLDLEVEL, line);
@@ -1785,14 +1773,6 @@ void ScintillaEditView::fold(int line, bool mode)
 
 void ScintillaEditView::foldAll(bool mode)
 {
-	// The following code is needed :
-	//execute(SCI_COLOURISE, 0, -1);
-	// according to the Scitilla document :
-	//    This requests the current lexer or the container (if the lexer is set to SCLEX_CONTAINER)
-	//    to style the document between startPos and endPos. If endPos is -1, the document is styled from startPos to the end.
-	//    If the "fold" property is set to "1" and your lexer or container supports folding, fold levels are also set.
-	//    This message causes a redraw.
-
 	int maxLine = execute(SCI_GETLINECOUNT);
 
 	for (int line = 0; line < maxLine; line++) 
