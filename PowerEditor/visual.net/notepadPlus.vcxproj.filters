@@ -314,15 +314,6 @@
     <None Include="..\src\icons\cut_on.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\default_close.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\default_new.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\default_open.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\src\icons\delete.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -363,21 +354,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\src\icons\findResult.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\hot_close.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\hot_new.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\hot_open.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\icons\icon10.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\src\icons\imp_off.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\src\icons\imprim_off.ico">
@@ -593,9 +569,6 @@
     <None Include="..\src\icons\unsaved.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\cursors\up.cur">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\src\icons\userDefineDlg_off.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -629,7 +602,6 @@
     <None Include="..\src\icons\zoomOut_on.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\ScitillaComponent\resource" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\WinControls\AnsiCharPanel\ansiCharPanel.rc">
@@ -764,9 +736,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\WinControls\DocumentMap\documentMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\WinControls\DocumentMap\documentMapl_rc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\EncodingMapper.h">

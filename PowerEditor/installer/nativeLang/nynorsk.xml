@@ -8,6 +8,256 @@
         <Menu>
             <Main>
                 <!-- Main Menu Entries -->
+                <Entries>
+                    <Item menuId="file" name="&amp;Fil"/>
+                    <Item menuId="edit" name="&amp;Rediger"/>
+                    <Item menuId="search" name="&amp;Søk"/>
+                    <Item menuId="view" name="&amp;Vis"/>
+                    <Item menuId="encoding" name="&amp;Teiknkoding"/>
+                    <Item menuId="language" name="S&amp;pråk"/>
+                    <Item menuId="settings" name="&amp;Innstillingar"/>
+                    <Item menuId="macro" name="Makro"/>
+                    <Item menuId="run" name="Køyr"/>
+                    <Item idName="Plugins" name="Programtillegg"/>
+                    <Item idName="Window" name="Vindauge"/>
+                </Entries>
+             
+                <!-- Sub Menu Entries -->
+                <SubEntries>
+                    <Item subMenuId="edit-copyToClipboard"  name="Kopier til utklippstavla"/>
+                    <Item subMenuId="edit-indent" name="Innnrykk"/>
+                    <Item subMenuId="edit-convertCaseTo" name="Endre bokstavane til"/>
+                    <Item subMenuId="edit-lineOperations" name="Rediger linjer"/>
+                    <Item subMenuId="edit-comment" name="Legg til/fjern kommentar"/>
+                    <Item subMenuId="edit-autoCompletion" name="Autofullfør"/>
+                    <Item subMenuId="edit-eolConversion" name="Endre linjeskift"/>
+                    <Item subMenuId="edit-blankOperations" name="Rediger tomrom"/>
+                    <Item subMenuId="edit-pasteSpecial" name="Avansert klipp-og-lim"/>
+                    <Item subMenuId="search-markAll" name="Merk alt"/>
+                    <Item subMenuId="search-unmarkAll" name="Fjern all merking"/>
+                    <Item subMenuId="search-jumpUp" name="Gå opp"/>
+                    <Item subMenuId="search-jumpDown" name="Gå ned"/>
+                    <Item subMenuId="search-bookmark" name="Bokmerke"/>
+                    <Item subMenuId="view-showSymbol"  name="Vis symbol"/>
+                    <Item subMenuId="view-zoom"  name="Skalering"/>
+                    <Item subMenuId="view-moveCloneDocument"  name="Flytt/kopier aktivt dokument"/>
+                    <Item subMenuId="view-collapseLevel" name="Skjul nivå"/>
+                    <Item subMenuId="view-uncollapseLevel" name="Vis nivå"/>
+                    <Item subMenuId="view-project" name="Prosjekt"/>
+                    <Item subMenuId="encoding-characterSets"  name="Teiknsett"/>
+                    <Item subMenuId="encoding-arabic"  name="Arabisk"/>
+                    <Item subMenuId="encoding-baltic"  name="Baltisk"/>
+                    <Item subMenuId="encoding-celtic"  name="Keltisk"/>
+                    <Item subMenuId="encoding-cyrillic"  name="Kyrillisk"/>
+                    <Item subMenuId="encoding-centralEuropean"  name="Sentral-europeisk"/>
+                    <Item subMenuId="encoding-chinese"  name="Kinesisk"/>
+                    <Item subMenuId="encoding-easternEuropean"  name="Aust-europeisk"/>
+                    <Item subMenuId="encoding-greek"  name="Gresk"/>
+                    <Item subMenuId="encoding-hebrew"  name="Hebraisk"/>
+                    <Item subMenuId="encoding-japanese"  name="Japansk"/>
+                    <Item subMenuId="encoding-korean" name="Koreansk"/>
+                    <Item subMenuId="encoding-northEuropean" name="Nord-europeisk"/>
+                    <Item subMenuId="encoding-thai" name="Thai"/>
+                    <Item subMenuId="encoding-turkish" name="Tyrkisk"/>
+                    <Item subMenuId="encoding-westernEuropean" name="Vest-europeisk"/>
+                    <Item subMenuId="encoding-vietnamese" name="Vietnamesisk"/>
+                    <Item subMenuId="settings-import"  name="Import"/>
+                </SubEntries>
+                
+                <!-- all menu item -->
+                <Commands>
+                    <Item id="41001" name="&amp;Ny"/>
+                    <Item id="41002" name="&amp;Opne"/>
+                    <Item id="41003" name="Lukk"/>
+                    <Item id="41004" name="L&amp;ukk alle"/>
+                    <Item id="41005" name="Lukk alle utanom aktivt dokument"/>
+                    <Item id="41006" name="&amp;Lagre"/>
+                    <Item id="41007" name="Lagr&amp;e alle"/>
+                    <Item id="41008" name="Lagre &amp;som..."/>
+                    <Item id="41010" name="Skriv ut..."/>
+                    <Item id="1001"  name="Skriv ut direkte"/>
+                    <Item id="41011" name="A&amp;vslutt"/>
+                    <Item id="41012" name="Opne økt..."/>
+                    <Item id="41013" name="Lagre økt..."/>
+                    <Item id="41014" name="Last inn att frå disken"/>
+                    <Item id="41015" name="Lagre kopi som..."/>
+                    <Item id="41016" name="Slett frå disken"/>
+                    <Item id="41017" name="Nytt namn..."/>
+                    
+                    <Item id="42001" name="Kl&amp;ipp ut"/>
+                    <Item id="42002" name="&amp;Kopier"/>
+                    <Item id="42003" name="&amp;Angre"/>
+                    <Item id="42004" name="&amp;Gjer om"/>
+                    <Item id="42005" name="&amp;Lim inn"/>
+                    <Item id="42006" name="&amp;Slett"/>
+                    <Item id="42007" name="Merk a&amp;lt"/>
+                    <Item id="42008" name="Lengre innrykk"/>
+                    <Item id="42009" name="Kortare innrykk"/>
+                    <Item id="42010" name="Lag kopi av den aktive linja"/>
+                    <Item id="42012" name="Del opp linjer"/>
+                    <Item id="42013" name="Slå saman linjer"/>
+                    <Item id="42014" name="Flytt den aktive linja opp"/>   
+                    <Item id="42015" name="Flytt den aktive linja ned"/>   
+                    <Item id="42016" name="STORE"/>
+                    <Item id="42017" name="småe"/>
+                    <Item id="42018" name="&amp;Registrer"/>
+                    <Item id="42019" name="Avslutt &amp;registrering"/>
+                    <Item id="42021" name="&amp;Køyr"/>
+                    <Item id="42022" name="Bruk/ikkje bruk blokkommentarar"/>
+                    <Item id="42023" name="Kommentér område"/>
+                    <Item id="42042" name="Fjern mellomrom framom"/>
+                    <Item id="42043" name="Fjern mellomrom framom og bak"/>
+                    <Item id="42044" name="Gjer om linjeskift til mellomrom"/>
+                    <Item id="42045" name="Fjern tomrom og linjeskift som ikkje trengst"/>
+                    <Item id="42046" name="Gjer om tabulatorar til mellomrom"/>
+                    <Item id="42047" name="Gjer om mellomrom til tabulatorar"/>
+					<Item id="42048" name = "Kopier binært innhald"/>
+					<Item id="42049" name = "Klipp ut binært innhald"/>
+					<Item id="42050" name = "Lim inn binært innhald"/>
+					<Item id="42051" name = "Teiknliste"/>
+					<Item id="42052" name = "Utklippstavle"/>
+                    <Item id="42024" name="Fjern mellomrom bak"/>
+                    <Item id="42025" name="Lagre den nye makroen"/>
+                    <Item id="42026" name="Tekstretning høgre-til-venstre"/>
+                    <Item id="42027" name="Tekstretning venstre-til-høgre"/>
+                    <Item id="42028" name="Lås redigering"/>
+                    <Item id="42029" name="Aktivt filnamn med heile stien"/>
+                    <Item id="42030" name="Aktivt filnamn"/>
+                    <Item id="42031" name="Aktiv filsti"/>
+                    <Item id="42032" name="Køyr makro fleire gonger..."/>
+                    <Item id="42033" name="Fjern merke for låsing"/>
+                    <Item id="42035" name="Blokkommentar"/>
+                    <Item id="42036" name="Fjern blokkommentar"/>
+					<Item id="42037" name = "Kolonnemodus..."/>
+					<Item id="42038" name = "Lim inn HTML-innhald"/>
+					<Item id="42039" name = "Lim inn RTF-innhald"/>
+                    
+                    <Item id="43001" name="&amp;Søk..."/>
+                    <Item id="43002" name="Søk etter &amp;neste"/>
+                    <Item id="43003" name="Bytt ut med..."/>
+                    <Item id="43004" name="Gå til..."/>
+                    <Item id="43005" name="Slå bokmerke på/av"/>
+                    <Item id="43006" name="Neste bokmerke"/>
+                    <Item id="43007" name="Førre bokmerke"/>
+                    <Item id="43008" name="Fjern alle bokmerke"/>
+                    <Item id="43009" name="Gå til motsvarande klamme"/>
+                    <Item id="43010" name="Søk etter førre"/>
+                    <Item id="43011" name="Søk &amp;medan du skriv"/>
+                    <Item id="43013" name="Søk i filer"/>
+                    <Item id="43014" name="Søk etter neste (endring)"/>
+                    <Item id="43015" name="Søk etter førre (endring)"/>
+                    <Item id="43016" name="Merk alt"/>
+                    <Item id="43017" name="Fjern all merking"/>
+                    <Item id="43018" name="Klipp ut linjer med bokmerke"/>
+                    <Item id="43019" name="Kopier linjer med bokmerke"/>
+                    <Item id="43020" name="Lim inn og bytt ut linjer med bokmerke"/>
+                    <Item id="43021" name="Slett linjer med bokmerke"/>
+                    <Item id="43022" name="Bruk stil 1"/>
+                    <Item id="43023" name="Fjern stil 1"/>
+                    <Item id="43024" name="Bruk stil 2"/>
+                    <Item id="43025" name="Fjern stil 2"/>
+                    <Item id="43026" name="Bruk stil 3"/>
+                    <Item id="43027" name="Fjern stil 3"/>
+                    <Item id="43028" name="Bruk stil 4"/>
+                    <Item id="43029" name="Fjern stil 4"/>
+                    <Item id="43030" name="Bruk stil 5"/>
+                    <Item id="43031" name="Fjern stil 5"/>
+                    <Item id="43032" name="Fjern alle stilar"/>
+                    <Item id="43033" name="Stil 1"/>
+                    <Item id="43034" name="Stil 2"/>
+                    <Item id="43035" name="Stil 3"/>
+                    <Item id="43036" name="Stil 4"/>
+                    <Item id="43037" name="Stil 5"/>
+                    <Item id="43038" name="Søk etter stil"/>
+                    <Item id="43039" name="Stil 1"/>
+                    <Item id="43040" name="Stil 2"/>
+                    <Item id="43041" name="Stil 3"/>
+                    <Item id="43042" name="Stil 4"/>
+                    <Item id="43043" name="Stil 5"/>
+                    <Item id="43044" name="Søk etter stil"/>
+                    <Item id="43045" name="Vis søkeresultata i vindauge"/>
+                    <Item id="43046" name="Neste søkeresultat"/>
+                    <Item id="43047" name="Førre søkeresultat"/>
+                    <Item id="43048" name="Merk og søk etter neste"/>
+                    <Item id="43049" name="Merk og søk etter førre"/>
+                    <Item id="43050" name="Snu om på bokmerke"/>
+					<Item id="43051" name="Fjern umerka &amp;linjer"/>
+					<Item id="43052" name="Søk etter teikn..."/>
+                    <Item id="44009" name="Skjul meny- og statuslinjer"/>
+                    <Item id="44010" name="Skjul alle nivå"/>
+                    <Item id="44011" name="Tilpass..."/>
+                    <Item id="44019" name="Vis alle teikn"/>
+                    <Item id="44020" name="Vis innrykk med strekar"/>
+                    <Item id="44022" name="Bryt tekst"/>
+                    <Item id="44023" name="Zoom &amp;Inn           Ctrl+Rull opp"/>
+                    <Item id="44024" name="Zoom &amp;Ut            Ctrl+Rull ned"/>
+                    <Item id="44025" name="Vis tomrom og tabulatorar"/>
+                    <Item id="44026" name="Vis linjeskift"/>
+                    <Item id="44029" name="Vis alle nivå"/>
+                    <Item id="44030" name="Skjul aktivt nivå"/>
+                    <Item id="44031" name="Vis aktivt nivå"/>
+                    <Item id="44032" name="Fullskjerm"/>
+                    <Item id="44033" name="Standard"/>
+                    <Item id="44034" name="Vis alltid øvst"/>
+                    <Item id="44049" name="Eigenskapar..."/>
+                    <Item id="44035" name="Synkroniser loddrett rulling"/>
+                    <Item id="44036" name="Synkroniser vassrett rulling"/>
+                    <Item id="44041" name="Vis teikn for linjeskift"/>
+                    <Item id="44072" name="Flytt til anna visning"/>
+					<Item id="44080" name="Dokumentkart"/>
+                    <Item id="44081" name="Prosjektfane 1"/>
+                    <Item id="44082" name="Prosjektfane 2"/>
+                    <Item id="44083" name="Prosjektfane 3"/>
+                    <Item id="45001" name="Gjer om til Windows-format"/>
+                    <Item id="45002" name="Gjer om til UNIX-format"/>
+                    <Item id="45003" name="Gjer om til MAC-format"/>
+                    <Item id="45004" name="ANSI"/>
+                    <Item id="45005" name="UTF-8"/>
+                    <Item id="45006" name="UCS-2 Big Endian"/>
+                    <Item id="45007" name="UCS-2 Little Endian"/>
+                    <Item id="45008" name="UTF-8 utan BOM"/>
+                    <Item id="45009" name="Gjer om til ANSI"/>
+                    <Item id="45010" name="Gjer om til UTF-8 utan BOM"/>
+                    <Item id="45011" name="Gjer om til UTF-8"/>
+                    <Item id="45012" name="Gjer om til UCS-2 Big Endian"/>
+                    <Item id="45013" name="Gjer om til UCS-2 Little Endian"/>
+
+                    <Item id="10001" name="Bytt vindauge"/>
+                    <Item id="10002" name="Kopier til anna vindauge"/>
+                    <Item id="10003" name="Flytt til nytt vindauge"/>
+                    <Item id="10004" name="Opne i nytt vindauge"/>
+
+                    <Item id="46001" name="Stilar..."/>
+                    <Item id="46080" name="Brukardefinert"/>
+                    <Item id="47000" name="Om Notepad++..."/>
+                    <Item id="47001" name="Notepad++ heimeside"/>
+                    <Item id="47002" name="Notepad++ prosjektheimeside"/>
+                    <Item id="47003" name="Hjelp på Internett"/>
+                    <Item id="47004" name="Forum"/>
+                    <Item id="47005" name="Finn fleire programtillegg"/>
+                    <Item id="47006" name="Oppdater Notepad++"/>
+                    <Item id="47008" name="Innhald i hjelp"/>
+                    <Item id="48005" name="Last inn programtillegg ..."/>
+                    <Item id="48006" name="Last inn tema ..."/>
+                    <Item id="48009" name="Tilpass tastatursnarvegar..."/>
+                    <Item id="48011" name="Allment..."/>
+                    <Item id="49000" name="&amp;Køyr..."/>
+
+                    <Item id="50000" name="Fullfør funksjonar"/>
+                    <Item id="50001" name="Fullfør ord"/>
+                    <Item id="50002" name="Gje hint om funksjonsparametera"/>
+                    <Item id="42034" name="Rediger kolonner..."/>
+                    <Item id="44042" name="Vis/skjul linjer"/>
+                    <Item id="42040" name="Opne alle nyleg brukte filer"/>
+                    <Item id="42041" name="Tøm lista over nyleg brukte filer"/>
+                    <Item id="48016" name="Endre snarveg/slett makro..."/>
+                    <Item id="48017" name="Endre snarveg/slett kommando..."/>
+                    <Item id="48018" name="Rediger kontekstmeny"/>
+                </Commands>
+            </Main>
+            <Splitter>
+            </Splitter>
+            <TabBar>
                     <Item CMID="0" name="Lukk"/>
                     <Item CMID="1" name="Lukk alle utanom det aktive dokumentet"/>
                     <Item CMID="2" name="Lagre"/>

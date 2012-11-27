@@ -412,7 +412,7 @@
 				<Item id="2" name="Fundal"/>
 				<Item id="3" name="Font"/>
 				<Item id="4" name="Nume:"/>
-				<Item menuId="language" name="Mãrime:"/>
+				<Item id="5" name="Mãrime:"/>
 				<Item id="6" name="Gros"/>
 				<Item id="7" name="Înclinat"/>
 				<Item id="8" name="Subliniat"/>
