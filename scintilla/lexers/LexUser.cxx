@@ -1581,106 +1581,6 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
         if (sc.More() == false)
             finished = false;   // colorize last word, even if file does not end with whitespace char
 
-        if (foldComments)
-            if (isInComment == false)
-                if (isCommentLine == COMMENTLINE_NO)
-                    if (sc.state != SCE_USER_STYLE_COMMENTLINE)
-                        if (sc.state != SCE_USER_STYLE_IDENTIFIER)
-                            if (sc.state != SCE_USER_STYLE_DEFAULT)
-                                if (!isWhiteSpace(sc.ch))
-                                    isCommentLine = COMMENTLINE_SKIP_TESTING;
-
-        if (foldCompact == true && visibleChars == false && !isWhiteSpace(sc.ch))
-            visibleChars = true;
-
-        if (sc.atLineEnd)
-        {
-            if (foldComments == true)
-            {
-                if (levelCurrent != levelNext)
-                    isCommentLine = COMMENTLINE_SKIP_TESTING;
-
-                if (continueCommentBlock > 0)
-                {
-                    if (continueCommentBlock & CL_PREVPREV)
-                    {
-                        isInCommentBlock = true;
-                        isPrevLineComment = COMMENTLINE_YES;
-
-                        if (!(continueCommentBlock & CL_CURRENT))
-                        {
-                            levelNext++;
-                            levelMinCurrent++;
-                            levelCurrent++;
-                            levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
-                        }
-                    }
-                    else if (continueCommentBlock & CL_PREV)
-                    {
-                        isPrevLineComment = COMMENTLINE_YES;
-                        if (continueCommentBlock & CL_CURRENT)
-                        {
-                            levelMinCurrent--;
-                            levelNext--;
-                            levelCurrent--;
-                            levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
-                        }
-                    }
-                    continueCommentBlock = 0;
-                }
-
-                if (isInCommentBlock && isCommentLine != COMMENTLINE_YES && isPrevLineComment == COMMENTLINE_YES)
-                {
-                    levelNext--;
-                    levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
-                    levelMinCurrent--;
-                    isInCommentBlock = false;
-                }
-
-                if (!isInCommentBlock && isCommentLine == COMMENTLINE_YES && isPrevLineComment == COMMENTLINE_YES)
-                {
-                    levelNext++;
-                    levelPrev = (levelMinCurrent | levelNext << 16) | SC_FOLDLEVELHEADERFLAG | SC_ISCOMMENTLINE;
-                    levelMinCurrent = levelNext;
-                    isInCommentBlock = true;
-                }
-
-                if (levelPrev != 0)
-                {
-                    // foldVector[lineCurrent - 1] = levelPrev;
-                    styler.SetLevel(lineCurrent - 1, levelPrev);
-                    levelPrev = 0;
-                }
-            }
-
-            lev = levelMinCurrent | levelNext << 16;
-            if (foldComments && isCommentLine == COMMENTLINE_YES)
-                lev |= SC_ISCOMMENTLINE;
-            if (visibleChars == false && foldCompact)
-                lev |= SC_FOLDLEVELWHITEFLAG;
-            if (levelMinCurrent < levelNext)
-                lev |= SC_FOLDLEVELHEADERFLAG;
-            // foldVector.push_back(lev);
-            styler.SetLevel(lineCurrent, lev);
-
-            for (int i=0; i<nlCount; ++i)   // multi-line multi-part keyword
-            {
-                // foldVector.push_back(levelNext | levelNext << 16);  // TODO: what about SC_ISCOMMENTLINE?
-                styler.SetLevel(lineCurrent++, levelNext | levelNext << 16);
-            }
-            nlCount = 0;
-
-            lineCurrent++;
-            levelCurrent = levelNext;
-            levelMinCurrent = levelCurrent;
-            visibleChars = false;
-            if (foldComments)
-            {
-                isPrevLineComment = isCommentLine==COMMENTLINE_YES ? COMMENTLINE_YES:COMMENTLINE_NO;
-                isCommentLine = isInComment ? COMMENTLINE_YES:COMMENTLINE_NO;
-            }
-        }
-
         switch (sc.state)
         {
             case SCE_USER_STYLE_DELIMITER1:
@@ -2189,6 +2089,106 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
 
             default:
                 break;
+        }
+
+        if (foldComments)
+            if (isInComment == false)
+                if (isCommentLine == COMMENTLINE_NO)
+                    if (sc.state != SCE_USER_STYLE_COMMENTLINE)
+                        if (sc.state != SCE_USER_STYLE_IDENTIFIER)
+                            if (sc.state != SCE_USER_STYLE_DEFAULT)
+                                if (!isWhiteSpace(sc.ch))
+                                    isCommentLine = COMMENTLINE_SKIP_TESTING;
+
+        if (foldCompact == true && visibleChars == false && !isWhiteSpace(sc.ch))
+            visibleChars = true;
+
+        if (sc.atLineEnd)
+        {
+            if (foldComments == true)
+            {
+                if (levelCurrent != levelNext)
+                    isCommentLine = COMMENTLINE_SKIP_TESTING;
+
+                if (continueCommentBlock > 0)
+                {
+                    if (continueCommentBlock & CL_PREVPREV)
+                    {
+                        isInCommentBlock = true;
+                        isPrevLineComment = COMMENTLINE_YES;
+
+                        if (!(continueCommentBlock & CL_CURRENT))
+                        {
+                            levelNext++;
+                            levelMinCurrent++;
+                            levelCurrent++;
+                            levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
+                        }
+                    }
+                    else if (continueCommentBlock & CL_PREV)
+                    {
+                        isPrevLineComment = COMMENTLINE_YES;
+                        if (continueCommentBlock & CL_CURRENT)
+                        {
+                            levelMinCurrent--;
+                            levelNext--;
+                            levelCurrent--;
+                            levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
+                        }
+                    }
+                    continueCommentBlock = 0;
+                }
+
+                if (isInCommentBlock && isCommentLine != COMMENTLINE_YES && isPrevLineComment == COMMENTLINE_YES)
+                {
+                    levelNext--;
+                    levelPrev = (levelMinCurrent | levelNext << 16) | SC_ISCOMMENTLINE;
+                    levelMinCurrent--;
+                    isInCommentBlock = false;
+                }
+
+                if (!isInCommentBlock && isCommentLine == COMMENTLINE_YES && isPrevLineComment == COMMENTLINE_YES)
+                {
+                    levelNext++;
+                    levelPrev = (levelMinCurrent | levelNext << 16) | SC_FOLDLEVELHEADERFLAG | SC_ISCOMMENTLINE;
+                    levelMinCurrent = levelNext;
+                    isInCommentBlock = true;
+                }
+
+                if (levelPrev != 0)
+                {
+                    // foldVector[lineCurrent - 1] = levelPrev;
+                    styler.SetLevel(lineCurrent - 1, levelPrev);
+                    levelPrev = 0;
+                }
+            }
+
+            lev = levelMinCurrent | levelNext << 16;
+            if (foldComments && isCommentLine == COMMENTLINE_YES)
+                lev |= SC_ISCOMMENTLINE;
+            if (visibleChars == false && foldCompact)
+                lev |= SC_FOLDLEVELWHITEFLAG;
+            if (levelMinCurrent < levelNext)
+                lev |= SC_FOLDLEVELHEADERFLAG;
+            // foldVector.push_back(lev);
+            styler.SetLevel(lineCurrent, lev);
+
+            for (int i=0; i<nlCount; ++i)   // multi-line multi-part keyword
+            {
+                // foldVector.push_back(levelNext | levelNext << 16);  // TODO: what about SC_ISCOMMENTLINE?
+                styler.SetLevel(lineCurrent++, levelNext | levelNext << 16);
+            }
+            nlCount = 0;
+
+            lineCurrent++;
+            levelCurrent = levelNext;
+            levelMinCurrent = levelCurrent;
+            visibleChars = false;
+            if (foldComments)
+            {
+                isPrevLineComment = isCommentLine==COMMENTLINE_YES ? COMMENTLINE_YES:COMMENTLINE_NO;
+                isCommentLine = isInComment ? COMMENTLINE_YES:COMMENTLINE_NO;
+            }
         }
     }
     sc.Complete();
