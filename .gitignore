@@ -19,6 +19,7 @@ PowerEditor/visual.net/Unicode Release/
 PowerEditor/visual.net/UpgradeLog.XML
 PowerEditor/visual.net/bin/
 *.orig
+PowerEditor/bin/userDefineLang.xml
 
 # Which files should I include in .gitignore when using Git in conjunction with Visual Studio Solutions (.sln) and Projects?
 # Community Wiki:

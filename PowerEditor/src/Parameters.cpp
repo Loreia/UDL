@@ -5309,7 +5309,6 @@ void NppParameters::writeStyle2Element(Style & style2Write, Style & style2Sync, 
 	    element->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
     }
 
-    element->SetAttribute(TEXT("fontStyle"), style2Write._fontStyle);
 	
 	if (style2Write._keywords)
     {	

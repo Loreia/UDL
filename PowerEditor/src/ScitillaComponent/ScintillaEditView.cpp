@@ -512,7 +512,7 @@ void ScintillaEditView::setStyle(Style styleToSet)
 					else
 						styleToSet._fontStyle &= ~FONTSTYLE_UNDERLINE;
 				}
-			//}
+			}
 		}
 	}
 	setSpecialStyle(styleToSet);
@@ -759,14 +759,17 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
 		}
 	}
 
-	// at the end (position SCE_USER_KWLIST_TOTAL) send id values
-	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.udlName", reinterpret_cast<LPARAM>(userLangContainer->getName()));
-	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.currentBufferID", reinterpret_cast<LPARAM>(_currentBufferID));
-
-	char intBuffer[10];
+ 	char intBuffer[15];
 	char nestingBuffer[] = "userDefine.nesting.00";
+
+	// at the end (position SCE_USER_KWLIST_TOTAL) send id values
+    itoa((int)userLangContainer->getName(), intBuffer, 10); // use numeric value of TCHAR pointer
+	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.udlName", reinterpret_cast<LPARAM>(intBuffer));
+
+    itoa((int)_currentBufferID, intBuffer, 10); // use numeric value of BufferID pointer
+    execute(SCI_SETPROPERTY, (WPARAM)"userDefine.currentBufferID", reinterpret_cast<LPARAM>(intBuffer));
 	
-	//for (int i = 0 ; i < userLangContainer->_styleArray.getNbStyler() ; i++)
+	// for (int i = 0 ; i < userLangContainer->_styleArray.getNbStyler() ; i++)
 	for (int i = 0 ; i < SCE_USER_STYLE_TOTAL_STYLES ; i++)
 	{
 		Style & style = userLangContainer->_styleArray.getStyler(i);
@@ -1607,13 +1610,6 @@ void ScintillaEditView::activateBuffer(BufferID buffer)
 	if (_currentBuffer->getNeedsLexing()) {
 		restyleBuffer();
 	}
-
-	// find hotspots
-	NMHDR nmhdr;
-	nmhdr.code = SCN_PAINTED;
-	nmhdr.hwndFrom = _hSelf;
-	nmhdr.idFrom = ::GetDlgCtrlID(nmhdr.hwndFrom);
-	::SendMessage(_hParent, WM_NOTIFY, (WPARAM)LINKTRIGGERED, (LPARAM)&nmhdr);
 
 	// restore the collapsed info
 	const std::vector<HeaderLineState> & lineStateVectorNew = newBuf->getHeaderLineState(this);
