@@ -904,6 +904,7 @@ public :
         _allowFoldOfComments = false;
 		_forceLineCommentsAtBOL = false;
 		_foldCompact = false;
+        _isCaseIgnored = false;
 
 		for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 			*_keywordLists[i] = '\0';

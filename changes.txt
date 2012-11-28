@@ -1,6 +1,7 @@
 Changes in this commit.
 
-Fixed a bug in Style dialog constructor, where wrong default values were causing mess in nesting and font options.
+Fixed a bug where Ignore case option didn't work.
+It was only a matter of missing initialization in constructor of class UserLangContainer.
 
 Files changed:
 PowerEditor/src/Parameters.h
