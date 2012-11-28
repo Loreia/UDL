@@ -280,7 +280,7 @@ struct Style
 	generic_string *_keywords;
 
 	Style():_styleID(-1), _styleDesc(NULL), _fgColor(COLORREF(STYLE_NOT_USED)), _bgColor(COLORREF(STYLE_NOT_USED)), _colorStyle(COLORSTYLE_ALL),\
-		_fontName(NULL), _fontStyle(STYLE_NOT_USED), _fontSize(STYLE_NOT_USED), _keywordClass(STYLE_NOT_USED), _keywords(NULL){};
+        _fontName(NULL), _fontStyle(FONTSTYLE_NONE), _fontSize(STYLE_NOT_USED), _keywordClass(STYLE_NOT_USED), _keywords(NULL), _nesting(FONTSTYLE_NONE){};
 
 	~Style(){
 		if (_keywords) 

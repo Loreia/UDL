@@ -1,6 +1,6 @@
 Changes in this commit.
 
-Fixed a bug where folding wasn't working for UNIX EOL style.
+Fixed a bug in Style dialog constructor, where wrong default values were causing mess in nesting and font options.
 
 Files changed:
-scintilla/lexers/LexUser.cxx
+PowerEditor/src/Parameters.h
