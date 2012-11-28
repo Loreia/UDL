@@ -1836,7 +1836,6 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                         }
                     }
 
-                    sc.Forward();   // set state of '\n' too
                     sc.ChangeState(SCE_USER_STYLE_COMMENTLINE); // no need to paint, only change state for now
                     if (!lineContinuation)
                     {
@@ -1848,7 +1847,6 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                         sc.SetState(newState);
                     }
 
-                    dontMove = true;
                     lineContinuation = false;
                     break;
                 }
