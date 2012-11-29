@@ -61,101 +61,113 @@ struct Style;
 #define ITALIC_MASK   2
 const bool DOCK = true;
 const bool UNDOCK = false;
-const TCHAR keywordListMapper[SCE_USER_KWLIST_TOTAL][32] = {
-    TEXT("Comments"),                       // SCE_USER_KWLIST_COMMENTS
-    TEXT("Numbers, additional"),            // SCE_USER_KWLIST_NUMBER_EXTRA
-    TEXT("Numbers, prefixes"),              // SCE_USER_KWLIST_NUMBER_PREFIX
-    TEXT("Numbers, extras with prefixes"),  // SCE_USER_KWLIST_NUMBER_EXTRAPREF
-    TEXT("Numbers, suffixes"),              // SCE_USER_KWLIST_NUMBER_SUFFIX
-    TEXT("Operators1"),                     // SCE_USER_KWLIST_OPERATORS1
-    TEXT("Operators2"),                     // SCE_USER_KWLIST_OPERATORS2
-    TEXT("Folders in code1, open"),         // SCE_USER_KWLIST_FOLDERS_IN_CODE1_OPEN
-    TEXT("Folders in code1, middle"),       // SCE_USER_KWLIST_FOLDERS_IN_CODE1_MIDDLE
-    TEXT("Folders in code1, close"),        // SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE
-    TEXT("Folders in code2, open"),         // SCE_USER_KWLIST_FOLDERS_IN_CODE2_OPEN
-    TEXT("Folders in code2, middle"),       // SCE_USER_KWLIST_FOLDERS_IN_CODE2_MIDDLE
-    TEXT("Folders in code2, close"),        // SCE_USER_KWLIST_FOLDERS_IN_CODE2_CLOSE
-    TEXT("Folders in comment, open"),       // SCE_USER_KWLIST_FOLDERS_IN_COMMENT_OPEN
-    TEXT("Folders in comment, middle"),     // SCE_USER_KWLIST_FOLDERS_IN_COMMENT_MIDDLE
-    TEXT("Folders in comment, close"),      // SCE_USER_KWLIST_FOLDERS_IN_COMMENT_CLOSE
-    TEXT("Keywords1"),                      // SCE_USER_KWLIST_KEYWORDS1
-    TEXT("Keywords2"),                      // SCE_USER_KWLIST_KEYWORDS2
-    TEXT("Keywords3"),                      // SCE_USER_KWLIST_KEYWORDS3
-    TEXT("Keywords4"),                      // SCE_USER_KWLIST_KEYWORDS4
-    TEXT("Keywords5"),                      // SCE_USER_KWLIST_KEYWORDS5
-    TEXT("Keywords6"),                      // SCE_USER_KWLIST_KEYWORDS6
-    TEXT("Keywords7"),                      // SCE_USER_KWLIST_KEYWORDS7
-    TEXT("Keywords8"),                      // SCE_USER_KWLIST_KEYWORDS8
-    TEXT("Delimiters")                      // SCE_USER_KWLIST_DELIMITERS
+
+class GlobalMappers
+{
+    public:
+        GlobalMappers()
+        {
+            keywordListMapper[SCE_USER_KWLIST_COMMENTS]                    	= TEXT("Comments");                       
+            keywordListMapper[SCE_USER_KWLIST_NUMBER_EXTRA]	               	= TEXT("Numbers, additional");            
+            keywordListMapper[SCE_USER_KWLIST_NUMBER_PREFIX]	           	= TEXT("Numbers, prefixes");              
+            keywordListMapper[SCE_USER_KWLIST_NUMBER_EXTRAPREF]	           	= TEXT("Numbers, extras with prefixes");  
+            keywordListMapper[SCE_USER_KWLIST_NUMBER_SUFFIX]	           	= TEXT("Numbers, suffixes");              
+            keywordListMapper[SCE_USER_KWLIST_OPERATORS1]	               	= TEXT("Operators1");                     
+            keywordListMapper[SCE_USER_KWLIST_OPERATORS2]	               	= TEXT("Operators2");                     
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE1_OPEN]	   	= TEXT("Folders in code1, open");         
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE1_MIDDLE]	   	= TEXT("Folders in code1, middle");       
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE]	   	= TEXT("Folders in code1, close");        
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE2_OPEN]	   	= TEXT("Folders in code2, open");         
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE2_MIDDLE]	   	= TEXT("Folders in code2, middle");       
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_CODE2_CLOSE]	   	= TEXT("Folders in code2, close");        
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_COMMENT_OPEN]	   	= TEXT("Folders in comment, open");       
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_COMMENT_MIDDLE]	= TEXT("Folders in comment, middle");     
+            keywordListMapper[SCE_USER_KWLIST_FOLDERS_IN_COMMENT_CLOSE]	   	= TEXT("Folders in comment, close");      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS1]	               	= TEXT("Keywords1");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS2]	               	= TEXT("Keywords2");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS3]	               	= TEXT("Keywords3");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS4]	               	= TEXT("Keywords4");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS5]	               	= TEXT("Keywords5");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS6]	               	= TEXT("Keywords6");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS7]	               	= TEXT("Keywords7");                      
+            keywordListMapper[SCE_USER_KWLIST_KEYWORDS8]	               	= TEXT("Keywords8");                      
+            keywordListMapper[SCE_USER_KWLIST_DELIMITERS]                  	= TEXT("Delimiters");   
+
+            styleNameMapper[SCE_USER_STYLE_DEFAULT]           = TEXT("DEFAULT");          
+            styleNameMapper[SCE_USER_STYLE_COMMENT]           = TEXT("COMMENTS");         
+            styleNameMapper[SCE_USER_STYLE_COMMENTLINE]       = TEXT("LINE COMMENTS");    
+            styleNameMapper[SCE_USER_STYLE_NUMBER]            = TEXT("NUMBERS");          
+            styleNameMapper[SCE_USER_STYLE_KEYWORD1]          = TEXT("KEYWORDS1");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD2]          = TEXT("KEYWORDS2");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD3]          = TEXT("KEYWORDS3");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD4]          = TEXT("KEYWORDS4");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD5]          = TEXT("KEYWORDS5");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD6]          = TEXT("KEYWORDS6");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD7]          = TEXT("KEYWORDS7");        
+            styleNameMapper[SCE_USER_STYLE_KEYWORD8]          = TEXT("KEYWORDS8");        
+            styleNameMapper[SCE_USER_STYLE_OPERATOR]          = TEXT("OPERATORS");        
+            styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE1]   = TEXT("FOLDER IN CODE1");  
+            styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE2]   = TEXT("FOLDER IN CODE2");  
+            styleNameMapper[SCE_USER_STYLE_FOLDER_IN_COMMENT] = TEXT("FOLDER IN COMMENT");
+            styleNameMapper[SCE_USER_STYLE_DELIMITER1]        = TEXT("DELIMITERS1");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER2]        = TEXT("DELIMITERS2");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER3]        = TEXT("DELIMITERS3");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER4]        = TEXT("DELIMITERS4");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER5]        = TEXT("DELIMITERS5");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER6]        = TEXT("DELIMITERS6");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER7]        = TEXT("DELIMITERS7");      
+            styleNameMapper[SCE_USER_STYLE_DELIMITER8]        = TEXT("DELIMITERS8");  
+
+            styleIdMApper[0]  = -1; // -1 stands for: not used      // #define SCE_USER_DEFAULT 0	// pre UDL2 definitions
+            styleIdMApper[1]  = SCE_USER_STYLE_COMMENT;             // #define SCE_USER_COMMENT 1
+            styleIdMApper[2]  = SCE_USER_STYLE_COMMENTLINE;         // #define SCE_USER_COMMENTLINE 2
+            styleIdMApper[3]  = -1;                                 // 
+            styleIdMApper[4]  = SCE_USER_STYLE_NUMBER;              // #define SCE_USER_NUMBER 4
+            styleIdMApper[5]  = SCE_USER_STYLE_KEYWORD1;            // #define SCE_USER_WORD1 5
+            styleIdMApper[6]  = SCE_USER_STYLE_KEYWORD2;            // #define SCE_USER_WORD2 6
+            styleIdMApper[7]  = SCE_USER_STYLE_KEYWORD3;            // #define SCE_USER_WORD3 7
+            styleIdMApper[8]  = SCE_USER_STYLE_KEYWORD4;            // #define SCE_USER_WORD4 8
+            styleIdMApper[9]  = -1;                                 // 
+            styleIdMApper[10] = SCE_USER_STYLE_OPERATOR;            // #define SCE_USER_OPERATOR 10
+            styleIdMApper[11] = SCE_USER_STYLE_DEFAULT;             // #define SCE_USER_IDENTIFIER 11
+            styleIdMApper[12] = SCE_USER_STYLE_FOLDER_IN_CODE1;     // #define SCE_USER_BLOCK_OPERATOR_OPEN 12
+            styleIdMApper[13] = -1;                                 // #define SCE_USER_BLOCK_OPERATOR_CLOSE 13
+            styleIdMApper[14] = SCE_USER_STYLE_DELIMITER1;          // #define SCE_USER_DELIMITER1 14
+            styleIdMApper[15] = SCE_USER_STYLE_DELIMITER2;          // #define SCE_USER_DELIMITER2 15
+            styleIdMApper[16] = SCE_USER_STYLE_DELIMITER3;          // #define SCE_USER_DELIMITER3 16
+
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER1]   = SCE_USER_MASK_NESTING_DELIMITER1;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER2]   = SCE_USER_MASK_NESTING_DELIMITER2;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER3]   = SCE_USER_MASK_NESTING_DELIMITER3;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER4]   = SCE_USER_MASK_NESTING_DELIMITER4;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER5]   = SCE_USER_MASK_NESTING_DELIMITER5;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER6]   = SCE_USER_MASK_NESTING_DELIMITER6;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER7]   = SCE_USER_MASK_NESTING_DELIMITER7;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_DELIMITER8]   = SCE_USER_MASK_NESTING_DELIMITER8;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_COMMENT]      = SCE_USER_MASK_NESTING_COMMENT;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_COMMENT_LINE] = SCE_USER_MASK_NESTING_COMMENT_LINE;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD1]     = SCE_USER_MASK_NESTING_KEYWORD1;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD2]     = SCE_USER_MASK_NESTING_KEYWORD2;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD3]     = SCE_USER_MASK_NESTING_KEYWORD3;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD4]     = SCE_USER_MASK_NESTING_KEYWORD4;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD5]     = SCE_USER_MASK_NESTING_KEYWORD5;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD6]     = SCE_USER_MASK_NESTING_KEYWORD6;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD7]     = SCE_USER_MASK_NESTING_KEYWORD7;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_KEYWORD8]     = SCE_USER_MASK_NESTING_KEYWORD8;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_OPERATORS1]   = SCE_USER_MASK_NESTING_OPERATORS1;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_OPERATORS2]   = SCE_USER_MASK_NESTING_OPERATORS2;
+            nestingMapper[IDC_STYLER_CHECK_NESTING_NUMBERS]      = SCE_USER_MASK_NESTING_NUMBERS;
+        
+        };
+
+        map<int, generic_string> keywordListMapper;
+        map<int, generic_string> styleNameMapper;
+        map<int, int> styleIdMApper;
+        map<int, int> nestingMapper;
 };
-const TCHAR styleNameMapper[SCE_USER_STYLE_TOTAL_STYLES][32] = {
-    TEXT("DEFAULT"),                    // 0   SCE_USER_STYLE_DEFAULT
-    TEXT("COMMENTS"),                   // 1   SCE_USER_STYLE_COMMENT
-    TEXT("LINE COMMENTS"),              // 2   SCE_USER_STYLE_COMMENTLINE
-    TEXT("NUMBERS"),                    // 3   SCE_USER_STYLE_NUMBER
-    TEXT("KEYWORDS1"),                  // 4   SCE_USER_STYLE_KEYWORD1
-    TEXT("KEYWORDS2"),                  // 5   SCE_USER_STYLE_KEYWORD2
-    TEXT("KEYWORDS3"),                  // 6   SCE_USER_STYLE_KEYWORD3
-    TEXT("KEYWORDS4"),                  // 7   SCE_USER_STYLE_KEYWORD4
-    TEXT("KEYWORDS5"),                  // 8   SCE_USER_STYLE_KEYWORD5
-    TEXT("KEYWORDS6"),                  // 9   SCE_USER_STYLE_KEYWORD6
-    TEXT("KEYWORDS7"),                  // 10  SCE_USER_STYLE_KEYWORD7
-    TEXT("KEYWORDS8"),                  // 11  SCE_USER_STYLE_KEYWORD8
-    TEXT("OPERATORS"),                  // 12  SCE_USER_STYLE_OPERATOR
-    TEXT("FOLDER IN CODE1"),            // 13  SCE_USER_STYLE_FOLDER_IN_CODE1
-    TEXT("FOLDER IN CODE2"),            // 14  SCE_USER_STYLE_FOLDER_IN_CODE2
-    TEXT("FOLDER IN COMMENT"),          // 15  SCE_USER_STYLE_FOLDER_IN_COMMENT
-    TEXT("DELIMITERS1"),                // 16  SCE_USER_STYLE_DELIMITER1
-    TEXT("DELIMITERS2"),                // 17  SCE_USER_STYLE_DELIMITER2
-    TEXT("DELIMITERS3"),                // 18  SCE_USER_STYLE_DELIMITER3
-    TEXT("DELIMITERS4"),                // 19  SCE_USER_STYLE_DELIMITER4
-    TEXT("DELIMITERS5"),                // 20  SCE_USER_STYLE_DELIMITER5
-    TEXT("DELIMITERS6"),                // 21  SCE_USER_STYLE_DELIMITER6
-    TEXT("DELIMITERS7"),                // 22  SCE_USER_STYLE_DELIMITER7
-    TEXT("DELIMITERS8")                 // 23  SCE_USER_STYLE_DELIMITER8
-};
-const int styleIdMApper[SCE_USER_STYLE_MAPPER_TOTAL] = {            // mapping sytle ID's between UDL 1.0 and UDL 2.0
-    -1, // -1 stands for: not used      // 0
-    SCE_USER_STYLE_COMMENT,             // 1
-    SCE_USER_STYLE_COMMENTLINE,         // 2
-    -1,                                 // 3
-    SCE_USER_STYLE_NUMBER,              // 4
-    SCE_USER_STYLE_KEYWORD1,            // 5
-    SCE_USER_STYLE_KEYWORD2,            // 6
-    SCE_USER_STYLE_KEYWORD3,            // 7
-    SCE_USER_STYLE_KEYWORD4,            // 8
-    -1,                                 // 9
-    SCE_USER_STYLE_OPERATOR,            // 10
-    SCE_USER_STYLE_DEFAULT,             // 11
-    SCE_USER_STYLE_FOLDER_IN_CODE1,     // 12
-    -1,                                 // 13
-    SCE_USER_STYLE_DELIMITER1,          // 14
-    SCE_USER_STYLE_DELIMITER2,          // 15
-    SCE_USER_STYLE_DELIMITER3,          // 16
-};
-const int nestingMapper[][2] = {
-    { IDC_STYLER_CHECK_NESTING_DELIMITER1,      SCE_USER_MASK_NESTING_DELIMITER1 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER2,      SCE_USER_MASK_NESTING_DELIMITER2 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER3,      SCE_USER_MASK_NESTING_DELIMITER3 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER4,      SCE_USER_MASK_NESTING_DELIMITER4 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER5,      SCE_USER_MASK_NESTING_DELIMITER5 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER6,      SCE_USER_MASK_NESTING_DELIMITER6 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER7,      SCE_USER_MASK_NESTING_DELIMITER7 },
-    { IDC_STYLER_CHECK_NESTING_DELIMITER8,      SCE_USER_MASK_NESTING_DELIMITER8 },
-    { IDC_STYLER_CHECK_NESTING_COMMENT,         SCE_USER_MASK_NESTING_COMMENT },
-    { IDC_STYLER_CHECK_NESTING_COMMENT_LINE,    SCE_USER_MASK_NESTING_COMMENT_LINE },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD1,        SCE_USER_MASK_NESTING_KEYWORD1 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD2,        SCE_USER_MASK_NESTING_KEYWORD2 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD3,        SCE_USER_MASK_NESTING_KEYWORD3 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD4,        SCE_USER_MASK_NESTING_KEYWORD4 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD5,        SCE_USER_MASK_NESTING_KEYWORD5 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD6,        SCE_USER_MASK_NESTING_KEYWORD6 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD7,        SCE_USER_MASK_NESTING_KEYWORD7 },
-    { IDC_STYLER_CHECK_NESTING_KEYWORD8,        SCE_USER_MASK_NESTING_KEYWORD8 },
-    { IDC_STYLER_CHECK_NESTING_OPERATORS1,      SCE_USER_MASK_NESTING_OPERATORS1 },
-    { IDC_STYLER_CHECK_NESTING_OPERATORS2,      SCE_USER_MASK_NESTING_OPERATORS2 },
-    { IDC_STYLER_CHECK_NESTING_NUMBERS,         SCE_USER_MASK_NESTING_NUMBERS }
-};
+
+GlobalMappers & globalMappper();
+
 class SharedParametersDialog : public StaticDialog
 {
 friend class StylerDlg;
