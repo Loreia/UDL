@@ -40,6 +40,14 @@
 UserLangContainer * SharedParametersDialog::_pUserLang = NULL;
 ScintillaEditView * SharedParametersDialog::_pScintilla = NULL;
 
+GlobalMappers & globalMappper()
+{
+    // getting global object as reference to static ensures that only one object is created
+    // even if called from different code units
+    static GlobalMappers gm;
+    return gm;
+}
+
 bool SharedParametersDialog::setPropertyByCheck(HWND hwnd, WPARAM id, bool & bool2set)
 {
     bool2set = (BST_CHECKED == ::SendMessage(::GetDlgItem(hwnd, id), BM_GETCHECK, 0, 0));
@@ -883,30 +891,30 @@ UserDefineDialog::UserDefineDialog(): SharedParametersDialog(), _status(UNDOCK),
 {
     _pCurrentUserLang = new UserLangContainer();
 
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DEFAULT,              styleNameMapper[SCE_USER_STYLE_DEFAULT]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_COMMENT,              styleNameMapper[SCE_USER_STYLE_COMMENT]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_COMMENTLINE,          styleNameMapper[SCE_USER_STYLE_COMMENTLINE]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_NUMBER,               styleNameMapper[SCE_USER_STYLE_NUMBER]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD1,             styleNameMapper[SCE_USER_STYLE_KEYWORD1]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD2,             styleNameMapper[SCE_USER_STYLE_KEYWORD2]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD3,             styleNameMapper[SCE_USER_STYLE_KEYWORD3]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD4,             styleNameMapper[SCE_USER_STYLE_KEYWORD4]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD5,             styleNameMapper[SCE_USER_STYLE_KEYWORD5]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD6,             styleNameMapper[SCE_USER_STYLE_KEYWORD6]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD7,             styleNameMapper[SCE_USER_STYLE_KEYWORD7]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD8,             styleNameMapper[SCE_USER_STYLE_KEYWORD8]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_OPERATOR,             styleNameMapper[SCE_USER_STYLE_OPERATOR]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_CODE1,      styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE1]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_CODE2,      styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE2]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_COMMENT,    styleNameMapper[SCE_USER_STYLE_FOLDER_IN_COMMENT]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER1,           styleNameMapper[SCE_USER_STYLE_DELIMITER1]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER2,           styleNameMapper[SCE_USER_STYLE_DELIMITER2]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER3,           styleNameMapper[SCE_USER_STYLE_DELIMITER3]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER4,           styleNameMapper[SCE_USER_STYLE_DELIMITER4]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER5,           styleNameMapper[SCE_USER_STYLE_DELIMITER5]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER6,           styleNameMapper[SCE_USER_STYLE_DELIMITER6]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER7,           styleNameMapper[SCE_USER_STYLE_DELIMITER7]);
-    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER8,           styleNameMapper[SCE_USER_STYLE_DELIMITER8]);
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DEFAULT,              globalMappper().styleNameMapper[SCE_USER_STYLE_DEFAULT].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_COMMENT,              globalMappper().styleNameMapper[SCE_USER_STYLE_COMMENT].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_COMMENTLINE,          globalMappper().styleNameMapper[SCE_USER_STYLE_COMMENTLINE].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_NUMBER,               globalMappper().styleNameMapper[SCE_USER_STYLE_NUMBER].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD1,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD1].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD2,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD2].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD3,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD3].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD4,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD4].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD5,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD5].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD6,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD6].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD7,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD7].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_KEYWORD8,             globalMappper().styleNameMapper[SCE_USER_STYLE_KEYWORD8].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_OPERATOR,             globalMappper().styleNameMapper[SCE_USER_STYLE_OPERATOR].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_CODE1,      globalMappper().styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE1].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_CODE2,      globalMappper().styleNameMapper[SCE_USER_STYLE_FOLDER_IN_CODE2].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_FOLDER_IN_COMMENT,    globalMappper().styleNameMapper[SCE_USER_STYLE_FOLDER_IN_COMMENT].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER1,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER1].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER2,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER2].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER3,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER3].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER4,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER4].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER5,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER5].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER6,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER6].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER7,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER7].c_str());
+    _pCurrentUserLang->_styleArray.addStyler(SCE_USER_STYLE_DELIMITER8,           globalMappper().styleNameMapper[SCE_USER_STYLE_DELIMITER8].c_str());
 }
 
 UserDefineDialog::~UserDefineDialog()
@@ -1577,10 +1585,11 @@ BOOL CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             dlg->pFgColour->display();
             dlg->pBgColour->display();
 
-            for (int i=0; i<sizeof(nestingMapper)/(2*sizeof(int)); ++i)
+            map<int, int>::iterator iter = globalMappper().nestingMapper.begin();
+            for (; iter != globalMappper().nestingMapper.end(); ++iter)
             {
-                ::SendDlgItemMessage(hwnd, nestingMapper[i][0], BM_SETCHECK, style._nesting & nestingMapper[i][1], 0);
-				::EnableWindow(::GetDlgItem(hwnd, nestingMapper[i][0]), dlg->enabledNesters & nestingMapper[i][1]);
+                ::SendDlgItemMessage(hwnd, iter->first, BM_SETCHECK, style._nesting & iter->second, 0);
+                ::EnableWindow(::GetDlgItem(hwnd, iter->first), dlg->enabledNesters & iter->second);
             }
             return TRUE;
         }
@@ -1665,10 +1674,11 @@ BOOL CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     style._fontStyle |= FONTSTYLE_UNDERLINE;
 
                 style._nesting = SCE_USER_MASK_NESTING_NONE;
-                for (int i=0; i<sizeof(nestingMapper)/(2*sizeof(int)); ++i)
+                map<int, int>::iterator iter = globalMappper().nestingMapper.begin();
+                for (; iter != globalMappper().nestingMapper.end(); ++iter)
                 {
-                    if (BST_CHECKED == ::SendMessage(::GetDlgItem(hwnd, nestingMapper[i][0]), BM_GETCHECK, 0, 0))
-                        style._nesting |= nestingMapper[i][1];
+                    if (BST_CHECKED == ::SendMessage(::GetDlgItem(hwnd, iter->first), BM_GETCHECK, 0, 0))
+                        style._nesting |= iter->second;
                 }
 
                 // show changes to user, re-color document

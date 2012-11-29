@@ -2191,7 +2191,7 @@ bool NppParameters::feedUserLang(TiXmlNode *node)
 			{
 				Style & style = _userLangArray[_nbUserLang - 1]->_styleArray.getStyler(i);
 				if (style._styleID == -1)
-					_userLangArray[_nbUserLang - 1]->_styleArray.addStyler(i, styleNameMapper[i]);
+					_userLangArray[_nbUserLang - 1]->_styleArray.addStyler(i, globalMappper().styleNameMapper[i].c_str());
 			}
 
 		} catch (std::exception e) {
@@ -2568,7 +2568,7 @@ void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
         {
             for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
             {
-                boolStr = (prefixNode->ToElement())->Attribute(keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1]);
+                boolStr = (prefixNode->ToElement())->Attribute(globalMappper().keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1]);
                 if (boolStr)
                     _userLangArray[_nbUserLang - 1]->_isPrefix[i] = !lstrcmp(TEXT("yes"), boolStr);
             }
@@ -2715,7 +2715,7 @@ void NppParameters::feedUserStyles(TiXmlNode *node)
 			if (id >= SCE_USER_STYLE_MAPPER_TOTAL)
 				continue;
 
-			id = styleIdMApper[id];
+			id = globalMappper().styleIdMApper[id];
 			if (id == -1)
 				continue;
 		}
@@ -2846,7 +2846,7 @@ void StyleArray::addStyler(int styleID, TiXmlNode *styleNode)
 		if (str)
 		{
 			if (isUser)
-				_styleArray[index]._styleDesc = styleNameMapper[index];
+				_styleArray[index]._styleDesc = globalMappper().styleNameMapper[index].c_str();
 			else
 				_styleArray[index]._styleDesc = str;
 		}
@@ -5338,7 +5338,7 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 
 		TiXmlElement *prefixElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Prefix"))))->ToElement();
 		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
-			prefixElement->SetAttribute(keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
+			prefixElement->SetAttribute(globalMappper().keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
 	}
 
 	TiXmlElement *kwlElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("KeywordLists"))))->ToElement();
@@ -5346,7 +5346,7 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 	for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 	{
 		TiXmlElement *kwElement = (kwlElement->InsertEndChild(TiXmlElement(TEXT("Keywords"))))->ToElement();
-		kwElement->SetAttribute(TEXT("name"), keywordListMapper[i]);
+		kwElement->SetAttribute(TEXT("name"), globalMappper().keywordListMapper[i]);
 		kwElement->SetAttribute(TEXT("id"), i);
 		kwElement->InsertEndChild(TiXmlText(userLang->_keywordLists[i]));
 	}
