@@ -5284,9 +5284,16 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 {
 	TiXmlElement *rootElement = (node->InsertEndChild(TiXmlElement(TEXT("UserLang"))))->ToElement();
 
+    TCHAR temp[32];
+    generic_string udlVersion = TEXT("");
+    udlVersion += generic_itoa(SCE_UDL_VERSION_MAJOR, temp, 10);
+    udlVersion += TEXT(".");
+    udlVersion += generic_itoa(SCE_UDL_VERSION_MINOR, temp, 10);
+
 	rootElement->SetAttribute(TEXT("name"), userLang->_name);
 	rootElement->SetAttribute(TEXT("ext"), userLang->_ext);
-	rootElement->SetAttribute(TEXT("udlVersion"), TEXT("2.0"));
+    rootElement->SetAttribute(TEXT("udlVersion"), udlVersion.c_str());
+
 	TiXmlElement *settingsElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("Settings"))))->ToElement();
 	{
 		TiXmlElement *globalElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Global"))))->ToElement();

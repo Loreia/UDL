@@ -1071,6 +1071,18 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
                 // // enableDlgTheme(_hSelf, ETDT_ENABLETAB);
             // }
 
+            TCHAR temp[32];
+            generic_string udlVersion = TEXT("User Defined Language v.");
+            udlVersion += generic_itoa(SCE_UDL_VERSION_MAJOR, temp, 10);
+            udlVersion += TEXT(".");
+            udlVersion += generic_itoa(SCE_UDL_VERSION_MINOR, temp, 10);
+            udlVersion += TEXT(".");
+            udlVersion += generic_itoa(SCE_UDL_VERSION_BUILD, temp, 10);
+            udlVersion += TEXT(".");
+            udlVersion += generic_itoa(SCE_UDL_VERSION_REVISION, temp, 10);
+
+            ::SetWindowText(_hSelf, udlVersion.c_str());
+
             return TRUE;
         }
 

@@ -1,9 +1,8 @@
 Changes in this commit.
 
-Extended support for global mappers.
-Simplified userDefineLang.xml file by removing "id" and "styleID" tags.
+Added versioning support.
 
 Files changed:
 PowerEditor/src/Parameters.cpp
-PowerEditor/src/ScitillaComponent/UserDefineDialog.h
-
+PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
+scintilla/include/SciLexer.h
