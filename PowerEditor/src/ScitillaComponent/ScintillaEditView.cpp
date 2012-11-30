@@ -646,10 +646,9 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
 	execute(SCI_SETPROPERTY, reinterpret_cast<WPARAM>("fold"), reinterpret_cast<LPARAM>("1"));
 	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.isCaseIgnored",		  (LPARAM)(userLangContainer->_isCaseIgnored ? "1":"0"));
 	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.allowFoldOfComments",    (LPARAM)(userLangContainer->_allowFoldOfComments ? "1":"0"));
-	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.forceLineCommentsAtBOL", (LPARAM)(userLangContainer->_forceLineCommentsAtBOL ? "1":"0"));
 	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.foldCompact",		      (LPARAM)(userLangContainer->_foldCompact ? "1":"0"));
 
-	char name[] = "userDefine.prefixKeywords0";
+    char name[] = "userDefine.prefixKeywords0";
 	for (int i=0 ; i<SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
 	{	
 		itoa(i+1, (name+25), 10);
@@ -761,6 +760,9 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
 
  	char intBuffer[15];
 	char nestingBuffer[] = "userDefine.nesting.00";
+
+    itoa(userLangContainer->_forcePureLC, intBuffer, 10);
+	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.forcePureLC", reinterpret_cast<LPARAM>(intBuffer));
 
 	// at the end (position SCE_USER_KWLIST_TOTAL) send id values
     itoa((int)userLangContainer->getName(), intBuffer, 10); // use numeric value of TCHAR pointer

@@ -385,6 +385,20 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
 {
     switch (Message)
     {
+        case WM_INITDIALOG :
+        case WM_ACTIVATE :
+        case WM_SHOWWINDOW :
+        {
+            ::SendDlgItemMessage(_hSelf, IDC_PURE_LINE_COMMENTS, BM_SETCHECK, _pUserLang->_forcePureLC != PURE_LC_NONE, 0);
+            ::SendDlgItemMessage(_hSelf, IDC_ALLOW_WHITESPACE,   BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP,  0);
+            ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,       BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL,  0);
+
+            ::EnableWindow(::GetDlgItem(_hSelf, IDC_ALLOW_WHITESPACE),  _pUserLang->_forcePureLC != PURE_LC_NONE);
+            ::EnableWindow(::GetDlgItem(_hSelf, IDC_FORCE_AT_BOL),      _pUserLang->_forcePureLC != PURE_LC_NONE);
+
+            return SharedParametersDialog::run_dlgProc(Message, wParam, lParam);
+        }
+
         case WM_COMMAND :
         {
             switch (wParam)
@@ -396,7 +410,54 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
 
 				case IDC_PURE_LINE_COMMENTS :
 				{
-                    return setPropertyByCheck(_hSelf, wParam, _pUserLang->_forceLineCommentsAtBOL);
+                    bool isPure = (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_PURE_LINE_COMMENTS), BM_GETCHECK, 0, 0));
+                    bool isBOL  = (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_FORCE_AT_BOL),       BM_GETCHECK, 0, 0));
+                    bool isWSP  = (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_ALLOW_WHITESPACE),   BM_GETCHECK, 0, 0));
+
+                    if (isPure == true)
+                    {
+                        if (isBOL == true)
+                            _pUserLang->_forcePureLC = PURE_LC_BOL;
+                        else if (isWSP == true)
+                            _pUserLang->_forcePureLC = PURE_LC_WSP;
+                        else
+                            _pUserLang->_forcePureLC = PURE_LC_BOL;     // default
+                    }
+                    else
+                        _pUserLang->_forcePureLC = PURE_LC_NONE;
+
+                    ::EnableWindow(::GetDlgItem(_hSelf, IDC_ALLOW_WHITESPACE), _pUserLang->_forcePureLC != PURE_LC_NONE);
+                    ::EnableWindow(::GetDlgItem(_hSelf, IDC_FORCE_AT_BOL),     _pUserLang->_forcePureLC != PURE_LC_NONE);
+
+                    ::SendDlgItemMessage(_hSelf, IDC_ALLOW_WHITESPACE, BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP, 0);
+                    ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,     BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL, 0);
+
+                    if (_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
+                        _pScintilla->styleChange();
+
+                    return TRUE;
+				}
+
+				case IDC_FORCE_AT_BOL :
+				{
+                    if (_pUserLang->_forcePureLC != PURE_LC_NONE)
+                        _pUserLang->_forcePureLC = PURE_LC_BOL;
+
+                    if (_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
+                        _pScintilla->styleChange();
+
+                    return TRUE;
+				}
+
+				case IDC_ALLOW_WHITESPACE :
+				{
+                    if (_pUserLang->_forcePureLC != PURE_LC_NONE)
+                        _pUserLang->_forcePureLC = PURE_LC_WSP;
+
+                    if (_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
+                        _pScintilla->styleChange();
+
+                    return TRUE;
 				}
 
                 case IDC_COMMENTLINE_STYLER :
@@ -590,7 +651,12 @@ void CommentStyleDialog::updateDlg()
 		::SendDlgItemMessage(_hSelf, list[i], WM_SETTEXT, 0, (LPARAM)buffer);
 	}
 
-    ::SendDlgItemMessage(_hSelf, IDC_PURE_LINE_COMMENTS,    BM_SETCHECK, _pUserLang->_forceLineCommentsAtBOL, 0);
+    ::EnableWindow(::GetDlgItem(_hSelf, IDC_ALLOW_WHITESPACE),  _pUserLang->_forcePureLC != PURE_LC_NONE);
+    ::EnableWindow(::GetDlgItem(_hSelf, IDC_FORCE_AT_BOL),      _pUserLang->_forcePureLC != PURE_LC_NONE);
+
+    ::SendDlgItemMessage(_hSelf, IDC_PURE_LINE_COMMENTS,    BM_SETCHECK, _pUserLang->_forcePureLC != PURE_LC_NONE, 0);
+    ::SendDlgItemMessage(_hSelf, IDC_ALLOW_WHITESPACE,      BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP, 0);
+    ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,          BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL, 0);
     ::SendDlgItemMessage(_hSelf, IDC_FOLDING_OF_COMMENTS,	BM_SETCHECK, _pUserLang->_allowFoldOfComments,    0);
 	
 	::SendDlgItemMessage(_hSelf, IDC_NUMBER_EXTRA_EDIT,		WM_SETTEXT, 0, (LPARAM)(_pUserLang->_keywordLists[SCE_USER_KWLIST_NUMBER_EXTRA]));
@@ -1061,15 +1127,7 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
             si.fMask  = SIF_RANGE; //| SIF_PAGE;
             si.nMin   = 0;
             si.nMax   = 0;
-            //si.nPage  = _currentHight;
-            //si.nPos = 0;
             ::SetScrollInfo(_hSelf, SB_VERT, &si, TRUE);
-
-            // ETDTProc enableDlgTheme = (ETDTProc)pNppParam->getEnableThemeDlgTexture();
-            // if (enableDlgTheme)
-            // {
-                // // enableDlgTheme(_hSelf, ETDT_ENABLETAB);
-            // }
 
             TCHAR temp[32];
             generic_string udlVersion = TEXT("User Defined Language v.");

@@ -1162,7 +1162,8 @@ static void readLastNested(vector<nestedInfo> & lastNestedGroup, int & newState,
 
 static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, WordList *kwLists[], Accessor &styler)
 {
-    bool lineCommentAtBOL = styler.GetPropertyInt("userDefine.forceLineCommentsAtBOL", 0) != 0;
+    bool lineCommentAtBOL = styler.GetPropertyInt("userDefine.forcePureLC", 0) != 0;
+    int pureLC = styler.GetPropertyInt("userDefine.forcePureLC", 0);
     bool foldComments     = styler.GetPropertyInt("userDefine.allowFoldOfComments",    0) != 0;
     bool ignoreCase       = styler.GetPropertyInt("userDefine.isCaseIgnored",          0) != 0;
     bool foldCompact      = styler.GetPropertyInt("userDefine.foldCompact",            0) != 0;

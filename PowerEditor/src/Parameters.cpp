@@ -2551,9 +2551,7 @@ void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
 		if (boolStr)
             _userLangArray[_nbUserLang - 1]->_allowFoldOfComments = !lstrcmp(TEXT("yes"), boolStr);
 
-		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("forceLineCommentsAtBOL"));
-		if (boolStr)
-            _userLangArray[_nbUserLang - 1]->_forceLineCommentsAtBOL = !lstrcmp(TEXT("yes"), boolStr);
+		(globalSettingNode->ToElement())->Attribute(TEXT("forcePureLC"), &_userLangArray[_nbUserLang - 1]->_forcePureLC);
 
 		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("foldCompact"));
 		if (boolStr)
@@ -5299,8 +5297,8 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 		TiXmlElement *globalElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Global"))))->ToElement();
 		globalElement->SetAttribute(TEXT("caseIgnored"),			userLang->_isCaseIgnored ? TEXT("yes"):TEXT("no"));
 		globalElement->SetAttribute(TEXT("allowFoldOfComments"),	userLang->_allowFoldOfComments ? TEXT("yes"):TEXT("no"));
-		globalElement->SetAttribute(TEXT("forceLineCommentsAtBOL"), userLang->_forceLineCommentsAtBOL ? TEXT("yes"):TEXT("no"));
 		globalElement->SetAttribute(TEXT("foldCompact"),			userLang->_foldCompact ? TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("forcePureLC"),            userLang->_forcePureLC);
 
 		TiXmlElement *prefixElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Prefix"))))->ToElement();
 		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
