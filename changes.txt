@@ -1,8 +1,10 @@
 Changes in this commit.
 
-Added versioning support.
+Changed GUI layout for pure line comments.
 
 Files changed:
-PowerEditor/src/Parameters.cpp
 PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
-scintilla/include/SciLexer.h
+PowerEditor/src/ScitillaComponent/UserDefineDialog.rc
+PowerEditor/src/ScitillaComponent/UserDefineResource.h
+PowerEditor/visual.net/notepadPlus.vcxproj
+PowerEditor/visual.net/notepadPlus.vcxproj.filters

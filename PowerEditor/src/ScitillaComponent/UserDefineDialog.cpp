@@ -394,7 +394,7 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
                     return setPropertyByCheck(_hSelf, wParam, _pUserLang->_allowFoldOfComments);
                 }
 
-				case IDC_FORCE_LINE_COMMENTS_AT_BOL :
+				case IDC_PURE_LINE_COMMENTS :
 				{
                     return setPropertyByCheck(_hSelf, wParam, _pUserLang->_forceLineCommentsAtBOL);
 				}
@@ -590,8 +590,8 @@ void CommentStyleDialog::updateDlg()
 		::SendDlgItemMessage(_hSelf, list[i], WM_SETTEXT, 0, (LPARAM)buffer);
 	}
 
-    ::SendDlgItemMessage(_hSelf, IDC_FORCE_LINE_COMMENTS_AT_BOL,	BM_SETCHECK, _pUserLang->_forceLineCommentsAtBOL, 0);
-    ::SendDlgItemMessage(_hSelf, IDC_FOLDING_OF_COMMENTS,			BM_SETCHECK, _pUserLang->_allowFoldOfComments,    0);
+    ::SendDlgItemMessage(_hSelf, IDC_PURE_LINE_COMMENTS,    BM_SETCHECK, _pUserLang->_forceLineCommentsAtBOL, 0);
+    ::SendDlgItemMessage(_hSelf, IDC_FOLDING_OF_COMMENTS,	BM_SETCHECK, _pUserLang->_allowFoldOfComments,    0);
 	
 	::SendDlgItemMessage(_hSelf, IDC_NUMBER_EXTRA_EDIT,		WM_SETTEXT, 0, (LPARAM)(_pUserLang->_keywordLists[SCE_USER_KWLIST_NUMBER_EXTRA]));
 	::SendDlgItemMessage(_hSelf, IDC_NUMBER_PREFIX_EDIT,	WM_SETTEXT, 0, (LPARAM)(_pUserLang->_keywordLists[SCE_USER_KWLIST_NUMBER_PREFIX]));

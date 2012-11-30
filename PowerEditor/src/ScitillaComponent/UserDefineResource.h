@@ -140,7 +140,9 @@
 
 #define    IDD_COMMENT_STYLE_DLG 23000 //(IDD_GLOBAL_USERDEFINE_DLG + 3000)
     #define IDC_FOLDING_OF_COMMENTS         (IDD_COMMENT_STYLE_DLG + 1)
-    #define IDC_FORCE_LINE_COMMENTS_AT_BOL  (IDD_COMMENT_STYLE_DLG + 2)
+    #define IDC_PURE_LINE_COMMENTS          (IDD_COMMENT_STYLE_DLG + 2)
+    #define IDC_FORCE_AT_BOL                (IDD_COMMENT_STYLE_DLG + 3)
+    #define IDC_ALLOW_WHITESPACE            (IDD_COMMENT_STYLE_DLG + 4)
 
     #define    IDC_COMMENT                                  (IDD_COMMENT_STYLE_DLG + 100)
         #define    IDC_COMMENT_DESCGROUP_STATIC             (IDC_COMMENT + 1 )
