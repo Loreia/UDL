@@ -136,13 +136,12 @@
         #define    IDC_KEYWORD8_PREFIX_CHECK                (IDC_KEYWORD8 + 21)
         #define    IDC_KEYWORD8_STYLER                      (IDC_KEYWORD8 + 22)
 
-    // #define    IDC_KEYWORD_SCROLLBAR                        (IDD_KEYWORD_STYLE_DLG + 500)
-
 #define    IDD_COMMENT_STYLE_DLG 23000 //(IDD_GLOBAL_USERDEFINE_DLG + 3000)
-    #define IDC_FOLDING_OF_COMMENTS         (IDD_COMMENT_STYLE_DLG + 1)
-    #define IDC_PURE_LINE_COMMENTS          (IDD_COMMENT_STYLE_DLG + 2)
-    #define IDC_FORCE_AT_BOL                (IDD_COMMENT_STYLE_DLG + 3)
-    #define IDC_ALLOW_WHITESPACE            (IDD_COMMENT_STYLE_DLG + 4)
+    #define IDC_FOLDING_OF_COMMENTS             (IDD_COMMENT_STYLE_DLG + 1)
+    #define IDC_COMMENTLINE_POSITION_STATIC     (IDD_COMMENT_STYLE_DLG + 3)
+    #define IDC_ALLOW_ANYWHERE                  (IDD_COMMENT_STYLE_DLG + 4)
+    #define IDC_FORCE_AT_BOL                    (IDD_COMMENT_STYLE_DLG + 5)
+    #define IDC_ALLOW_PRECEEDING_WHITESPACE     (IDD_COMMENT_STYLE_DLG + 6)
 
     #define    IDC_COMMENT                                  (IDD_COMMENT_STYLE_DLG + 100)
         #define    IDC_COMMENT_DESCGROUP_STATIC             (IDC_COMMENT + 1 )

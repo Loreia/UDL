@@ -912,14 +912,20 @@ public :
 
 		for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 			*_keywordLists[i] = '\0';
+
+		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
+            _isPrefix[i] = false;
 	};
 	UserLangContainer(const TCHAR *name, const TCHAR *ext, const TCHAR *udlVer) : _name(name), _ext(ext), _udlVersion(udlVer) {
         _allowFoldOfComments = false;
 		_forcePureLC = PURE_LC_NONE;
 		_foldCompact = false;
 
-		for (int j = 0 ; j < SCE_USER_KWLIST_TOTAL ; j++)
-			*_keywordLists[j] = '\0';
+		for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
+			*_keywordLists[i] = '\0';
+
+		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
+            _isPrefix[i] = false;
 	};
 
 	UserLangContainer & operator=(const UserLangContainer & ulc) {
@@ -944,6 +950,9 @@ public :
 			}
 			for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 				lstrcpy(this->_keywordLists[i], ulc._keywordLists[i]);
+
+			for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
+                _isPrefix[i] = ulc._isPrefix[i];
 		}
 		return *this;
 	};
@@ -961,12 +970,12 @@ private:
 
 	//TCHAR _keywordLists[nbKeywodList][max_char];
 	TCHAR _keywordLists[SCE_USER_KWLIST_TOTAL][max_char];
+	bool _isPrefix[SCE_USER_TOTAL_KEYWORD_GROUPS];
 
 	bool _isCaseIgnored;
 	bool _allowFoldOfComments;
 	int  _forcePureLC;
 	bool _foldCompact;
-	bool _isPrefix[SCE_USER_TOTAL_KEYWORD_GROUPS];
 };
 
 #define MAX_EXTERNAL_LEXER_NAME_LEN 16

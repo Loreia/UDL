@@ -76,6 +76,10 @@ using namespace Scintilla;
 #define SC_ISCOMMENTLINE      0x8000
 #define MULTI_PART_LIMIT      100
 
+#define PURE_LC_NONE    0   // must be in synch with the same values in PowerEditor/src/Parameters.h
+#define PURE_LC_BOL     1
+#define PURE_LC_WSP     2
+
 #define MAPPER_TOTAL 15
 #define FW_VECTORS_TOTAL SCE_USER_TOTAL_DELIMITERS + 6
 
@@ -1104,11 +1108,11 @@ static void setBackwards(WordList * kwLists[], StyleContext & sc, bool prefixes[
 }
 
 static bool isInListNested(int nestedKey, vector<forwardStruct> & forwards, StyleContext & sc,
-                           bool ignoreCase, int & openIndex, int & skipForward, int & newState, bool lineCommentAtBOL,
-                           vector<string> * numberTokens[], vvstring ** numberDelims, int decSeparator)
+                           bool ignoreCase, int & openIndex, int & skipForward, int & newState, int pureLC,
+                           bool visibleChars, vector<string> * numberTokens[], vvstring ** numberDelims, int decSeparator)
 {
     // check if some other delimiter is nested within current delimiter
-    // all delimiters are freely checked but line comments must be synched with property 'lineCommentAtBOL'
+    // all delimiters are freely checked but line comments must be synched with property 'pureLC'
 
     int backup = openIndex;
     vector<forwardStruct>::iterator iter = forwards.begin();
@@ -1118,7 +1122,11 @@ static bool isInListNested(int nestedKey, vector<forwardStruct> & forwards, Styl
         if (nestedKey & iter->maskID)
         {
             if ((iter->maskID != SCE_USER_MASK_NESTING_COMMENT_LINE) ||
-                (iter->maskID == SCE_USER_MASK_NESTING_COMMENT_LINE && !(lineCommentAtBOL && !sc.atLineStart)))
+                (iter->maskID == SCE_USER_MASK_NESTING_COMMENT_LINE &&
+                    ((pureLC == PURE_LC_NONE) ||
+                     (pureLC == PURE_LC_BOL && (sc.chPrev == '\r' || sc.chPrev == '\n')) ||
+                     (pureLC == PURE_LC_WSP && visibleChars == false))))
+
             {
                 if (isInListForward(*(iter->vec), sc, ignoreCase, openIndex, skipForward))
                 {
@@ -1162,11 +1170,11 @@ static void readLastNested(vector<nestedInfo> & lastNestedGroup, int & newState,
 
 static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, WordList *kwLists[], Accessor &styler)
 {
-    bool lineCommentAtBOL = styler.GetPropertyInt("userDefine.forcePureLC", 0) != 0;
+    bool foldComments = styler.GetPropertyInt("userDefine.allowFoldOfComments", 0) != 0;
+    bool ignoreCase   = styler.GetPropertyInt("userDefine.isCaseIgnored",       0) != 0;
+    bool foldCompact  = styler.GetPropertyInt("userDefine.foldCompact",         0) != 0;
+
     int pureLC = styler.GetPropertyInt("userDefine.forcePureLC", 0);
-    bool foldComments     = styler.GetPropertyInt("userDefine.allowFoldOfComments",    0) != 0;
-    bool ignoreCase       = styler.GetPropertyInt("userDefine.isCaseIgnored",          0) != 0;
-    bool foldCompact      = styler.GetPropertyInt("userDefine.foldCompact",            0) != 0;
 
     bool prefixes[MAPPER_TOTAL];
 
@@ -1522,6 +1530,7 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
     int lev = 0;
 
     bool visibleChars = false;
+    bool skipVisibleCheck = false;
 
     bool dontMove = false;
     bool finished = true;
@@ -1662,7 +1671,8 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                 }
 
                 // third, check nested delimiter sequence
-                if (isInListNested(delimNesting, forwards, sc, ignoreCase, openIndex, skipForward, newState, lineCommentAtBOL, numberTokens, numberDelims, decSeparator))
+                if (isInListNested(delimNesting, forwards, sc, ignoreCase, openIndex, skipForward,
+                                    newState, pureLC, visibleChars,numberTokens, numberDelims, decSeparator))
                 {
                     // any backward keyword 'glued' on the left side?
                     setBackwards(kwLists, sc, prefixes, ignoreCase, delimNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);
@@ -1730,7 +1740,8 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                 }
 
                 // third, check nested delimiter sequence
-                if (isInListNested(commentNesting, forwards, sc, ignoreCase, openIndex, skipForward, newState, lineCommentAtBOL, numberTokens, numberDelims, decSeparator))
+                if (isInListNested(commentNesting, forwards, sc, ignoreCase, openIndex, skipForward,
+                                    newState, pureLC, visibleChars, numberTokens, numberDelims, decSeparator))
                 {
                     // any backward keyword 'glued' on the left side?
                     setBackwards(kwLists, sc, prefixes, ignoreCase, commentNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);
@@ -1856,7 +1867,8 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                     break;
 
                 // third, check nested delimiter sequence
-                if (isInListNested(lineCommentNesting, forwards, sc, ignoreCase, openIndex, skipForward, newState, lineCommentAtBOL, numberTokens, numberDelims, decSeparator))
+                if (isInListNested(lineCommentNesting, forwards, sc, ignoreCase, openIndex, skipForward,
+                                    newState, pureLC, visibleChars, numberTokens, numberDelims, decSeparator))
                 {
                     // any backward keyword 'glued' on the left side?
                     setBackwards(kwLists, sc, prefixes, ignoreCase, lineCommentNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);
@@ -1893,7 +1905,9 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
 
                 if (!commentLineOpen.empty())
                 {
-                    if (!(lineCommentAtBOL && !sc.atLineStart))     // some line comments start at BOL only
+                    if ((pureLC == PURE_LC_NONE) ||
+                        (pureLC == PURE_LC_BOL && (sc.chPrev == '\r' || sc.chPrev == '\n')) ||
+                        (pureLC == PURE_LC_WSP && visibleChars == false) )
                     {
                         if (isInListForward(commentLineOpen, sc, ignoreCase, openIndex, skipForward))
                         {
@@ -2080,6 +2094,7 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                 if (!isWhiteSpace(sc.ch))// && isWhiteSpace(sc.chPrev)) // word start
                 {
                     sc.SetState(SCE_USER_STYLE_DEFAULT);
+                    skipVisibleCheck = true;
                     dontMove = true;
                     break;
                 }
@@ -2099,7 +2114,9 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
                                 if (!isWhiteSpace(sc.ch))
                                     isCommentLine = COMMENTLINE_SKIP_TESTING;
 
-        if (foldCompact == true && visibleChars == false && !isWhiteSpace(sc.ch))
+        if (skipVisibleCheck == true)
+            skipVisibleCheck = false;
+        else if (visibleChars == false && !isWhiteSpace(sc.ch))
             visibleChars = true;
 
         if (sc.atLineEnd)
