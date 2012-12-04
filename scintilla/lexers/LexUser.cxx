@@ -198,13 +198,16 @@ struct udlKeywordsMapStruct
     vvstring operators1;
     vvstring foldersInCode1Open, foldersInCode1Middle, foldersInCode1Close;
     vvstring foldersInCode2Open, foldersInCode2Middle, foldersInCode2Close;
-    vector<string> suffixTokens;
     vector<string> prefixTokens1;
     vector<string> prefixTokens2;
+    vector<string> suffixTokens1;
+    vector<string> suffixTokens2;
+    vector<string> extrasTokens1;
+    vector<string> extrasTokens2;
+    vector<string> rangeTokens;
     vector<string> negativePrefixTokens1;
     vector<string> negativePrefixTokens2;
-    vector<string> extrasInPrefixedTokens;
-    vector<string> rangeTokens;
+    vector<string> negativeExtrasTokens2;
 };
 
 // key value is of type "int" so it could receive pointer value !!
@@ -339,7 +342,9 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
     bool hasDot = false;
     bool hasPrefix1 = false;
     bool hasPrefix2 = false;
-    bool hasSuffix = false;
+    bool hasSuffix1 = false;
+    bool hasSuffix2 = false;
+    bool hasExtras2 = false;
     bool hasRange = false;
     bool hasExp = false;
     bool previousWasRange = false;
@@ -347,11 +352,14 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
 
     vector<string> * prefixTokens1          = numberTokens[0];
     vector<string> * prefixTokens2          = numberTokens[1];
-    vector<string> * negativePrefixTokens1  = numberTokens[2];
-    vector<string> * negativePrefixTokens2  = numberTokens[3];
-    vector<string> * extrasInPrefixedTokens = numberTokens[4];
-    vector<string> * rangeTokens            = numberTokens[5];
-    vector<string> * suffixTokens           = numberTokens[6];
+    vector<string> * extrasTokens1          = numberTokens[2];
+    vector<string> * extrasTokens2          = numberTokens[3];
+    vector<string> * suffixTokens1          = numberTokens[4];
+    vector<string> * suffixTokens2          = numberTokens[5];
+    vector<string> * rangeTokens            = numberTokens[6];
+    vector<string> * negativePrefixTokens1  = numberTokens[7];
+    vector<string> * negativePrefixTokens2  = numberTokens[8];
+    vector<string> * negativeExtrasTokens2  = numberTokens[9];
 
     // treat .1234 as correct number sequence
     if (((decSeparator == SEPARATOR_BOTH || decSeparator == SEPARATOR_DOT) && sc.ch == '.') ||
@@ -383,7 +391,7 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
             // prefix2 is styled as number only if followed by an actual number or NBR_EXTRA_CHAR
             int skipForward = 0;
 
-            if (isInListForward3(extrasInPrefixedTokens, sc, ignoreCase, iter->length(), skipForward))
+            if (isInListForward3(extrasTokens1, sc, ignoreCase, iter->length(), skipForward))
             {
                 offset += iter->length() + skipForward;
                 hasPrefix2 = true;
@@ -424,6 +432,29 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
                 }
             }
         }
+        if (hasPrefix1 == false && hasPrefix2 == false)
+        {
+            // or is it a suffixed1 number with extras2?
+            vector<string>::iterator iter = extrasTokens2->begin();
+            vector<string>::iterator last = extrasTokens2->end();
+
+            if (sc.ch == '-')
+            {
+                iter = negativeExtrasTokens2->begin();
+                last = negativeExtrasTokens2->end();
+            }
+            for (; iter != last; ++iter)
+            {
+                if (ignoreCase?sc.MatchIgnoreCase2(iter->c_str()) : sc.Match(iter->c_str()))
+                    break;
+            }
+            if (iter != last)
+            {
+                offset += iter->length();
+                hasExtras2 = true;
+                hasExp = true;  // can't be a scientific E notation
+            }
+        }
     }
     // is it a simple digit?
     if (offset == 0)
@@ -450,6 +481,9 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
         // if (isInListForward2(fwEndVectors, (*fwEndVectors)->size(), sc, ignoreCase, offset)  || isWhiteSpace(sc.GetRelative(offset)))
         if (isWhiteSpace(sc.GetRelative(offset)) || isInListForward2(fwEndVectors, 12, sc, ignoreCase, offset))
         {
+            if (hasExtras2 == true && hasSuffix1 == false)
+                return false;
+
             moveForward = offset;
             return true;    // yay, finally we have a number
         }
@@ -458,34 +492,58 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
         {
             if (isInListForward3(rangeTokens, sc, ignoreCase, offset, skipForward))
             {
+                if (hasExtras2 == true && hasSuffix1 == false)
+                    return false;
+
                 offset += skipForward;
-                hasSuffix = false;
+                hasSuffix1 = false;
+                hasSuffix2 = false;
                 hasDot = false;
                 hasRange = true;
                 hasExp = false;
+                hasExtras2 = false;
                 previousWasRange = true;
                 continue;
             }
         }
 
-        if (hasSuffix == true)  // only RANGE_CHARs are allowed after SUFFIX_CHARs
+        if (hasSuffix2 == true)  // only RANGE_CHARs are allowed after SUFFIX_CHARs
             return false;
 
         if (hasPrefix2 == true)
         {
-            if (isInListForward3(extrasInPrefixedTokens, sc, ignoreCase, offset, skipForward))
+            if (isInListForward3(extrasTokens1, sc, ignoreCase, offset, skipForward))
             {
                 offset += skipForward;
                 continue;
             }
         }
 
-        if (hasSuffix == false/* && hasExp == false*/)
+        if (hasSuffix1 == false && hasPrefix1 == false && hasPrefix2 == false)
         {
-            if (isInListForward3(suffixTokens, sc, ignoreCase, offset, skipForward))
+            if (isInListForward3(suffixTokens1, sc, ignoreCase, offset, skipForward))
             {
                 offset += skipForward;
-                hasSuffix = true;
+                hasExtras2 = false;
+                hasSuffix1 = true;
+                continue;
+            }
+            
+            if (isInListForward3(extrasTokens2, sc, ignoreCase, offset, skipForward))
+            {
+                offset += skipForward;
+                hasExtras2 = true;
+                hasExp = true;  // can't be a scientific E notation
+                continue;
+            }
+        }
+
+        if (hasSuffix2 == false)
+        {
+            if (isInListForward3(suffixTokens2, sc, ignoreCase, offset, skipForward))
+            {
+                offset += skipForward;
+                hasSuffix2 = true;
                 continue;
             }
         }
@@ -559,7 +617,6 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
                     {
                         offset += move;
                         hasPrefix2 = false; // EXTRA_CHARs are not allowed in E notation
-                        //hasSuffix = true; // SUFFIX_CHARs are not allowed in E notation
                         hasDot    = false;
                         hasExp    = true;
                         continue;
@@ -1278,13 +1335,16 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
     vvstring & foldersInCode1Middle = udlKeywordsMap[sUdlName].foldersInCode1Middle;
     vvstring & foldersInCode1Close  = udlKeywordsMap[sUdlName].foldersInCode1Close;
 
-    vector<string> & extrasInPrefixedTokens = udlKeywordsMap[sUdlName].extrasInPrefixedTokens;
+    vector<string> & prefixTokens1          = udlKeywordsMap[sUdlName].prefixTokens1;
+    vector<string> & prefixTokens2          = udlKeywordsMap[sUdlName].prefixTokens2;
+    vector<string> & extrasTokens1          = udlKeywordsMap[sUdlName].extrasTokens1;
+    vector<string> & extrasTokens2          = udlKeywordsMap[sUdlName].extrasTokens2;
+    vector<string> & suffixTokens1          = udlKeywordsMap[sUdlName].suffixTokens1;
+    vector<string> & suffixTokens2          = udlKeywordsMap[sUdlName].suffixTokens2;
     vector<string> & rangeTokens            = udlKeywordsMap[sUdlName].rangeTokens;
     vector<string> & negativePrefixTokens1  = udlKeywordsMap[sUdlName].negativePrefixTokens1;
     vector<string> & negativePrefixTokens2  = udlKeywordsMap[sUdlName].negativePrefixTokens2;
-    vector<string> & prefixTokens1          = udlKeywordsMap[sUdlName].prefixTokens1;
-    vector<string> & prefixTokens2          = udlKeywordsMap[sUdlName].prefixTokens2;
-    vector<string> & suffixTokens           = udlKeywordsMap[sUdlName].suffixTokens;
+    vector<string> & negativeExtrasTokens2  = udlKeywordsMap[sUdlName].negativeExtrasTokens2;
 
     if (startPos == 0)
     {
@@ -1388,30 +1448,36 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
         SubGroup(sFoldersInCode1Close,    foldersInCode1Close,      true);
         SubGroup(sOperators1,             operators1,               true);
 
-        char * numberRanges         = (char *)styler.pprops->Get("userDefine.numberRanges");
-        char * extraCharsInPrefixed = (char *)styler.pprops->Get("userDefine.extraCharsInPrefixed");
-        //char * numberPrefixes1      = (char *)styler.pprops->Get("userDefine.numberPrefixes1");
-        char * numberPrefixes1      = "";
-        //char * numberPrefixes2      = (char *)styler.pprops->Get("userDefine.numberPrefixes2");
-        char * numberPrefixes2      = (char *)styler.pprops->Get("userDefine.numberPrefixes");
-        char * numberSuffixes       = (char *)styler.pprops->Get("userDefine.numberSuffixes");
+        char * numberPrefix1        = (char *)styler.pprops->Get("userDefine.numberPrefix1");
+        char * numberPrefix2        = (char *)styler.pprops->Get("userDefine.numberPrefix2");
+        char * numberExtras1        = (char *)styler.pprops->Get("userDefine.numberExtras1");
+        char * numberExtras2        = (char *)styler.pprops->Get("userDefine.numberExtras2");
+        char * numberSuffix1        = (char *)styler.pprops->Get("userDefine.numberSuffix1");
+        char * numberSuffix2        = (char *)styler.pprops->Get("userDefine.numberSuffix2");
+        char * numberRange          = (char *)styler.pprops->Get("userDefine.numberRange");
 
-        negativePrefixTokens1.clear();
+        prefixTokens1.clear();
         prefixTokens2.clear();
-        negativePrefixTokens1.clear();
-        prefixTokens2.clear();
-        extrasInPrefixedTokens.clear();
+        extrasTokens1.clear();
+        extrasTokens2.clear();
+        suffixTokens1.clear();
+        suffixTokens2.clear();
         rangeTokens.clear();
-        suffixTokens.clear();
+        negativePrefixTokens1.clear();
+        negativePrefixTokens2.clear();
+        negativeExtrasTokens2.clear();
 
         // 'StringToVector' converts strings into vector<string> objects
-        StringToVector(numberPrefixes1, prefixTokens1);
-        StringToVector(numberPrefixes1, negativePrefixTokens1, true);
-        StringToVector(numberPrefixes2, prefixTokens2);
-        StringToVector(numberPrefixes2, negativePrefixTokens2, true);
-        StringToVector(numberSuffixes, suffixTokens);
-        StringToVector(extraCharsInPrefixed, extrasInPrefixedTokens);
-        StringToVector(numberRanges, rangeTokens);
+        StringToVector(numberPrefix1, prefixTokens1);
+        StringToVector(numberPrefix1, negativePrefixTokens1, true);
+        StringToVector(numberPrefix2, prefixTokens2);
+        StringToVector(numberPrefix2, negativePrefixTokens2, true);
+        StringToVector(numberExtras1, extrasTokens1);
+        StringToVector(numberExtras2, extrasTokens2);
+        StringToVector(numberExtras2, negativeExtrasTokens2, true);
+        StringToVector(numberSuffix1, suffixTokens1);
+        StringToVector(numberSuffix2, suffixTokens2);
+        StringToVector(numberRange,   rangeTokens);
     }
 
     // forward strings are actually kept in forwardStruct's, this allows easy access to ScintillaID and MaskID
@@ -1513,14 +1579,17 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
         numberDelimSeparators[i][11] = (delimNestings[i] & SCE_USER_MASK_NESTING_OPERATORS1)    ? &operators1      : NULL;
     }
 
-    vector<string> * numberTokens[7];
+    vector<string> * numberTokens[10];
     numberTokens[0] = &prefixTokens1;
     numberTokens[1] = &prefixTokens2;
-    numberTokens[2] = &negativePrefixTokens1;
-    numberTokens[3] = &negativePrefixTokens2;
-    numberTokens[4] = &extrasInPrefixedTokens;
-    numberTokens[5] = &rangeTokens;
-    numberTokens[6] = &suffixTokens;
+    numberTokens[2] = &extrasTokens1;
+    numberTokens[3] = &extrasTokens2;
+    numberTokens[4] = &suffixTokens1;
+    numberTokens[5] = &suffixTokens2;
+    numberTokens[6] = &rangeTokens;
+    numberTokens[7] = &negativePrefixTokens1;
+    numberTokens[8] = &negativePrefixTokens2;
+    numberTokens[9] = &negativeExtrasTokens2;
 
     int levelCurrent = SC_FOLDLEVELBASE;
     int lineCurrent = 0;
@@ -1672,7 +1741,7 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
 
                 // third, check nested delimiter sequence
                 if (isInListNested(delimNesting, forwards, sc, ignoreCase, openIndex, skipForward,
-                                    newState, pureLC, visibleChars,numberTokens, numberDelims, decSeparator))
+                                    newState, pureLC, visibleChars, numberTokens, numberDelims, decSeparator))
                 {
                     // any backward keyword 'glued' on the left side?
                     setBackwards(kwLists, sc, prefixes, ignoreCase, delimNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);

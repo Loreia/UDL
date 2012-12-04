@@ -1,10 +1,14 @@
 Changes in this commit.
 
-Added support for pure LC in Scintilla project.
+Added support new number definition in UDL GUI (prefix1, prefix2, extras1, extras2, suffix1, suffix2, range).
+Added support in suffix2 in LexUser.cxx (function IsNumber(...)).
 
 Files changed:
-PowerEditor/src/Parameters.h
+PowerEditor/src/Parameters.cpp
+PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
 PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
+PowerEditor/src/ScitillaComponent/UserDefineDialog.h
 PowerEditor/src/ScitillaComponent/UserDefineDialog.rc
 PowerEditor/src/ScitillaComponent/UserDefineResource.h
+scintilla/include/SciLexer.h
 scintilla/lexers/LexUser.cxx

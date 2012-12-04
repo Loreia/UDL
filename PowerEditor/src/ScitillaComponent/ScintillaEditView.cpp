@@ -655,7 +655,6 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
 		execute(SCI_SETPROPERTY, (WPARAM)name, (LPARAM)(userLangContainer->_isPrefix[i]?"1":"0"));
 	}
 
-	// for (int i = 0 ; i < userLangContainer->getNbKeywordList() ; i++)
 	for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 	{
 #ifndef UNICODE
@@ -664,45 +663,9 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
 		WcharMbcsConvertor *wmc = WcharMbcsConvertor::getInstance();
 		const char * keyWords_char = wmc->wchar2char(userLangContainer->_keywordLists[i], codepage);
 #endif
-		if (i == SCE_USER_KWLIST_COMMENTS)
+		if (globalMappper().setLexerMapper.find(i) != globalMappper().setLexerMapper.end())
 		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.comments", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_DELIMITERS)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.delimiters", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_OPERATORS1)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.operators1", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_NUMBER_EXTRA)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.numberRanges", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_NUMBER_PREFIX)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.numberPrefixes", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_NUMBER_EXTRAPREF)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.extraCharsInPrefixed", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_NUMBER_SUFFIX)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.numberSuffixes", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_FOLDERS_IN_CODE1_OPEN)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.foldersInCode1Open", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_FOLDERS_IN_CODE1_MIDDLE)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.foldersInCode1Middle", reinterpret_cast<LPARAM>(keyWords_char));
-		}
-		else if (i == SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE)
-		{
-			execute(SCI_SETPROPERTY, (WPARAM)"userDefine.foldersInCode1Close", reinterpret_cast<LPARAM>(keyWords_char));
+            execute(SCI_SETPROPERTY, (WPARAM)globalMappper().setLexerMapper[i].c_str(), reinterpret_cast<LPARAM>(keyWords_char));
 		}
 		else // OPERATORS2, FOLDERS_IN_CODE2, FOLDERS_IN_COMMENT, KEYWORDS1-8
 		{
@@ -771,7 +734,6 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
     itoa((int)_currentBufferID, intBuffer, 10); // use numeric value of BufferID pointer
     execute(SCI_SETPROPERTY, (WPARAM)"userDefine.currentBufferID", reinterpret_cast<LPARAM>(intBuffer));
 	
-	// for (int i = 0 ; i < userLangContainer->_styleArray.getNbStyler() ; i++)
 	for (int i = 0 ; i < SCE_USER_STYLE_TOTAL_STYLES ; i++)
 	{
 		Style & style = userLangContainer->_styleArray.getStyler(i);
