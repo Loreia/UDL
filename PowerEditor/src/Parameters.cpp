@@ -2551,9 +2551,8 @@ void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
 		if (boolStr)
             _userLangArray[_nbUserLang - 1]->_allowFoldOfComments = !lstrcmp(TEXT("yes"), boolStr);
 
-		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("forceLineCommentsAtBOL"));
-		if (boolStr)
-            _userLangArray[_nbUserLang - 1]->_forceLineCommentsAtBOL = !lstrcmp(TEXT("yes"), boolStr);
+		(globalSettingNode->ToElement())->Attribute(TEXT("forcePureLC"), &_userLangArray[_nbUserLang - 1]->_forcePureLC);
+		(globalSettingNode->ToElement())->Attribute(TEXT("decimalSeparator"), &_userLangArray[_nbUserLang - 1]->_decimalSeparator);
 
 		boolStr = (globalSettingNode->ToElement())->Attribute(TEXT("foldCompact"));
 		if (boolStr)
@@ -2568,7 +2567,7 @@ void NppParameters::feedUserSettings(TiXmlNode *settingsRoot)
         {
             for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
             {
-                boolStr = (prefixNode->ToElement())->Attribute(globalMappper().keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1]);
+                boolStr = (prefixNode->ToElement())->Attribute(globalMappper().keywordNameMapper[i+SCE_USER_KWLIST_KEYWORDS1]);
                 if (boolStr)
                     _userLangArray[_nbUserLang - 1]->_isPrefix[i] = !lstrcmp(TEXT("yes"), boolStr);
             }
@@ -5299,12 +5298,13 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 		TiXmlElement *globalElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Global"))))->ToElement();
 		globalElement->SetAttribute(TEXT("caseIgnored"),			userLang->_isCaseIgnored ? TEXT("yes"):TEXT("no"));
 		globalElement->SetAttribute(TEXT("allowFoldOfComments"),	userLang->_allowFoldOfComments ? TEXT("yes"):TEXT("no"));
-		globalElement->SetAttribute(TEXT("forceLineCommentsAtBOL"), userLang->_forceLineCommentsAtBOL ? TEXT("yes"):TEXT("no"));
 		globalElement->SetAttribute(TEXT("foldCompact"),			userLang->_foldCompact ? TEXT("yes"):TEXT("no"));
+		globalElement->SetAttribute(TEXT("forcePureLC"),            userLang->_forcePureLC);
+		globalElement->SetAttribute(TEXT("decimalSeparator"),       userLang->_decimalSeparator);
 
 		TiXmlElement *prefixElement = (settingsElement->InsertEndChild(TiXmlElement(TEXT("Prefix"))))->ToElement();
 		for (int i = 0 ; i < SCE_USER_TOTAL_KEYWORD_GROUPS ; i++)
-			prefixElement->SetAttribute(globalMappper().keywordListMapper[i+SCE_USER_KWLIST_KEYWORDS1], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
+			prefixElement->SetAttribute(globalMappper().keywordNameMapper[i+SCE_USER_KWLIST_KEYWORDS1], userLang->_isPrefix[i]?TEXT("yes"):TEXT("no"));
 	}
 
 	TiXmlElement *kwlElement = (rootElement->InsertEndChild(TiXmlElement(TEXT("KeywordLists"))))->ToElement();
@@ -5312,7 +5312,7 @@ void NppParameters::insertUserLang2Tree(TiXmlNode *node, UserLangContainer *user
 	for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
 	{
 		TiXmlElement *kwElement = (kwlElement->InsertEndChild(TiXmlElement(TEXT("Keywords"))))->ToElement();
-		kwElement->SetAttribute(TEXT("name"), globalMappper().keywordListMapper[i]);
+		kwElement->SetAttribute(TEXT("name"), globalMappper().keywordNameMapper[i]);
 		kwElement->InsertEndChild(TiXmlText(userLang->_keywordLists[i]));
 	}
 
