@@ -141,7 +141,7 @@
     #define IDC_COMMENTLINE_POSITION_STATIC     (IDD_COMMENT_STYLE_DLG + 3)
     #define IDC_ALLOW_ANYWHERE                  (IDD_COMMENT_STYLE_DLG + 4)
     #define IDC_FORCE_AT_BOL                    (IDD_COMMENT_STYLE_DLG + 5)
-    #define IDC_ALLOW_PRECEEDING_WHITESPACE     (IDD_COMMENT_STYLE_DLG + 6)
+    #define IDC_ALLOW_WHITESPACE                (IDD_COMMENT_STYLE_DLG + 6)
 
     #define    IDC_COMMENT                                  (IDD_COMMENT_STYLE_DLG + 100)
         #define    IDC_COMMENT_DESCGROUP_STATIC             (IDC_COMMENT + 1 )
@@ -168,6 +168,10 @@
         #define    IDC_NUMBER_SUFFIX2_EDIT                  (IDC_NUMBER + 41)
         #define    IDC_NUMBER_RANGE_STATIC                  (IDC_NUMBER + 42)
         #define    IDC_NUMBER_RANGE_EDIT                    (IDC_NUMBER + 43)
+        #define    IDC_DECIMAL_SEPARATOR_STATIC             (IDC_NUMBER + 44)
+        #define    IDC_DOT_RADIO                            (IDC_NUMBER + 45)
+        #define    IDC_COMMA_RADIO                          (IDC_NUMBER + 46)
+        #define    IDC_BOTH_RADIO                           (IDC_NUMBER + 47)
 
     #define    IDC_COMMENTLINE                              (IDD_COMMENT_STYLE_DLG + 300)
         #define    IDC_COMMENTLINE_DESCGROUP_STATIC         (IDC_COMMENTLINE + 1 )

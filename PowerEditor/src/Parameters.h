@@ -114,6 +114,10 @@ const int COPYDATA_FILENAMESW = 2;
 #define PURE_LC_BOL     1
 #define PURE_LC_WSP     2
 
+#define DECSEP_DOT      0
+#define DECSEP_COMMA    1
+#define DECSEP_BOTH     2
+
 const TCHAR fontSizeStrs[][3] = {TEXT(""), TEXT("5"), TEXT("6"), TEXT("7"), TEXT("8"), TEXT("9"), TEXT("10"), TEXT("11"), TEXT("12"), TEXT("14"), TEXT("16"), TEXT("18"), TEXT("20"), TEXT("22"), TEXT("24"), TEXT("26"), TEXT("28")};
 
 const TCHAR localConfFile[] = TEXT("doLocalConf.xml");
@@ -907,6 +911,7 @@ public :
 		_udlVersion = TEXT("");
         _allowFoldOfComments = false;
 		_forcePureLC = PURE_LC_NONE;
+        _decimalSeparator = DECSEP_DOT;
 		_foldCompact = false;
         _isCaseIgnored = false;
 
@@ -919,6 +924,7 @@ public :
 	UserLangContainer(const TCHAR *name, const TCHAR *ext, const TCHAR *udlVer) : _name(name), _ext(ext), _udlVersion(udlVer) {
         _allowFoldOfComments = false;
 		_forcePureLC = PURE_LC_NONE;
+        _decimalSeparator = DECSEP_DOT;
 		_foldCompact = false;
 
 		for (int i = 0 ; i < SCE_USER_KWLIST_TOTAL ; i++)
@@ -938,6 +944,7 @@ public :
 			this->_styleArray = ulc._styleArray;
 			this->_allowFoldOfComments = ulc._allowFoldOfComments;
 			this->_forcePureLC = ulc._forcePureLC;
+			this->_decimalSeparator = ulc._decimalSeparator;
 			this->_foldCompact = ulc._foldCompact;
 			int nbStyler = this->_styleArray.getNbStyler();
 			for (int i = 0 ; i < nbStyler ; i++)
@@ -975,6 +982,7 @@ private:
 	bool _isCaseIgnored;
 	bool _allowFoldOfComments;
 	int  _forcePureLC;
+    int _decimalSeparator;
 	bool _foldCompact;
 };
 

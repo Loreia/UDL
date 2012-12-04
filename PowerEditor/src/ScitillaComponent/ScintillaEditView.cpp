@@ -727,6 +727,9 @@ void ScintillaEditView::setUserLexer(const TCHAR *userLangName)
     itoa(userLangContainer->_forcePureLC, intBuffer, 10);
 	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.forcePureLC", reinterpret_cast<LPARAM>(intBuffer));
 
+    itoa(userLangContainer->_decimalSeparator, intBuffer, 10);
+	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.decimalSeparator", reinterpret_cast<LPARAM>(intBuffer));
+
 	// at the end (position SCE_USER_KWLIST_TOTAL) send id values
     itoa((int)userLangContainer->getName(), intBuffer, 10); // use numeric value of TCHAR pointer
 	execute(SCI_SETPROPERTY, (WPARAM)"userDefine.udlName", reinterpret_cast<LPARAM>(intBuffer));

@@ -384,9 +384,13 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
         case WM_ACTIVATE :
         case WM_SHOWWINDOW :
         {
-            ::SendDlgItemMessage(_hSelf, IDC_ALLOW_ANYWHERE,   BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_NONE, 0);
-            ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,     BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL,  0);
-            ::SendDlgItemMessage(_hSelf, IDC_ALLOW_PRECEEDING_WHITESPACE, BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP,  0);
+            ::SendDlgItemMessage(_hSelf, IDC_ALLOW_ANYWHERE,    BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_NONE, 0);
+            ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,      BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL,  0);
+            ::SendDlgItemMessage(_hSelf, IDC_ALLOW_WHITESPACE,  BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP,  0);
+
+            ::SendDlgItemMessage(_hSelf, IDC_DOT_RADIO,         BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_DOT,   0);
+            ::SendDlgItemMessage(_hSelf, IDC_COMMA_RADIO,       BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_COMMA, 0);
+            ::SendDlgItemMessage(_hSelf, IDC_BOTH_RADIO,        BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_BOTH,  0);
 
             return SharedParametersDialog::run_dlgProc(Message, wParam, lParam);
         }
@@ -399,17 +403,32 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
                 {
                     return setPropertyByCheck(_hSelf, wParam, _pUserLang->_allowFoldOfComments);
                 }
-
                 case IDC_ALLOW_ANYWHERE :
                 case IDC_FORCE_AT_BOL :
-                case IDC_ALLOW_PRECEEDING_WHITESPACE :
+                case IDC_ALLOW_WHITESPACE :
                 {
                     if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_ALLOW_ANYWHERE), BM_GETCHECK, 0, 0))
                         _pUserLang->_forcePureLC = PURE_LC_NONE;
                     else if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_FORCE_AT_BOL), BM_GETCHECK, 0, 0))
                         _pUserLang->_forcePureLC = PURE_LC_BOL;
-                    else if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_ALLOW_PRECEEDING_WHITESPACE), BM_GETCHECK, 0, 0))
+                    else if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_ALLOW_WHITESPACE), BM_GETCHECK, 0, 0))
                         _pUserLang->_forcePureLC = PURE_LC_WSP;
+
+                    if (_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
+                        _pScintilla->styleChange();
+
+                    return TRUE;
+                }
+                case IDC_DOT_RADIO :
+                case IDC_COMMA_RADIO :
+                case IDC_BOTH_RADIO :
+                {
+                    if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_DOT_RADIO), BM_GETCHECK, 0, 0))
+                        _pUserLang->_decimalSeparator = DECSEP_DOT;
+                    else if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_COMMA_RADIO), BM_GETCHECK, 0, 0))
+                        _pUserLang->_decimalSeparator = DECSEP_COMMA;
+                    else if (BST_CHECKED == ::SendMessage(::GetDlgItem(_hSelf, IDC_BOTH_RADIO), BM_GETCHECK, 0, 0))
+                        _pUserLang->_decimalSeparator = DECSEP_BOTH;
 
                     if (_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
                         _pScintilla->styleChange();
@@ -602,7 +621,11 @@ void CommentStyleDialog::updateDlg()
 
     ::SendDlgItemMessage(_hSelf, IDC_ALLOW_ANYWHERE,        BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_NONE, 0);
     ::SendDlgItemMessage(_hSelf, IDC_FORCE_AT_BOL,          BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_BOL,  0);
-    ::SendDlgItemMessage(_hSelf, IDC_ALLOW_PRECEEDING_WHITESPACE,      BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP,  0);
+    ::SendDlgItemMessage(_hSelf, IDC_ALLOW_WHITESPACE,      BM_SETCHECK, _pUserLang->_forcePureLC == PURE_LC_WSP,  0);
+
+    ::SendDlgItemMessage(_hSelf, IDC_DOT_RADIO,             BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_DOT, 0);
+    ::SendDlgItemMessage(_hSelf, IDC_COMMA_RADIO,           BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_COMMA,  0);
+    ::SendDlgItemMessage(_hSelf, IDC_BOTH_RADIO,            BM_SETCHECK, _pUserLang->_decimalSeparator == DECSEP_BOTH,  0);
 
     ::SendDlgItemMessage(_hSelf, IDC_NUMBER_PREFIX1_EDIT,    WM_SETTEXT, 0, (LPARAM)(_pUserLang->_keywordLists[SCE_USER_KWLIST_NUMBER_PREFIX1]));
     ::SendDlgItemMessage(_hSelf, IDC_NUMBER_PREFIX2_EDIT,    WM_SETTEXT, 0, (LPARAM)(_pUserLang->_keywordLists[SCE_USER_KWLIST_NUMBER_PREFIX2]));
