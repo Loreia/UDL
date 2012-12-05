@@ -1,11 +1,8 @@
 Changes in this commit.
 
-Added support for user selectable decimal separator.
+Fixed a bug where multi-part keywords were not recognized if 'Ignore case' was turned on.
+Revision bumped to 2.1.0.1
 
 Files changed:
-PowerEditor/src/Parameters.cpp
-PowerEditor/src/Parameters.h
-PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
-PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
-PowerEditor/src/ScitillaComponent/UserDefineDialog.rc
-PowerEditor/src/ScitillaComponent/UserDefineResource.h
+scintilla/include/SciLexer.h
+scintilla/lexers/LexUser.cxx

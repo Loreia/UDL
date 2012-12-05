@@ -1026,6 +1026,7 @@ static bool isInListBackward(WordList & list, StyleContext & sc, bool specialMod
 
                         a = static_cast<unsigned char>(ignoreCase?toupper(list.words[i][indexa++]):list.words[i][indexa++]);
                     }
+                    b = ignoreCase?toupper(b):b;
                 }
                 else
                     b = ignoreCase?toupper(sc.GetRelative(offset + indexb++)):sc.GetRelative(offset + indexb++);
