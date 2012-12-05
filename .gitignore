@@ -21,6 +21,8 @@ PowerEditor/visual.net/bin/
 *.orig
 PowerEditor/bin/userDefineLang.xml
 PowerEditor/src/ScitillaComponent/resource.h
+PowerEditor/bin/*.zip
+PowerEditor/bin/installation_instructions.txt
 
 # Which files should I include in .gitignore when using Git in conjunction with Visual Studio Solutions (.sln) and Projects?
 # Community Wiki:
