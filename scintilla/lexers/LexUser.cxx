@@ -81,7 +81,7 @@ using namespace Scintilla;
 #define PURE_LC_WSP     2
 
 #define MAPPER_TOTAL 15
-#define FW_VECTORS_TOTAL SCE_USER_TOTAL_DELIMITERS + 6
+#define FW_VECTORS_TOTAL SCE_USER_TOTAL_DELIMITERS + 9
 
 const int maskMapper[MAPPER_TOTAL] =
 {
@@ -1514,14 +1514,17 @@ static void ColouriseUserDoc(unsigned int startPos, int length, int initStyle, W
     fwEndVectors[3]  = &commentLineClose;
     fwEndVectors[4]  = &commentOpen;
     fwEndVectors[5]  = &commentClose;
-    fwEndVectors[6]  = &delim1Close;
-    fwEndVectors[7]  = &delim2Close;
-    fwEndVectors[8]  = &delim3Close;
-    fwEndVectors[9]  = &delim4Close;
-    fwEndVectors[10] = &delim5Close;
-    fwEndVectors[11] = &delim6Close;
-    fwEndVectors[12] = &delim7Close;
-    fwEndVectors[13] = &delim8Close;
+    fwEndVectors[6]  = &foldersInCode1Open;
+    fwEndVectors[7]  = &foldersInCode1Middle;
+    fwEndVectors[8]  = &foldersInCode1Close;
+    fwEndVectors[9]  = &delim1Close;
+    fwEndVectors[10] = &delim2Close;
+    fwEndVectors[11] = &delim3Close;
+    fwEndVectors[12] = &delim4Close;
+    fwEndVectors[13] = &delim5Close;
+    fwEndVectors[14] = &delim6Close;
+    fwEndVectors[15] = &delim7Close;
+    fwEndVectors[16] = &delim8Close;
 
     // keep delimiter escape/close strings in an array for easier looping
     vvstring * delimVectors[(SCE_USER_TOTAL_DELIMITERS+2) * 2];

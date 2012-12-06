@@ -1,8 +1,8 @@
 Changes in this commit.
 
-Extended Keyword (1 through 8) edit boxes to hold 128k of TCHARs.
-Revision bumped to 2.1.0.2
+Extended 'forwardEndVectors' with 'Folding in code 1' keywords.
+This fixes an error where numbers are not recognized when followed by SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE.
+Revision bumped to 2.1.0.3
 
 Files changed:
-PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
-scintilla/include/SciLexer.h
+scintilla/lexers/LexUser.cxx
