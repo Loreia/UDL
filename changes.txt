@@ -1,8 +1,11 @@
 Changes in this commit.
 
-Extended 'forwardEndVectors' with 'Folding in code 1' keywords.
-This fixes an error where numbers are not recognized when followed by SCE_USER_KWLIST_FOLDERS_IN_CODE1_CLOSE.
-Revision bumped to 2.1.0.3
+Updated project files to avoid constant rebuilding of the Notepad++ project in Visual studio 2010 even if code was not changed.
+Revision bumped to 2.1.0.4
 
 Files changed:
-scintilla/lexers/LexUser.cxx
+PowerEditor/visual.net/SciLexer.vcxproj
+PowerEditor/visual.net/notepadPlus.sln
+PowerEditor/visual.net/notepadPlus.vcxproj
+scintilla/include/SciLexer.h
+
