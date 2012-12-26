@@ -1,11 +1,9 @@
 Changes in this commit.
 
-Updated project files to avoid constant rebuilding of the Notepad++ project in Visual studio 2010 even if code was not changed.
-Revision bumped to 2.1.0.4
+Fixed crash on Windows XP systems.
+Revision bumped to 2.1.0.5
 
 Files changed:
-PowerEditor/visual.net/SciLexer.vcxproj
-PowerEditor/visual.net/notepadPlus.sln
-PowerEditor/visual.net/notepadPlus.vcxproj
+PowerEditor/src/ScitillaComponent/UserDefineDialog.cpp
 scintilla/include/SciLexer.h
-
+changes.txt

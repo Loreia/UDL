@@ -395,7 +395,6 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
         case WM_ACTIVATE :
         case WM_SHOWWINDOW :
         {
@@ -1045,6 +1044,8 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
     {
         case WM_INITDIALOG :
         {
+            _pUserLang = _pCurrentUserLang;
+
             _ctrlTab.init(_hInst, _hSelf, false);
             _ctrlTab.setFont(TEXT("Tahoma"), 13);
 
@@ -1095,8 +1096,6 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
             ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_SETCURSEL, 0, 0);
 
             enableLangAndControlsBy(0);
-
-            _pUserLang = _pCurrentUserLang;
 
             if (pNppParam->isTransparentAvailable())
             {
