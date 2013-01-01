@@ -1,9 +1,9 @@
 Changes in this commit.
 
-Fixed solution file to build SciLexer project.
-Revision bumped to 2.1.0.6
+Fixed SciLexer.vcxproj.filters file to remove unneeded files.
+Revision bumped to 2.1.0.7
 
 Files changed:
-PowerEditor/visual.net/notepadPlus.sln
+PowerEditor/visual.net/SciLexer.vcxproj.filters
 scintilla/include/SciLexer.h
 changes.txt
