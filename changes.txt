@@ -1,9 +1,7 @@
 Changes in this commit.
 
-Fixed SciLexer.vcxproj.filters file to remove unneeded files.
-Revision bumped to 2.1.0.7
+A small update in .gitignore (to ignore file mode (chmod) on Linux)
 
 Files changed:
-PowerEditor/visual.net/SciLexer.vcxproj.filters
-scintilla/include/SciLexer.h
+.gitignore
 changes.txt

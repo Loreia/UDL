@@ -1,4 +1,7 @@
 *.pdb
+PowerEditor/bin/updater/
+PowerEditor/bin/*.exe
+PowerEditor/bin/*.zip
 PowerEditor/bin/SciLexer2.dll
 PowerEditor/bin/notepad2++.exe
 PowerEditor/bin/config.model.xml
@@ -21,7 +24,6 @@ PowerEditor/visual.net/bin/
 *.orig
 PowerEditor/bin/userDefineLang.xml
 PowerEditor/src/ScitillaComponent/resource.h
-PowerEditor/bin/*.zip
 PowerEditor/bin/installation_instructions.txt
 
 # Which files should I include in .gitignore when using Git in conjunction with Visual Studio Solutions (.sln) and Projects?
