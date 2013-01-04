@@ -254,6 +254,21 @@ BOOL CALLBACK KeyWordsStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPAR
 {
     switch (Message)
     {
+        case WM_INITDIALOG :
+        {
+            // extend Keyword edit boxes to hold 128k of TCHARs
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD1_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD2_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD3_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD4_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD5_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD6_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD7_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+            ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD8_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
+
+            return TRUE;
+        }
+
         case WM_COMMAND :
         {
             switch (wParam)
@@ -380,7 +395,6 @@ BOOL CALLBACK CommentStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LPARA
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
         case WM_ACTIVATE :
         case WM_SHOWWINDOW :
         {
@@ -1030,6 +1044,8 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
     {
         case WM_INITDIALOG :
         {
+            _pUserLang = _pCurrentUserLang;
+
             _ctrlTab.init(_hInst, _hSelf, false);
             _ctrlTab.setFont(TEXT("Tahoma"), 13);
 
@@ -1080,8 +1096,6 @@ BOOL CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPARAM 
             ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_SETCURSEL, 0, 0);
 
             enableLangAndControlsBy(0);
-
-            _pUserLang = _pCurrentUserLang;
 
             if (pNppParam->isTransparentAvailable())
             {

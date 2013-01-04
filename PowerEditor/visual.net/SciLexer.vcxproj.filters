@@ -446,9 +446,6 @@
     <ClInclude Include="..\..\scintilla\src\CallTip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\scintilla\scintilla\src\Catalogue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\scintilla\src\CellBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -521,7 +518,7 @@
     <ClInclude Include="..\..\scintilla\src\XPM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\scintilla\win32\PlatformRes.h">
+    <ClInclude Include="..\..\scintilla\src\Catalogue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
