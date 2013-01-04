@@ -53,6 +53,7 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" />
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">notepad2++</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">notepad2++</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <ClCompile>
@@ -138,7 +139,7 @@ copy ..\src\langs.model.xml ..\bin\langs.model.xml
 copy ..\src\stylers.model.xml ..\bin\stylers.model.xml
 copy ..\src\shortcuts.xml ..\bin\shortcuts.xml
 copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
-..\misc\vistaIconTool\changeIcon.bat "..\misc\vistaIconTool\ChangeIcon.exe" "$(OutDir)notepad++.exe"
+..\misc\vistaIconTool\changeIcon.bat "..\misc\vistaIconTool\ChangeIcon.exe" "$(OutDir)notepad2++.exe"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -244,9 +245,6 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
     <None Include="..\src\icons\cut_dis.ico" />
     <None Include="..\src\icons\cut_off.ico" />
     <None Include="..\src\icons\cut_on.ico" />
-    <None Include="..\src\default_close.ico" />
-    <None Include="..\src\default_new.ico" />
-    <None Include="..\src\default_open.ico" />
     <None Include="..\src\icons\delete.ico" />
     <None Include="..\src\cursors\drag.cur" />
     <None Include="..\src\cursors\drag_interdit.cur" />
@@ -261,11 +259,6 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
     <None Include="..\src\icons\findrep_on.ico" />
     <None Include="..\src\icons\findReplace.bmp" />
     <None Include="..\src\icons\findResult.ico" />
-    <None Include="..\src\hot_close.ico" />
-    <None Include="..\src\hot_new.ico" />
-    <None Include="..\src\hot_open.ico" />
-    <None Include="..\src\icons\icon10.ico" />
-    <None Include="..\src\icons\imp_off.ico" />
     <None Include="..\src\icons\imprim_off.ico" />
     <None Include="..\src\icons\imprim_on.ico" />
     <None Include="..\src\icons\indentGuide.bmp" />
@@ -337,7 +330,6 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
     <None Include="..\src\icons\undo_off.ico" />
     <None Include="..\src\icons\undo_on.ico" />
     <None Include="..\src\icons\unsaved.ico" />
-    <None Include="..\src\cursors\up.cur" />
     <None Include="..\src\icons\userDefineDlg_off.ico" />
     <None Include="..\src\icons\userDefineDlg_on.ico" />
     <None Include="..\src\icons\wrap.bmp" />
@@ -349,7 +341,6 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
     <None Include="..\src\icons\zoomOut.bmp" />
     <None Include="..\src\icons\zoomOut_off.ico" />
     <None Include="..\src\icons\zoomOut_on.ico" />
-    <None Include="..\src\ScitillaComponent\resource" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\WinControls\AnsiCharPanel\ansiCharPanel.rc" />
@@ -398,7 +389,6 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
     <ClInclude Include="..\src\WinControls\DockingWnd\DockingSplitter.h" />
     <ClInclude Include="..\src\ScitillaComponent\DocTabView.h" />
     <ClInclude Include="..\src\WinControls\DocumentMap\documentMap.h" />
-    <ClInclude Include="..\src\WinControls\DocumentMap\documentMapl_rc.h" />
     <ClInclude Include="..\src\EncodingMapper.h" />
     <ClInclude Include="..\src\WinControls\OpenSaveFileDialog\FileDialog.h" />
     <ClInclude Include="..\src\MISC\FileNameStringSplitter.h" />

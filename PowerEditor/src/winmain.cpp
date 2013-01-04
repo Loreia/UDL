@@ -35,6 +35,18 @@
 
 typedef std::vector<const TCHAR*> ParamVector;
 
+char getDriveLetter(){
+	char drive = '\0';
+	TCHAR current[MAX_PATH];
+
+	::GetCurrentDirectory(MAX_PATH, current);
+	int driveNbr = ::PathGetDriveNumber(current);
+	if (driveNbr != -1)
+		drive = 'A' + char(driveNbr);
+
+	return drive;
+}
+
 bool checkSingleFile(const TCHAR * commandLine) {
 	TCHAR fullpath[MAX_PATH];
 	::GetFullPathName(commandLine, MAX_PATH, fullpath, NULL);
@@ -256,6 +268,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
 			}
 			else
 			{
+				if ((currentFile[0] == '\\' && currentFile[1] != '\\') || currentFile[0] == '/')
+				{
+					quotFileName += getDriveLetter();
+					quotFileName += ':';
+				}
 				quotFileName += currentFile;
 			}
 			quotFileName += TEXT("\" ");
@@ -326,10 +343,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
 	generic_string version = TEXT("-v");
 	version += VERSION_VALUE;
 
-	winVer curWinVer = pNppParameters->getWinVersion();
-
 	bool isUpExist = nppGui._doesExistUpdater = (::PathFileExists(updaterFullPath.c_str()) == TRUE);
-	bool winSupported = (curWinVer >= WV_W2K);
+
     bool doUpdate = nppGui._autoUpdateOpt._doAutoUpdate;
 
     if (doUpdate) // check more detail 
@@ -340,10 +355,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
             doUpdate = false;
     }
 
-	if (!winSupported)
-		nppGui._doesExistUpdater = false;
-
-	if (TheFirstOne && isUpExist && doUpdate && winSupported)
+	if (TheFirstOne && isUpExist && doUpdate)
 	{
 		Process updater(updaterFullPath.c_str(), version.c_str(), updaterDir.c_str());
 		updater.run();

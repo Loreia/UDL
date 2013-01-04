@@ -26,40 +26,11 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-#ifndef COLOUR_PICKER_H
-#define COLOUR_PICKER_H
+#ifndef IDD_FUNCLISTPANEL_RC_H
+#define IDD_FUNCLISTPANEL_RC_H
 
-class ColourPopup;
+#define	IDD_FUNCLIST_PANEL		3400
+#define	IDC_LIST_FUNCLIST    (IDD_FUNCLIST_PANEL + 1)
 
-#define CPN_COLOURPICKED (BN_CLICKED)
+#endif //IDD_FUNCLISTPANEL_RC_H
 
-class ColourPicker : public Window
-{
-public :
-	ColourPicker() : Window(),  _currentColour(RGB(0xFF, 0x00, 0x00)), _pColourPopup(NULL), _isEnabled(true) {};
-    ~ColourPicker(){};
-	virtual void init(HINSTANCE hInst, HWND parent);
-	virtual void destroy();
-    void setColour(COLORREF c) {
-        _currentColour = c;
-    };
-
-	COLORREF getColour() const {return _currentColour;};
-	bool isEnabled() {return _isEnabled;};
-	void setEnabled(bool enabled) {_isEnabled = enabled;};
-
-private :
-	COLORREF _currentColour;
-    WNDPROC _buttonDefaultProc;
-	ColourPopup *_pColourPopup;
-	bool _isEnabled;
-
-    static LRESULT CALLBACK staticWinProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
-        return (((ColourPicker *)(::GetWindowLongPtr(hwnd, GWL_USERDATA)))->runProc(Message, wParam, lParam));
-    };
-	LRESULT runProc(UINT Message, WPARAM wParam, LPARAM lParam);
-    void drawForeground(HDC hDC);
-	void drawBackground(HDC hDC);
-};
-
-#endif // COLOUR_PICKER_H

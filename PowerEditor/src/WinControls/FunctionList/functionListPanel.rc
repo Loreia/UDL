@@ -26,40 +26,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-#ifndef COLOUR_PICKER_H
-#define COLOUR_PICKER_H
+#include <windows.h>
+#include "functionListPanel_rc.h"
 
-class ColourPopup;
-
-#define CPN_COLOURPICKED (BN_CLICKED)
-
-class ColourPicker : public Window
-{
-public :
-	ColourPicker() : Window(),  _currentColour(RGB(0xFF, 0x00, 0x00)), _pColourPopup(NULL), _isEnabled(true) {};
-    ~ColourPicker(){};
-	virtual void init(HINSTANCE hInst, HWND parent);
-	virtual void destroy();
-    void setColour(COLORREF c) {
-        _currentColour = c;
-    };
-
-	COLORREF getColour() const {return _currentColour;};
-	bool isEnabled() {return _isEnabled;};
-	void setEnabled(bool enabled) {_isEnabled = enabled;};
-
-private :
-	COLORREF _currentColour;
-    WNDPROC _buttonDefaultProc;
-	ColourPopup *_pColourPopup;
-	bool _isEnabled;
-
-    static LRESULT CALLBACK staticWinProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
-        return (((ColourPicker *)(::GetWindowLongPtr(hwnd, GWL_USERDATA)))->runProc(Message, wParam, lParam));
-    };
-	LRESULT runProc(UINT Message, WPARAM wParam, LPARAM lParam);
-    void drawForeground(HDC hDC);
-	void drawBackground(HDC hDC);
-};
-
-#endif // COLOUR_PICKER_H
+IDD_FUNCLIST_PANEL DIALOGEX 26, 41, 142, 324
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE
+CAPTION "Function List"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+	LISTBOX         IDC_LIST_FUNCLIST,50,44,78,120,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END

@@ -46,6 +46,7 @@
 #include "VerticalFileSwitcher.h"
 #include "ProjectPanel.h"
 #include "documentMap.h"
+#include "functionListPanel.h"
 
 enum tb_stat {tb_saved, tb_unsaved, tb_ro};
 #define DIR_LEFT true
@@ -121,7 +122,7 @@ ToolBarButtonUnit toolBarIcons[] = {
 Notepad_plus::Notepad_plus(): _mainWindowStatus(0), _pDocTab(NULL), _pEditView(NULL),
 	_pMainSplitter(NULL),
     _recordingMacro(false), _pTrayIco(NULL), _isUDDocked(false), _pFileSwitcherPanel(NULL),
-	_pProjectPanel_1(NULL), _pProjectPanel_2(NULL), _pProjectPanel_3(NULL), _pDocMap(NULL),
+	_pProjectPanel_1(NULL), _pProjectPanel_2(NULL), _pProjectPanel_3(NULL), _pDocMap(NULL), _pFuncList(NULL),
 	_linkTriggered(true), _isHotspotDblClicked(false), _isFolding(false), 
 	_sysMenuEntering(false),
 	_autoCompleteMain(&_mainEditView), _autoCompleteSub(&_subEditView), _smartHighlighter(&_findReplaceDlg),
@@ -187,6 +188,10 @@ Notepad_plus::~Notepad_plus()
 	if (_pDocMap)
 	{
 		delete _pDocMap;
+	}
+	if (_pFuncList)
+	{
+		delete _pFuncList;
 	}
 }
 
@@ -337,7 +342,7 @@ LRESULT Notepad_plus::init(HWND hwnd)
 	bool willBeShown = nppGUI._statusBarShow;
     _statusBar.init(_pPublicInterface->getHinst(), hwnd, 6);
 	_statusBar.setPartWidth(STATUSBAR_DOC_SIZE, 200);
-	_statusBar.setPartWidth(STATUSBAR_CUR_POS, 230);
+	_statusBar.setPartWidth(STATUSBAR_CUR_POS, 260);
 	_statusBar.setPartWidth(STATUSBAR_EOF_FORMAT, 110);
 	_statusBar.setPartWidth(STATUSBAR_UNICODE_TYPE, 120);
 	_statusBar.setPartWidth(STATUSBAR_TYPING_MODE, 30);
@@ -1225,6 +1230,36 @@ void Notepad_plus::doTrim(trimOp whichPart)
 	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
 }
 
+void Notepad_plus::removeEmptyLine(bool isBlankContained)
+{
+	// whichPart : line head or line tail
+	FindOption env;
+	if (isBlankContained)
+	{
+		env._str2Search = TEXT("^[\\t ]*$(\\r\\n|\\r|\\n)");
+	}
+	else
+	{
+		env._str2Search = TEXT("^$(\\r\\n|\\r|\\n)");
+	}
+	env._str4Replace = TEXT("");
+    env._searchType = FindRegex;
+	
+	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
+
+
+	// remove the last line if it's an empty line.
+	if (isBlankContained)
+	{
+		env._str2Search = TEXT("(\\r\\n|\\r|\\n)^[\\t ]*$");
+	}
+	else
+	{
+		env._str2Search = TEXT("(\\r\\n|\\r|\\n)^$");
+	}
+	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
+}
+
 void Notepad_plus::getMatchedFileNames(const TCHAR *dir, const vector<generic_string> & patterns, vector<generic_string> & fileNames, bool isRecursive, bool isInHiddenDir)
 {
 	generic_string dirFilter(dir);
@@ -1584,7 +1619,7 @@ int Notepad_plus::doCloseOrNot(const TCHAR *fn)
 
 int Notepad_plus::doDeleteOrNot(const TCHAR *fn)
 {
-	TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
+	TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be moved to your Recycle Bin and this document will be closed.\rContinue?");
 	TCHAR phrase[512];
 	wsprintf(phrase, pattern, fn);
 	return doActionOrNot(TEXT("Delete file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
@@ -2032,7 +2067,9 @@ void Notepad_plus::addHotSpot()
 	int endStyle = _pEditView->execute(SCI_GETENDSTYLED);
 
 	_pEditView->getVisibleStartAndEndPosition(&startPos, &endPos);
+
 	_pEditView->execute(SCI_SETSEARCHFLAGS, SCFIND_REGEXP|SCFIND_POSIX);
+
 	_pEditView->execute(SCI_SETTARGETSTART, startPos);
 	_pEditView->execute(SCI_SETTARGETEND, endPos);
 
@@ -2055,7 +2092,7 @@ void Notepad_plus::addHotSpot()
 
 	LangType type = _pEditView->getCurrentBuffer()->getLangType();
 
-	if (type == L_HTML)			
+	if (type == L_HTML || type == L_PHP || type == L_ASP || type == L_JSP)			
 		mask = INDIC2_MASK;
 	else if (type == L_PS)
 		mask = 16;
@@ -2069,6 +2106,7 @@ void Notepad_plus::addHotSpot()
 		int foundTextLen = end - start;
 		unsigned char idStyle = static_cast<unsigned char>(_pEditView->execute(SCI_GETSTYLEAT, posFound));
 
+		// Search the style
 		int fs = -1;
 		for (size_t i = 0 ; i < hotspotPairs.size() ; i++)
 		{
@@ -2077,16 +2115,17 @@ void Notepad_plus::addHotSpot()
 			{
 				fs = hotspotPairs[i];
 				_pEditView->execute(SCI_STYLEGETFORE, fs);
-				break;
+					break;
 			}
 		}
 
+		// if we found it then use it to colourize
 		if (fs != -1)
 		{
 			_pEditView->execute(SCI_STARTSTYLING, start, 0xFF);
 			_pEditView->execute(SCI_SETSTYLING, foundTextLen, fs);
 		}
-		else
+		else // generize a new style and add it into a array
 		{
 			style_hotspot = idStyle | mask;	// set "hotspot bit"
 			hotspotPairs.push_back(style_hotspot);
@@ -2126,6 +2165,8 @@ void Notepad_plus::addHotSpot()
 			_pEditView->execute(SCI_STYLESETHOTSPOT, style_hotspot, TRUE);
 			_pEditView->execute(SCI_SETHOTSPOTACTIVEFORE, TRUE, activeFG);
 			_pEditView->execute(SCI_SETHOTSPOTSINGLELINE, style_hotspot, 0);
+
+			// colourize it!
 			_pEditView->execute(SCI_STARTSTYLING, start, 0xFF);
 			_pEditView->execute(SCI_SETSTYLING, foundTextLen, style_hotspot);
 		}
@@ -2642,10 +2683,11 @@ void Notepad_plus::updateStatusBar()
 {
     TCHAR strLnCol[128];
 	TCHAR strSel[64];
+	int selByte = 0;
+	int selLine = 0;
 
-	long nbByte = _pEditView->getSelectedByteNumber();
-	if (nbByte != -1)
-		wsprintf(strSel, TEXT("Sel : %d"), nbByte);
+	if (_pEditView->getSelectedCount(selByte, selLine))
+		wsprintf(strSel, TEXT("Sel : %d | %d"), selByte, selLine);
 	else
 		wsprintf(strSel, TEXT("Sel : %s"), TEXT("N/A"));
 
@@ -3330,9 +3372,9 @@ bool Notepad_plus::doBlockComment(comment_mode currCommentMode)
 		symbol = extractSymbol('0', '0', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentLineSybol = symbol.c_str();
 		//--FLS: BlockToStreamComment: Needed to decide, if stream-comment can be called below!
-		symbolStart = extractSymbol('0', '1', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolStart = extractSymbol('0', '3', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentStart = symbolStart.c_str();
-		symbolEnd = extractSymbol('0', '2', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolEnd = extractSymbol('0', '4', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentEnd = symbolEnd.c_str();
 	}
 	else
@@ -3484,9 +3526,9 @@ bool Notepad_plus::doStreamComment()
 		symbol = extractSymbol('0', '0', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentLineSybol = symbol.c_str();
 
-		symbolStart = extractSymbol('0', '1', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolStart = extractSymbol('0', '3', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentStart = symbolStart.c_str();
-		symbolEnd = extractSymbol('0', '2', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolEnd = extractSymbol('0', '4', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentEnd = symbolEnd.c_str();
 	}
 	else
@@ -4406,6 +4448,8 @@ void Notepad_plus::notifyBufferChanged(Buffer * buffer, int mask)
 
 	if (mask & (BufferChangeDirty|BufferChangeFilename))
 	{
+		if(mask & BufferChangeFilename)
+			command(IDM_VIEW_REFRESHTABAR);
 		checkDocState();
 		setTitle();
 		generic_string dir(buffer->getFullPathName());
@@ -4488,6 +4532,11 @@ void Notepad_plus::notifyBufferActivated(BufferID bufid, int view)
 	{
 		_pDocMap->reloadMap();
 		_pDocMap->setSyntaxLiliting();
+	}
+
+	if (_pFuncList)
+	{
+		_pFuncList->reload();
 	}
 
 	_linkTriggered = true;
@@ -5001,6 +5050,36 @@ void Notepad_plus::launchDocMap()
 	_pEditView->getFocus();
 }
 
+void Notepad_plus::launchFunctionList()
+{
+	if (!_pFuncList)
+	{
+		_pFuncList = new FunctionListPanel();
+		_pFuncList->init(_pPublicInterface->getHinst(), _pPublicInterface->getHSelf(), &_pEditView);
+		
+		tTbData	data = {0};
+		_pFuncList->create(&data);
+
+		::SendMessage(_pPublicInterface->getHSelf(), NPPM_MODELESSDIALOG, MODELESSDIALOGREMOVE, (WPARAM)_pFuncList->getHSelf());
+		// define the default docking behaviour
+		data.uMask = DWS_DF_CONT_RIGHT | DWS_ICONTAB;
+		//data.hIconTab = (HICON)::LoadImage(_pPublicInterface->getHinst(), MAKEINTRESOURCE(IDI_FIND_RESULT_ICON), IMAGE_ICON, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT);
+		data.pszModuleName = NPP_INTERNAL_FUCTION_STR;
+
+		// the dlgDlg should be the index of funcItem where the current function pointer is
+		// in this case is DOCKABLE_DEMO_INDEX
+		// In the case of Notepad++ internal function, it'll be the command ID which triggers this dialog
+		data.dlgID = IDM_VIEW_FUNC_LIST;
+
+		::SendMessage(_pPublicInterface->getHSelf(), NPPM_DMMREGASDCKDLG, 0, (LPARAM)&data);
+	}
+
+	//_pDocMap->initWrapMap();
+	//_pDocMap->wrapMap();
+	_pFuncList->display();
+
+	_pEditView->getFocus();
+}
 
 struct TextPlayerParams {
 	HWND _nppHandle;
@@ -5022,9 +5101,9 @@ struct Quote{
 	const char *_quote;
 };
 
-const int nbQuote = 85;
+const int nbQuote = 100;
 Quote quotes[nbQuote] = {
-{"Notepad++", "Notepad++ is written in C++ and uses pure Win32 API and STL which ensures a higher execution speed and smaller program size.\nBy optimizing as many routines as possible without losing user friendliness, Notepad++ is trying to reduce the world carbon dioxide emissions. When using less CPU power, the PC can throttle down and reduce power consumption, resulting in a greener environment."},
+{"Notepad++", "RTFM is the true path of every developer.\nBut it would happen only if there's no way out."},
 {"Martin Golding", "Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live."},
 {"L. Peter Deutsch", "To iterate is human, to recurse divine."},
 {"Seymour Cray", "The trouble with programmers is that you can never tell what a programmer is doing until it's too late."},
@@ -5045,12 +5124,13 @@ Quote quotes[nbQuote] = {
 {"Linus Torvalds", "Software is like sex: It's better when it's free."},
 {"Cult of vi", "Emacs is a great operating system, lacking only a decent editor."},
 {"Church of Emacs", "vi has two modes – \"beep repeatedly\" and \"break everything\"."},
-{"Steve Jobs", "The only problem with Microsoft is they just have no taste. They have absolutely no taste. And I don't mean that in a small way, I mean that in a big way, in the sense that they don't think of original ideas, and they don't bring much culture into their products."},
+{"Steve Jobs", "Picasso had a saying: \"Good artists copy, great artists steal.\".\nWe have always been shameless about stealing great ideas."},
 {"brotips #1001", "Do everything for greatness, not money. Money follows greatness."},
 {"brotips #1212", "Cheating is like eating fast food: you do it, you enjoy it, and then you feel like shit."},
 {"Robin Williams", "God gave men both a penis and a brain, but unfortunately not enough blood supply to run both at the same time."},
 {"Darth Vader", "You don't get to 500 million star systems without making a few enemies."},
 {"Doug Linder", "A good programmer is someone who always looks both ways before crossing a one-way street."},
+{"Jean-Claude van Damme", "A cookie has no soul, it's just a cookie. But before it was milk and eggs.\nAnd in eggs there's the potential for life."},
 {"Don Ho", "Je mange donc je chie."},
 {"Anonymous #1", "Does your ass ever get jealous of all the shit that comes out of your month?"},
 {"Anonymous #2", "Before sex, you help each other get naked, after sex you only dress yourself.\nMoral of the story: in life no one helps you once you're fucked."},
@@ -5100,10 +5180,24 @@ Quote quotes[nbQuote] = {
 {"Anonymous #46", "Pornography harms\nmy wrist."},
 {"Anonymous #47", "Kids are like fart.\nYou can only stand yours."},
 {"Anonymous #48", "If you were born in Israel, you’d probably be Jewish.\nIf you were born in Saudi Arabia, you’d probably be Muslim.\nIf you were born in India, you’d probably be Hindu.\nBut because you were born in North America, you’re Christian.\nYour faith is not inspired by some divine, constant truth.\nIt’s simply geography."},
-{"Anonymous #49", "There are 2 types of people in this world:\nPeople who say they pee in the swimming pool, and the dirty fucking liars."},
+{"Anonymous #49", "There are 2 types of people in this world:\nPeople who say they pee in the shower, and the dirty fucking liars."},
 {"Anonymous #50", "London 2012 Olympic Games - A bunch of countries coming across the ocean to put their flags in britain and try to get a bunch of gold... it's like history but opposite."},
 {"Anonymous #51", "I don't need a stable relationship,\nI just need a stable Internet connection."},
 {"Anonymous #52", "What's the difference between religion and bullshit?\nThe bull."},
+{"Anonymous #53", "Today, as I was waiting for my girlfriend in the street, I saw a woman who looked a lot like her. I ran towards her, my arms in the air ready to give her a hug, only to realise it wasn't her. I then had to pass the woman, my arms in the air, still running. FML"},
+{"Anonymous #54", "Today, I finally got my hands on the new iPhone 5, after I pulled it out of a patient's rectum. FML"},
+{"Anonymous #55", "Violent video games won't change our behaviour.\nIf people were influenced by video games, then the majority of Facebook users would be farmers right now."},
+{"Anonymous #56", "Religion is like circumcision.\nIf you wait until someone is 21 to tell them about it they probably won't be interested."},
+{"Anonymous #57", "No, no, no, I'm not insulting you.\nI'm describing you."},
+{"Anonymous #58", "I bought a dog once. Named him \"Stay\".\n\"Come here, Stay.\"\nHe's insane now."},
+{"Anonymous #59", "Steve Jobs\n1955-2011\nDied from PC (Pancreatic Cancer)."},
+{"Anonymous #60", "Yesterday I named my Wifi network \"hack me if you can\"\nToday when I woke up it was changed to \"challenge accepted\"."},
+{"Anonymous #61", "Your mother is so fat,\nthe recursive function computing her mass causes a stack overflow."},
+{"Anonymous #62", "Oral sex makes my day, but anal sex makes my hole weak."},
+{"Anonymous #63", "I'm not saying I am Batman, I am just saying no one has ever seen me and Batman in the same room togather."},
+{"Anonymous #64", "I took a taxi today.\nThe driver told me \"I love my job, I own this car, I've got my own business, I'm my own boss, NO ONE tells me what to do!\"\nI said \"TURN LEFT HERE\".\n"},
+{"Apple fan boy", "I'll buy a second iPhone 5 and buy a lot of iOS applications so that Apple will be able to buy Samsung (this shitty company) to shut it down and all the Apple haters will be forced to have an iPhone. Muhahaha..."},
+{"Motherf*cker", "Thousands of my potential children died on your mother's face last night."},
 {"Hustle Man", "Politicians are like sperm.\nOne in a million turn out to be an actual human being."},
 {"Confucius", "It's good to meet girl in park.\nBut better to park meat in girl."},
 {"Mark Twain", "Censorship is telling a man he can't have a steak just because a baby can't chew it."},
@@ -5465,9 +5559,9 @@ bool Notepad_plus::undoStreamComment()
 		if (!userLangContainer)
 			return false;
 
-		symbolStart = extractSymbol('0', '1', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolStart = extractSymbol('0', '3', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentStart = symbolStart.c_str();
-		symbolEnd = extractSymbol('0', '2', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
+		symbolEnd = extractSymbol('0', '4', userLangContainer->_keywordLists[SCE_USER_KWLIST_COMMENTS]);
 		commentEnd = symbolEnd.c_str();
 	}
 	else

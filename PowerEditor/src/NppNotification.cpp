@@ -318,7 +318,7 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_SAVE, TEXT("Save")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_SAVEAS, TEXT("Save As...")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_RENAME, TEXT("Rename")));
-			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_DELETE, TEXT("Delete")));
+			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_DELETE, TEXT("Move to Recycle Bin")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_RELOAD, TEXT("Reload")));
 			itemUnitArray.push_back(MenuItemUnit(IDM_FILE_PRINT, TEXT("Print")));
 			itemUnitArray.push_back(MenuItemUnit(0, NULL));
@@ -473,6 +473,7 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 		int urlAction = (NppParameters::getInstance())->getNppGUI()._styleURL;
 		if ((urlAction == 1) || (urlAction == 2))
 			addHotSpot();
+
 		break;
 	}
 
@@ -585,7 +586,7 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 
 	case SCN_HOTSPOTDOUBLECLICK :
 	{
-		notifyView->execute(SCI_SETWORDCHARS, 0, (LPARAM)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-+.:?&@=/%#");
+		notifyView->execute(SCI_SETWORDCHARS, 0, (LPARAM)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-+.,:?&@=/%#()");
 		
 		int pos = notifyView->execute(SCI_GETCURRENTPOS);
 		int startPos = static_cast<int>(notifyView->execute(SCI_WORDSTARTPOSITION, pos, false));
@@ -608,6 +609,11 @@ BOOL Notepad_plus::notify(SCNotification *notification)
 		TCHAR currentWord[2*MAX_PATH];
 
 		notifyView->getGenericText(currentWord, MAX_PATH*2, startPos, endPos);
+
+		// This treatment would fail on some valid URLs where there's actually supposed to be a comma or parenthesis at the end.
+		int lastCharIndex = _tcsnlen(currentWord, MAX_PATH*2) - 1;
+		if(lastCharIndex >= 0 && (currentWord[lastCharIndex] == ',' || currentWord[lastCharIndex] == ')' || currentWord[lastCharIndex] == '('))
+			currentWord[lastCharIndex] = '\0';
 
 		::ShellExecute(_pPublicInterface->getHSelf(), TEXT("open"), currentWord, NULL, NULL, SW_SHOW);
 		_isHotspotDblClicked = true;
