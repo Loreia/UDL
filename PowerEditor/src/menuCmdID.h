@@ -73,6 +73,8 @@
     #define    IDM_EDIT_LINE_DOWN                   (IDM_EDIT + 15)
     #define    IDM_EDIT_UPPERCASE                   (IDM_EDIT + 16)
     #define    IDM_EDIT_LOWERCASE                   (IDM_EDIT + 17)
+	#define    IDM_EDIT_REMOVEEMPTYLINES            (IDM_EDIT + 55)
+	#define    IDM_EDIT_REMOVEEMPTYLINESWITHBLANK   (IDM_EDIT + 56)
 
 // Menu macro
     #define    IDM_MACRO_STARTRECORDINGMACRO        (IDM_EDIT + 18)
@@ -263,6 +265,8 @@
 	#define    IDM_VIEW_PROJECT_PANEL_1           (IDM_VIEW + 81)
 	#define    IDM_VIEW_PROJECT_PANEL_2           (IDM_VIEW + 82)
 	#define    IDM_VIEW_PROJECT_PANEL_3           (IDM_VIEW + 83)
+
+	#define    IDM_VIEW_FUNC_LIST                 (IDM_VIEW + 84)
 
     #define    IDM_VIEW_GOTO_ANOTHER_VIEW        10001
     #define    IDM_VIEW_CLONE_TO_ANOTHER_VIEW    10002

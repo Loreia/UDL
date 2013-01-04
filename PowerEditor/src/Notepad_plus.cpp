@@ -46,6 +46,7 @@
 #include "VerticalFileSwitcher.h"
 #include "ProjectPanel.h"
 #include "documentMap.h"
+#include "functionListPanel.h"
 
 enum tb_stat {tb_saved, tb_unsaved, tb_ro};
 #define DIR_LEFT true
@@ -121,7 +122,7 @@ ToolBarButtonUnit toolBarIcons[] = {
 Notepad_plus::Notepad_plus(): _mainWindowStatus(0), _pDocTab(NULL), _pEditView(NULL),
 	_pMainSplitter(NULL),
     _recordingMacro(false), _pTrayIco(NULL), _isUDDocked(false), _pFileSwitcherPanel(NULL),
-	_pProjectPanel_1(NULL), _pProjectPanel_2(NULL), _pProjectPanel_3(NULL), _pDocMap(NULL),
+	_pProjectPanel_1(NULL), _pProjectPanel_2(NULL), _pProjectPanel_3(NULL), _pDocMap(NULL), _pFuncList(NULL),
 	_linkTriggered(true), _isHotspotDblClicked(false), _isFolding(false), 
 	_sysMenuEntering(false),
 	_autoCompleteMain(&_mainEditView), _autoCompleteSub(&_subEditView), _smartHighlighter(&_findReplaceDlg),
@@ -187,6 +188,10 @@ Notepad_plus::~Notepad_plus()
 	if (_pDocMap)
 	{
 		delete _pDocMap;
+	}
+	if (_pFuncList)
+	{
+		delete _pFuncList;
 	}
 }
 
@@ -1225,6 +1230,36 @@ void Notepad_plus::doTrim(trimOp whichPart)
 	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
 }
 
+void Notepad_plus::removeEmptyLine(bool isBlankContained)
+{
+	// whichPart : line head or line tail
+	FindOption env;
+	if (isBlankContained)
+	{
+		env._str2Search = TEXT("^[\\t ]*$(\\r\\n|\\r|\\n)");
+	}
+	else
+	{
+		env._str2Search = TEXT("^$(\\r\\n|\\r|\\n)");
+	}
+	env._str4Replace = TEXT("");
+    env._searchType = FindRegex;
+	
+	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
+
+
+	// remove the last line if it's an empty line.
+	if (isBlankContained)
+	{
+		env._str2Search = TEXT("(\\r\\n|\\r|\\n)^[\\t ]*$");
+	}
+	else
+	{
+		env._str2Search = TEXT("(\\r\\n|\\r|\\n)^$");
+	}
+	_findReplaceDlg.processAll(ProcessReplaceAll, &env, true);
+}
+
 void Notepad_plus::getMatchedFileNames(const TCHAR *dir, const vector<generic_string> & patterns, vector<generic_string> & fileNames, bool isRecursive, bool isInHiddenDir)
 {
 	generic_string dirFilter(dir);
@@ -1584,7 +1619,7 @@ int Notepad_plus::doCloseOrNot(const TCHAR *fn)
 
 int Notepad_plus::doDeleteOrNot(const TCHAR *fn)
 {
-	TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
+	TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be moved to your Recycle Bin and this document will be closed.\rContinue?");
 	TCHAR phrase[512];
 	wsprintf(phrase, pattern, fn);
 	return doActionOrNot(TEXT("Delete file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
@@ -4413,6 +4448,8 @@ void Notepad_plus::notifyBufferChanged(Buffer * buffer, int mask)
 
 	if (mask & (BufferChangeDirty|BufferChangeFilename))
 	{
+		if(mask & BufferChangeFilename)
+			command(IDM_VIEW_REFRESHTABAR);
 		checkDocState();
 		setTitle();
 		generic_string dir(buffer->getFullPathName());
@@ -4495,6 +4532,11 @@ void Notepad_plus::notifyBufferActivated(BufferID bufid, int view)
 	{
 		_pDocMap->reloadMap();
 		_pDocMap->setSyntaxLiliting();
+	}
+
+	if (_pFuncList)
+	{
+		_pFuncList->reload();
 	}
 
 	_linkTriggered = true;
@@ -5008,6 +5050,36 @@ void Notepad_plus::launchDocMap()
 	_pEditView->getFocus();
 }
 
+void Notepad_plus::launchFunctionList()
+{
+	if (!_pFuncList)
+	{
+		_pFuncList = new FunctionListPanel();
+		_pFuncList->init(_pPublicInterface->getHinst(), _pPublicInterface->getHSelf(), &_pEditView);
+		
+		tTbData	data = {0};
+		_pFuncList->create(&data);
+
+		::SendMessage(_pPublicInterface->getHSelf(), NPPM_MODELESSDIALOG, MODELESSDIALOGREMOVE, (WPARAM)_pFuncList->getHSelf());
+		// define the default docking behaviour
+		data.uMask = DWS_DF_CONT_RIGHT | DWS_ICONTAB;
+		//data.hIconTab = (HICON)::LoadImage(_pPublicInterface->getHinst(), MAKEINTRESOURCE(IDI_FIND_RESULT_ICON), IMAGE_ICON, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT);
+		data.pszModuleName = NPP_INTERNAL_FUCTION_STR;
+
+		// the dlgDlg should be the index of funcItem where the current function pointer is
+		// in this case is DOCKABLE_DEMO_INDEX
+		// In the case of Notepad++ internal function, it'll be the command ID which triggers this dialog
+		data.dlgID = IDM_VIEW_FUNC_LIST;
+
+		::SendMessage(_pPublicInterface->getHSelf(), NPPM_DMMREGASDCKDLG, 0, (LPARAM)&data);
+	}
+
+	//_pDocMap->initWrapMap();
+	//_pDocMap->wrapMap();
+	_pFuncList->display();
+
+	_pEditView->getFocus();
+}
 
 struct TextPlayerParams {
 	HWND _nppHandle;
@@ -5029,9 +5101,9 @@ struct Quote{
 	const char *_quote;
 };
 
-const int nbQuote = 98;
+const int nbQuote = 100;
 Quote quotes[nbQuote] = {
-{"Notepad++", "Notepad++ is written in C++ and uses pure Win32 API and STL which ensures a higher execution speed and smaller program size.\nBy optimizing as many routines as possible without losing user friendliness, Notepad++ is trying to reduce the world carbon dioxide emissions. When using less CPU power, the PC can throttle down and reduce power consumption, resulting in a greener environment."},
+{"Notepad++", "RTFM is the true path of every developer.\nBut it would happen only if there's no way out."},
 {"Martin Golding", "Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live."},
 {"L. Peter Deutsch", "To iterate is human, to recurse divine."},
 {"Seymour Cray", "The trouble with programmers is that you can never tell what a programmer is doing until it's too late."},
@@ -5123,7 +5195,9 @@ Quote quotes[nbQuote] = {
 {"Anonymous #61", "Your mother is so fat,\nthe recursive function computing her mass causes a stack overflow."},
 {"Anonymous #62", "Oral sex makes my day, but anal sex makes my hole weak."},
 {"Anonymous #63", "I'm not saying I am Batman, I am just saying no one has ever seen me and Batman in the same room togather."},
+{"Anonymous #64", "I took a taxi today.\nThe driver told me \"I love my job, I own this car, I've got my own business, I'm my own boss, NO ONE tells me what to do!\"\nI said \"TURN LEFT HERE\".\n"},
 {"Apple fan boy", "I'll buy a second iPhone 5 and buy a lot of iOS applications so that Apple will be able to buy Samsung (this shitty company) to shut it down and all the Apple haters will be forced to have an iPhone. Muhahaha..."},
+{"Motherf*cker", "Thousands of my potential children died on your mother's face last night."},
 {"Hustle Man", "Politicians are like sperm.\nOne in a million turn out to be an actual human being."},
 {"Confucius", "It's good to meet girl in park.\nBut better to park meat in girl."},
 {"Mark Twain", "Censorship is telling a man he can't have a steak just because a baby can't chew it."},

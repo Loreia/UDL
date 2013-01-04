@@ -341,6 +341,25 @@ void Notepad_plus::command(int id)
 		}
 		break;
 
+		case IDM_VIEW_FUNC_LIST:
+		{
+			launchFunctionList();
+			/*
+			if(_pDocMap && _pDocMap->isVisible())
+			{
+				_pDocMap->display(false);
+				_pDocMap->vzDlgDisplay(false);
+				checkMenuItem(IDM_VIEW_DOC_MAP, false);
+			}
+			else
+			{
+				checkMenuItem(IDM_VIEW_DOC_MAP, true);
+				launchDocMap();
+			}
+			*/
+		}
+		break;
+
 		case IDM_EDIT_DELETE:
 			_pEditView->execute(WM_CLEAR);
 			break;
@@ -815,6 +834,18 @@ void Notepad_plus::command(int id)
 
 		case IDM_EDIT_LINE_DOWN:
 			_pEditView->currentLinesDown();
+			break;
+
+		case IDM_EDIT_REMOVEEMPTYLINES:
+			_pEditView->execute(SCI_BEGINUNDOACTION);
+			removeEmptyLine(false);
+			_pEditView->execute(SCI_ENDUNDOACTION);
+			break;
+
+		case IDM_EDIT_REMOVEEMPTYLINESWITHBLANK:
+			_pEditView->execute(SCI_BEGINUNDOACTION);
+			removeEmptyLine(true);
+			_pEditView->execute(SCI_ENDUNDOACTION);
 			break;
 
 		case IDM_EDIT_UPPERCASE:

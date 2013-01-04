@@ -206,7 +206,7 @@ BEGIN
         MENUITEM "&Close",                           IDM_FILE_CLOSE
         MENUITEM "Clos&e All",                       IDM_FILE_CLOSEALL
         MENUITEM "Close All but Active Document",    IDM_FILE_CLOSEALL_BUT_CURRENT
-        MENUITEM "Delete from Disk",                 IDM_FILE_DELETE
+        MENUITEM "Move to Recycle Bin",              IDM_FILE_DELETE
         MENUITEM SEPARATOR
         MENUITEM "Load Session...",                  IDM_FILE_LOADSESSION
         MENUITEM "Save Session...",                  IDM_FILE_SAVESESSION
@@ -251,6 +251,8 @@ BEGIN
             MENUITEM "Join Lines",                IDM_EDIT_JOIN_LINES
             MENUITEM "Move Up Current Line",      IDM_EDIT_LINE_UP
             MENUITEM "Move Down Current Line",    IDM_EDIT_LINE_DOWN
+			MENUITEM "Remove Empty Lines",        IDM_EDIT_REMOVEEMPTYLINES
+			MENUITEM "Remove Empty Lines (Containing Blank characters)",    IDM_EDIT_REMOVEEMPTYLINESWITHBLANK
         END
         POPUP "Comment/Uncomment"
         BEGIN
@@ -446,9 +448,10 @@ BEGIN
                 MENUITEM "Project Panel 2",          IDM_VIEW_PROJECT_PANEL_2
                 MENUITEM "Project Panel 3",          IDM_VIEW_PROJECT_PANEL_3
             END
-#ifdef UNICODE
+
         MENUITEM "Document Map",          IDM_VIEW_DOC_MAP
-#endif
+
+        //MENUITEM "Function List",         IDM_VIEW_FUNC_LIST
         MENUITEM SEPARATOR
         MENUITEM "Synchronize Vertical Scrolling",      IDM_VIEW_SYNSCROLLV
         MENUITEM "Synchronize Horizontal Scrolling",    IDM_VIEW_SYNSCROLLH
